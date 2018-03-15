@@ -4,20 +4,16 @@
     $_REQUEST ["ON_REQUEST_START"] = microtime ( true );
 
     // Include application configuration values
-    require_once $_SERVER ["DOCUMENT_ROOT"] . "/application.config.php";
+    require_once __DIR__ . "/application.config.php";
 
     // Include application server override values
-    require_once $_SERVER ["DOCUMENT_ROOT"] . "/application.server.php";
+    require_once __DIR__ . "/application.server.php";
 
     // Global variables
     $_REQUEST ["ALERT_HEAD"]    = "";
     $_REQUEST ["ALERT_TYPE"]    = "";
     $_REQUEST ["ALERT_MSG"]     = "";
 
-    // Class autoloader
-    spl_autoload_register ( function ( $class ) {
-        require_once ltrim ( $GLOBALS ["DEV_FOLDER"] . "/", "/" ) . str_replace ( "\\", "/", $class ) . ".php";
-    } );
 
     /**
      * @param string $key

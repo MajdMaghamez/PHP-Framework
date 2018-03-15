@@ -27,7 +27,6 @@
         public function handleRequest ( ) {
             $uri = $_SERVER["REQUEST_URI"];
             $route = preg_replace ("/\..+$/","", $uri );
-            $route = str_replace ( $GLOBALS["DEV_FOLDER"], "", $route );
             $route = trim ( $route,"/" );
 
             $this->routeTo($route);

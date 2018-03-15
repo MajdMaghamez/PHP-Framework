@@ -51,10 +51,10 @@
     $GLOBALS ["OFF_WEB_ROOT"]   = "C:\\xampp\\apache\\secure";
 
     // Full link URL
-    $GLOBALS ["RELATIVE_TO_ROOT"]       = "http://" . $_SERVER ["HTTP_HOST"] . $GLOBALS ["DEV_FOLDER"];
+    $GLOBALS ["RELATIVE_TO_ROOT"]       = "http://" . $_SERVER ["HTTP_HOST"];
 
     // Full directory URL
-    $GLOBALS ["RELATIVE_TO_DIRECTORY"]  = $_SERVER ["DOCUMENT_ROOT"] . $GLOBALS ["DEV_FOLDER"];
+    $GLOBALS ["RELATIVE_TO_DIRECTORY"]  = $_SERVER ["DOCUMENT_ROOT"];
 
 
     // Cache location

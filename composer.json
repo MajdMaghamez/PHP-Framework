@@ -1,0 +1,14 @@
+{
+    "require": {
+        "swiftmailer/swiftmailer": "^6.0"
+    },
+
+    "autoload": {
+        "classmap" : [
+            "main/"
+        ],
+        "files" : [
+            "main/application.php"
+        ]
+    }
+}
