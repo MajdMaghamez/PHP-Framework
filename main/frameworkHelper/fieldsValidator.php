@@ -12,8 +12,13 @@
             {
                 foreach ( $columns as $column => $gui )
                 {
-                    if ( method_exists ( $gui, "validate" ) )
+                    $Parent = explode( "\\", get_parent_class ( $gui ) );
+                    $gui_parent = end ( $Parent );
+
+                    if ( $gui_parent == 'field' )
                     {
+                        $gui->setValue ( $_POST [ $gui->getName( ) ] );
+
                         if ( ! $gui->validate ( ) ) { return false; }
                     }
                 }

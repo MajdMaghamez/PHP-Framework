@@ -1,22 +1,21 @@
 <?php namespace main\controllers\authControl;
 
+    use main\models\User;
     use main\emails\email;
-    use main\gui\buttons\formButton;
-    use main\gui\fields\emailField;
-    use main\gui\fields\passwordField;
-    use main\gui\fields\selectField;
-    use main\gui\fields\textField;
-    use main\gui\alerts\alert;
     use main\gui\links\link;
-    use main\storage\database;
+    use main\gui\fields\textField;
+    use main\gui\fields\emailField;
     use main\controllers\Controller;
     use main\layouts\bootstrap\main;
+    use main\gui\buttons\formButton;
+    use main\gui\fields\selectField;
+    use main\gui\fields\passwordField;
     use main\gui\renderer\bootstrapForm;
     use main\frameworkHelper\cacheManager;
     use main\frameworkHelper\fieldsValidator;
+
     class RegisterController extends Controller
     {
-        protected $errors = array ( );
         protected $arrComponents;
 
         /**
@@ -92,43 +91,43 @@
             $components ["BTN_register"]->setTabs ( $Tabs );
 
             $this->arrComponents =
+            [
+                0 =>
                 [
-                    0 =>
-                    [
-                        0 => $components ["firstname"],
-                        1 => $components ["lastname"]
-                    ],
-                    1 =>
-                    [
-                        0 => $components ["email"]
-                    ],
-                    2 =>
-                    [
-                        0 => $components ["password"],
-                        1 => $components ["confPassword"]
-                    ],
-                    3 =>
-                    [
-                        0 => $components ["question1"]
-                    ],
-                    4 =>
-                    [
-                        0 => $components ["answer1"]
-                    ],
-                    5 =>
-                    [
-                        0 => $components ["question2"]
-                    ],
-                    6 =>
-                    [
-                        0 => $components ["answer2"]
-                    ],
-                    7 =>
-                    [
-                        0 => $components ["LNK_login"],
-                        1 => $components ["BTN_register"]
-                    ]
-                ];
+                    0 => $components ["firstname"],
+                    1 => $components ["lastname"]
+                ],
+                1 =>
+                [
+                    0 => $components ["email"]
+                ],
+                2 =>
+                [
+                    0 => $components ["password"],
+                    1 => $components ["confPassword"]
+                ],
+                3 =>
+                [
+                    0 => $components ["question1"]
+                ],
+                4 =>
+                [
+                    0 => $components ["answer1"]
+                ],
+                5 =>
+                [
+                    0 => $components ["question2"]
+                ],
+                6 =>
+                [
+                    0 => $components ["answer2"]
+                ],
+                7 =>
+                [
+                    0 => $components ["LNK_login"],
+                    1 => $components ["BTN_register"]
+                ]
+            ];
         }
 
         /**
@@ -151,18 +150,17 @@
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" . basename(__DIR__);
             $file = $folder . "/register.html";
+            $errors = false;
 
             $cacheManager = new cacheManager ($folder, $file);
-            if (!$cacheManager->isCacheExists()) { $this->errors = !$cacheManager->write($this->preRenderPage ( ) ); }
-            if (!$this->errors) { return $cacheManager->read ( $this->arrComponents ); }
+            if (!$cacheManager->isCacheExists()) { $errors = !$cacheManager->write($this->preRenderPage ( ) ); }
+            if (! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
             return "";
         }
 
         protected function onGet()
         {
             $layoutTemplate = new main();
-            $alert = new alert ("Oops!", "Something went wrong, please make a correction and try again", 4);
-            $alert->setTabs("\t\t\t\t\t");
 
             $html = "<!DOCTYPE html>\n";
             $html .= "<html lang=\"en\">\n";
@@ -173,9 +171,7 @@
             $html .= "\t\t<div class=\"container register\">\n";
             $html .= "\t\t\t<div class=\"row justify-content-center\">\n";
             $html .= "\t\t\t\t<div class=\"col-sm-12 col-md-6 col-lg-6 col-xl-6\">\n";
-
-            if ($this->errors) { $html .= $alert->renderBootstrap();}
-
+            $html .= flash_message ( "\t\t\t\t\t" );
             $html .= "\t\t\t\t\t<div class=\"card\">\n";
             $html .= "\t\t\t\t\t<h5 class=\"center\">Registration</h5><hr/>\n";
             $html .= $this->renderPage();
@@ -192,130 +188,82 @@
 
         protected function onPost()
         {
-            $errors = !fieldsValidator::validate ( $this->arrComponents );
-            if ( $errors == false ) { array_push ( $this->errors, [ "TYPE" => 4, "HEADER" => "Oops", "MESSAGE" => "Something went wrong, please make a correction and try again" ] ); }
+            $errors = ! fieldsValidator::validate ( $this->arrComponents );
 
-
-            $user ["firstname"] = ucwords($this->arrComponents [0][0]->getValue());
-            $user ["lastname"] = ucwords($this->arrComponents [0][1]->getValue());
-            $user ["email"] = $this->arrComponents [1][0]->getValue();
-            $user ["password"] = password($this->arrComponents [2][0]->getValue());
-            $user ["question1"] = $this->arrComponents [3][0]->getValue();
-            $user ["answer1"] = encrypt($this->arrComponents [4][0]->getValue());
-            $user ["question2"] = $this->arrComponents [5][0]->getValue();
-            $user ["answer2"] = encrypt($this->arrComponents [6][0]->getValue());
-
-            $this->errors = $this->registerUser ( $user );
-
+            if ( $errors )
+            {
+                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
+                $_REQUEST ["ALERT_TYPE"]= 4;
+            }
+            else
+            {
+                $errors = ! $this->registerUser ( );
+                if ( $errors )
+                {
+                    $_REQUEST ["ALERT_HEAD"] = "Oops!";
+                    $_REQUEST ["ALERT_MSG"] = "We weren't able to create your account, try again later.";
+                    $_REQUEST ["ALERT_TYPE"]= 4;
+                }
+                $_REQUEST ["ALERT_HEAD"] = "Success!";
+                $_REQUEST ["ALERT_MSG"] = "A verification email has been sent! Please verify your email before logging in.";
+                $_REQUEST ["ALERT_TYPE"]= 3;
+            }
+            $this->onGet();
         }
 
-        protected function registerUser( $userData )
+        protected function registerUser( )
         {
-            define('stop', 0);
+            $data ['firstname']     = ucwords ( $this->arrComponents [0][0]->getValue ( ) );
+            $data ['lastname']      = ucwords ( $this->arrComponents [0][1]->getValue ( ) );
+            $data ['email']         = $this->arrComponents [1][0]->getValue ( );
+            $data ['password']      = password ( $this->arrComponents [2][0]->getValue ( ) );
+
+            $data ['question1']     = $this->arrComponents [3][0]->getValue ( );
+            $data ['question2']     = $this->arrComponents [5][0]->getValue ( );
+            $data ['answer1']       = encrypt ( $this->arrComponents [4][0]->getValue ( ) );
+            $data ['answer2']       = encrypt ( $this->arrComponents [6][0]->getValue ( ) );
+
+            define('stop'       , 0);
             define('user_exists', 1);
-            define('user_store', 2);
-            define('send_email', 3);
+            define('user_store' , 2);
+            define('send_email' , 3);
 
             $state = user_exists;
-            while ($state > stop) {
-                switch ($state) {
-                    case user_exists: if ( $this->findByEmail ( $userData ["EMAIL"] ) ) { return 2; } else { $state = user_store; } break;
-                    case user_store: if ( $this->storePublicUser ( $userData)) { $state = send_email; } else { return 0; } break;
-                    case send_email: if ($this->sendEmail( $userData)) { return 1; } else { return 0; } break;
+            while ($state > stop)
+            {
+                switch ($state)
+                {
+                    case user_exists:
+                        if ( User::is_emailExists ( $data ["email"] ) )
+                        {
+                            $_REQUEST ["ALERT_TYPE"] = 5;
+                            $_REQUEST ["ALERT_MSG"] = "This email address is already associated with an account.";
+                            return false;
+                        }
+                        $state = user_store;
+                    break;
+
+                    case user_store:
+                        $data ['id'] = User::store_public ( $data );
+
+                        if ( $data ['id'] > 0 )
+                        {
+                            $state = send_email;
+                        }
+                        else
+                        {
+                            $_REQUEST ["ALERT_HEAD"] = "Error!";
+                            $_REQUEST ["ALERT_TYPE"] = 4;
+                            $_REQUEST ["ALERT_MSG"] = "We were unable to create your account, try again later.";
+                            return false;
+                        }
+                    break;
+
+                    case send_email:
+                        User::sendVerificationEmail ( $data );
+                        return true;
+                    break;
                 }
             }
-        }
-
-        /**
-         * @param string $email
-         * @return bool
-         */
-        private function findByEmail( $email )
-        {
-            $sql_select = "SELECT `ID` FROM `users` WHERE `EMAIL` = :EMAIL;";
-            $sql_params = array(":EMAIL" => ["TYPE" => "STR", "VALUE" => $email]);
-            $sql_result = database::runSelectQuery($sql_select, $sql_params);
-            if (isset ($sql_result))
-                return true;
-            return false;
-        }
-
-        /**
-         * @param array $userData
-         * @return bool
-         */
-        private function storePublicUser( $userData)
-        {
-            // store the user
-            $sql_insert = "INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `ACTIVE`, `FAILED`, `VERIFIED`, `CREATED`, `UPDATED` ) ";
-            $sql_insert .= "VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, 1, 0, 0, CURRENT_TIMESTAMP ( ), CURRENT_TIMESTAMP ( );";
-            $sql_params = array
-            (
-                ":FIRSTNAME" => ["TYPE" => "STR", "VALUE" => $userData ["FIRSTNAME"]],
-                ":LASTNAME" => ["TYPE" => "STR", "VALUE" => $userData ["LASTNAME"]],
-                ":EMAIL" => ["TYPE" => "STR", "VALUE" => $userData ["EMAIL"]],
-                ":PASSWORD" => ["TYPE" => "STR", "VALUE" => $userData ["PASSWORD"]]
-            );
-
-            $userID = database::runInsertQuery($sql_insert, $sql_params, "ID");
-            if ($userID == 0) return false;
-
-            // store questions & answers
-            $sql_insert = "INSERT INTO `users_password_answers` ( `USERID`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2` ) ";
-            $sql_insert .= "VALUES ( :USERID, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2 );";
-            $sql_params = array
-            (
-                ":USERID" => ["TYPE" => "INT", "VALUE" => $userID],
-                ":QUESTIONID1" => ["TYPE" => "INT", "VALUE" => $userData ["QUESTION1"]],
-                ":QUESTIONID2" => ["TYPE" => "INT", "VALUE" => $userData ["QUESTION2"]],
-                ":ANSWER1" => ["TYPE" => "STR", "VALUE" => $userData ["ANSWER1"]],
-                ":ANSWER2" => ["TYPE" => "STR", "VALUE" => $userData ["ANSWER2"]]
-            );
-
-            $sql_result = database::runInsertQuery($sql_insert, $sql_params, "ID");
-            if ($sql_result == 0) return false;
-
-            return true;
-        }
-
-        /**
-         * @param $userId
-         * @return string
-         */
-        private function generateVerificationLink ($userId )
-        {
-            return base64urlEncode ($GLOBALS ["RELATIVE_TO_ROOT"] . "/verify?token=" . $userId );
-        }
-
-        /**
-         * @param array $userData
-         * @return bool
-         */
-        private function sendEmail ( $userData )
-        {
-            $template   = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/emails/templates/registration.html";
-            $contents   = file_get_contents ( $template );
-            $keys       = array ( "{{ name }}", "{{ href }}", "{{ link }}", "{{ company_name }}" );
-            $values     = array
-            (
-                $userData ["firstname"],
-                $GLOBALS ["RELATIVE_TO_ROOT"] . "/verify",
-                $this->generateVerificationLink ( ),
-                $GLOBALS ["BS_NAME"]
-            );
-
-            // email setup
-            $subject    = "verify your email";
-            $recipients = array ( "to" => [ $userData ["email"] => $userData ["firstname"] . " " . $userData ["lastname"] ] );
-            $message    = str_replace ( $keys, $values, $contents );
-
-            ob_start ( );
-            email::sendEmail ( $subject, $recipients, $message );
-            $results = ob_get_contents ( );
-            ob_end_clean ( );
-
-            if ( $results !== 0 )
-                return true;
-            return false;
         }
     }

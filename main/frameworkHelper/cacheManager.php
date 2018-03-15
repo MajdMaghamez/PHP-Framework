@@ -60,9 +60,9 @@
             $keys           = array ( );
             $values         = array ( );
 
-            foreach ( $arrComponents as $key => $array )
+            foreach ( $arrComponents as $row => $columns )
             {
-                foreach ( $array as $index => $gui )
+                foreach ( $columns as $column => $gui )
                 {
                     $Parent = explode ( "\\", get_parent_class ( $gui ) );
                     $gui_parent = end (  $Parent );
