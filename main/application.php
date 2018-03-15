@@ -9,6 +9,11 @@
     // Include application server override values
     require_once $_SERVER ["DOCUMENT_ROOT"] . "/application.server.php";
 
+    // Global variables
+    $_REQUEST ["ALERT_HEAD"]    = "";
+    $_REQUEST ["ALERT_TYPE"]    = "";
+    $_REQUEST ["ALERT_MSG"]     = "";
+
     // Class autoloader
     spl_autoload_register ( function ( $class ) {
         require_once ltrim ( $GLOBALS ["DEV_FOLDER"] . "/", "/" ) . str_replace ( "\\", "/", $class ) . ".php";
@@ -179,6 +184,21 @@
         });
     }
 
+    /**
+     * @param string $tabs
+     * @return string html
+     */
+    function flash_message ($tabs = "" )
+    {
+        if ( ! empty ( $_REQUEST ["ALERT_MSG"] ) )
+        {
+            $alert = new \main\gui\alerts\alert ( $_REQUEST ["ALERT_HEAD"], $_REQUEST ["ALERT_MSG"], $_REQUEST ["ALERT_TYPE"] );
+            $alert->setDismiss ( true );
+            $alert->setTabs ( $tabs );
+            return $alert->renderBootstrap ( );
+        }
+        return "";
+    }
 
     /**
      * @param bool $public

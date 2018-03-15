@@ -1,9 +1,19 @@
 <?php namespace main\emails;
 
-    require_once $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/emails/swiftmailer/autoload.php";
     class email
     {
         private static $transport;
+
+        protected $subject;
+        protected $recipients;
+        protected $body;
+
+        public function __construct ( $subject, $recipients, $body )
+        {
+            $this->subject = $subject;
+            $this->recipients = $recipients;
+            $this->body = $body;
+        }
 
         private static function setConnection ( )
         {
