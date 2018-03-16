@@ -1,4 +1,5 @@
 .idea 
 cache
-main/.env
 vendor/ 
+.DS_Store
+main/.env
