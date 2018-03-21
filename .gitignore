@@ -3,3 +3,4 @@ cache
 vendor/ 
 .DS_Store
 main/.env
+.env
