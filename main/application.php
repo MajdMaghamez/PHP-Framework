@@ -326,23 +326,24 @@
     }
 
     register_shutdown_function ( function ( ) {
-        $end_time   = microtime ( true );
-        $elapsed    = $end_time - $_REQUEST ["ON_REQUEST_START"];
-        $short_url  = strtok ( $_SERVER ["REQUEST_URI"], '?' );
-        $log        = array
-        (
-            $GLOBALS ["BS_NAME"],
-            $short_url,
-            $_SERVER ["REQUEST_URI"],
-            $elapsed,
-            date ( "m-d-Y h:i:s a" ),
-            get_ip ( ),
-            get_client_browser ( ),
-            get_os ( )
-        );
 
         if ( $GLOBALS ["LOG_RECORDS"] )
         {
+            $end_time   = microtime ( true );
+            $elapsed    = $end_time - $_REQUEST ["ON_REQUEST_START"];
+            $short_url  = strtok ( $_SERVER ["REQUEST_URI"], '?' );
+            $log        = array
+            (
+                $GLOBALS ["BS_NAME"],
+                $short_url,
+                $_SERVER ["REQUEST_URI"],
+                $elapsed,
+                date ( "m-d-Y h:i:s a" ),
+                get_ip ( ),
+                get_client_browser ( ),
+                get_os ( )
+            );
+
             $file_handler = @fopen ( $GLOBALS ["LOG_FOLDER"] . "/serverLog_" . date ( "F_Y" ) . "csv", "a" );
             fputcsv ( $file_handler, $log );
             @fflush ( $file_handler );
@@ -350,5 +351,5 @@
         }
     } );
 
-    //echo "<a href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/main/storage/firstLoad.php?RUN=1&AUTH=VMiJhPgR43UWdnKXyPFH5E8" . "\">create database and necessary tables for application to run</a>";
+    //echo "<a href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Init/?RUN=1&AUTH=VMiJhPgR43UWdnKXyPFH5E8" . "\">create database and necessary tables for application to run</a>";
 ?>

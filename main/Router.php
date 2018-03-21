@@ -10,6 +10,8 @@
         private static $instance = null;
 
         private function __construct ( ) {
+            $this->routes["Init"]       = init::class;
+
             $this->routes["Login"]      = LoginController::class;
             $this->routes["Register"]   = RegisterController::class;
             $this->routes["Reset"]      = ResetController::class;
@@ -28,8 +30,9 @@
             $uri = $_SERVER["REQUEST_URI"];
             $route = preg_replace ("/\..+$/","", $uri );
             $route = trim ( $route,"/" );
+            $route = explode( '/', $route );
 
-            $this->routeTo($route);
+            $this->routeTo($route[0]);
         }
 
         public function routeTo( $route ) {
@@ -37,6 +40,10 @@
             {
                 $controllerClass = $this->routes[$route];
                 ( new $controllerClass ( ) )->onRequestStart ( );
+            }
+            else
+            {
+                die ( "page not found");
             }
         }
     }
