@@ -12,10 +12,11 @@
                 {
                     self::$connection = new \PDO ( "mysql:host=" . $GLOBALS ["DB_HOST"] . ";port=" . $GLOBALS ["DB_PORT"] . ";dbname=" . $GLOBALS ["DB_NAME"], $GLOBALS ["DB_USER"], $GLOBALS ["DB_PASS"] );
                     self::$connection->setAttribute ( \PDO::ATTR_ERRMODE, $GLOBALS ["PDO_ERROR"] );
+                    self::$connection->query ( 'USE ' . $GLOBALS ["DB_NAME"] );
                 }
                 catch ( \PDOException $E )
                 {
-                    die ( "database error: could not set connection" );
+                    error_log( "database error: could not set connection for database: " . $GLOBALS ["DB_NAME"] . ' ' . $E->getMessage(), 0 );
                 }
             }
         }
@@ -30,7 +31,7 @@
 
             if ( ! $connection )
             {
-                die ( "database error: could not create database " . $database );
+                error_log( "database error: could not set connection for database " . $database, 0 );
             }
 
             $sql = "CREATE DATABASE IF NOT EXISTS `" . $database . "`;";
@@ -82,7 +83,7 @@
             }
             catch ( \PDOException $E )
             {
-                die ( "database error: could not run select query" );
+                error_log( "database error: could not run select query " . $E->getMessage(), 0 );
             }
         }
 
@@ -121,7 +122,7 @@
             }
             catch ( \PDOException $E )
             {
-                die ( "database error: could not run insert query" );
+                error_log( "database error: could not run insert query " . $E->getMessage(), 0 );
             }
         }
 
@@ -159,7 +160,7 @@
             }
             catch ( \PDOException $E )
             {
-                die ( "database error: could not run update query" );
+                error_log( "database error: could not run update query " . $E->getMessage(), 0 );
             }
         }
 
@@ -178,7 +179,7 @@
             }
             catch ( \PDOException $E )
             {
-                die ( "database error: could not run query" );
+                error_log( "database error: could not run query " . $E->getMessage(), 0 );
             }
         }
 
