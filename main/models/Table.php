@@ -21,7 +21,7 @@
             $this->engine   = "ENGINE=INNODB";
             $this->charset  = "CHARSET=utf8";
             $this->AI       = "AUTO_INCREMENT=1";
-            $this->database = $GLOBALS ["DATABASE"];
+            $this->database = $GLOBALS ["DB_NAME"];
         }
 
         /**
@@ -44,15 +44,11 @@
             {
                 foreach ( $this->getColumns ( ) as $key => $value )
                 {
-                    if ( $key == ltrim ( rtrim ( end ( $this->getColumns ( ) ) ["COLUMN_NAME"], "`" ), "`" ) )
-                    {
-                        $sql_create .= implode ( " ", $value );
-                    }
-                    else
-                    {
-                        $sql_create .= implode ( " ", $value ) . ", ";
-                    }
+
+                    $sql_create .= implode ( " ", $value ) . ", ";
                 }
+
+                $sql_create = substr ( $sql_create, 0, -2 );
             }
 
             if ( ! empty ( $this->getUnique ( ) ) )

@@ -48,7 +48,10 @@
 
 
     // Off web root directory
-    $GLOBALS ["OFF_WEB_ROOT"]   = "C:\\xampp\\apache\\secure";
+    // windows xampp: C:\\xampp\\apache\\secure
+    // MAC OS X: /Library/WebServer/secure
+    // Linux Server: /var/secure
+    $GLOBALS ["OFF_WEB_ROOT"]   = "/Library/WebServer/secure";
 
     // Full link URL
     $GLOBALS ["RELATIVE_TO_ROOT"]       = "http://" . $_SERVER ["HTTP_HOST"];
