@@ -53,6 +53,8 @@
          * @param array $extra_keys
          * @param array $extra_values
          * @return mixed
+         *
+         * @note this function return gui objects without their values
          */
         public function read ( $arrComponents, $extra_keys = array ( ), $extra_values = array ( ) )
         {
@@ -74,7 +76,7 @@
 
                         switch ( $gui_self )
                         {
-                            case 'selectedField':
+                            case 'selectField':
                                 // loop through the selected field options
                                 foreach ( $gui->getOptions ( ) as $option => $text )
                                 {
@@ -117,6 +119,8 @@
          * @param array $extra_keys
          * @param array $extra_values
          * @return string
+         *
+         * @note this function return gui objects with their values
          */
         public function read_values ( $arrComponents, $extra_keys = array ( ), $extra_values = array ( ) )
         {

@@ -3,16 +3,17 @@
     // Get the time of request start
     $_REQUEST ["ON_REQUEST_START"] = microtime ( true );
 
+    // Global variables
+    $_REQUEST ["ALERT_HEAD"]    = "";
+    $_REQUEST ["ALERT_TYPE"]    = "";
+    $_REQUEST ["ALERT_MSG"]     = "";
+
+
     // Include application configuration values
     require_once __DIR__ . "/application.config.php";
 
     // Include application server override values
     require_once __DIR__ . "/application.server.php";
-
-    // Global variables
-    $_REQUEST ["ALERT_HEAD"]    = "";
-    $_REQUEST ["ALERT_TYPE"]    = "";
-    $_REQUEST ["ALERT_MSG"]     = "";
 
 
     /**
@@ -200,7 +201,7 @@
      * @param bool $public
      * @throws Exception
      */
-    function session_auth ($public = false )
+    function session_auth ( $public = false )
     {
         session_start ( );
         session_regenerate_id ( true );

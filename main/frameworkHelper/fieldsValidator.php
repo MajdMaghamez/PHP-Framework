@@ -8,6 +8,13 @@
          */
         public static function validate ( $arrComponents )
         {
+            // validate honey Pot
+            if ( isset ( $_POST ["username"] ) )
+            {
+                if ( ! empty( $_POST ["username"] ) )
+                    return false;
+            }
+
             foreach ( $arrComponents as $row => $columns )
             {
                 foreach ( $columns as $column => $gui )

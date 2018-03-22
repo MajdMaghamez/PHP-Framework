@@ -12,6 +12,10 @@
                 $method = "on" . ucfirst ( strtolower( $method ) );
                 $this->$method ( );
             }
+            else
+            {
+                die ( "Unsupported Request! " );
+            }
         }
 
         abstract protected function onGet ( );
