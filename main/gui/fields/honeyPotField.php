@@ -106,13 +106,13 @@
             $html   .= "size=\"" . $this->getSize ( ) . "\" ";
             $html   .= "maxlength=\"" . $this->getMaxLength ( ) . "\" ";
             $html   .= "placeholder=\"" . $this->getPlaceHolder ( ) . "\" ";
-            $html   .= "value=\"{value_" . $this->getId ( ) . "}\"\n";
+            $html   .= "value=\"\"\n";
             $html   .= $tabs . "\tdata-parsley-trigger=\"change\" data-parsley-maxlength=\"" . $this->getMaxLength ( ) . "\" ";
             $html   .= "data-parsley-pattern=\"" . $this->getRegex ( ) . "\"";
             if ( $this->isRequired ( ) ) { $html   .= " data-parsley-required=\"true\" required"; }
             if ( $this->isDisabled ( ) ) { $html   .= " disabled"; }
             $html   .= "/>\n";
-            $html   .= $tabs . "\t<span class=\"error\">{error_" . $this->getId ( ) . "}</span>\n";
+            $html   .= $tabs . "\t<span class=\"error\"></span>\n";
             return $html;
         }
 
