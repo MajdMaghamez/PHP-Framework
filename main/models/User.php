@@ -69,22 +69,24 @@
 
         public static function sendVerificationEmail ( $user )
         {
-            $template   = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/emails/templates/registration.html";
-            $contents   = file_get_contents ( $template );
-            $keys       = array ( "{{ name }}", "{{ href }}", "{{ link }}", "{{ company_name }}" );
-            $values     = array
-            (
-                $user ['firstname'],
-                self::generateVerificationLink ( $user ['id'] ),
-                "Verify my email",
-                $GLOBALS ["BS_NAME"]
-            );
+//            $template   = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/emails/templates/registration.html";
+//            $contents   = file_get_contents ( $template );
+//            $keys       = array ( "{{ name }}", "{{ href }}", "{{ link }}", "{{ company_name }}" );
+//            $values     = array
+//            (
+//                $user ['firstname'],
+//                self::generateVerificationLink ( $user ['id'] ),
+//                "Verify my email",
+//                $GLOBALS ["BS_NAME"]
+//            );
+//
+//            // email setup
+//            $subject    = "Verify my email";
+//            $recipients = array ( "to" => [ $user ['email'] => $user ['firstname'] . " " . $user ['lastname'] ] );
+//            $message    = str_replace ( $keys, $values, $contents );
+//
+//            email::sendEmail( $subject, $recipients, $message );
 
-            // email setup
-            $subject    = "Verify my email";
-            $recipients = array ( "to" => [ $user ['email'] => $user ['firstname'] . " " . $user ['lastname'] ] );
-            $message    = str_replace ( $keys, $values, $contents );
-
-            email::sendEmail( $subject, $recipients, $message );
+            return true;
         }
     }

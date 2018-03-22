@@ -49,12 +49,76 @@
         }
 
         /**
+         * @param $arrComponents
+         * @param array $extra_keys
+         * @param array $extra_values
+         * @return mixed
+         */
+        public function read ( $arrComponents, $extra_keys = array ( ), $extra_values = array ( ) )
+        {
+            $cached_page    = file_get_contents ( $this->getFile ( ) );
+            $keys           = array ( );
+            $values         = array ( );
+
+            foreach ( $arrComponents as $row => $columns )
+            {
+                foreach ( $columns as $column => $gui )
+                {
+                    $Parent = explode ( "\\", get_parent_class ( $gui ) );
+                    $gui_parent = end ( $Parent );
+
+                    if ( $gui_parent == 'field' )
+                    {
+                        $Self = explode ( "\\", get_class ( $gui ) );
+                        $gui_self = end ( $Self );
+
+                        switch ( $gui_self )
+                        {
+                            case 'selectedField':
+                                // loop through the selected field options
+                                foreach ( $gui->getOptions ( ) as $option => $text )
+                                {
+                                    array_push ( $keys, "{selected_" . $gui->getId ( ) . "_" . $option . "}" );
+                                    array_push ( $values, "" );
+                                }
+                            break;
+
+                            case 'fileField':
+                                array_push ( $keys, "" );
+                                array_push ( $values, "" );
+                            break;
+
+                            default:
+                                array_push ( $keys, "{value_" . $gui->getId ( ) . "}" );
+                                array_push ( $values, "" );
+                            break;
+                        }
+
+                        array_push ( $keys, "{error_" . $gui->getId ( ) . "}" );
+                        array_push ( $values, $gui->getError ( ) );
+                    }
+                }
+            }
+
+            if ( ! empty ( $extra_keys ) )
+            {
+                foreach ( $extra_keys as $key => $value )
+                {
+                    array_push ( $keys, $value );
+                    array_push ( $values, $extra_values [$key] );
+                }
+            }
+
+            return str_replace ( $keys, $values, $cached_page );
+        }
+
+        /**
          * @param array $arrComponents
          * @param array $extra_keys
          * @param array $extra_values
          * @return string
          */
-        public function read ( $arrComponents, $extra_keys = array ( ), $extra_values = array ( ) )
+        public function read_values ( $arrComponents, $extra_keys = array ( ), $extra_values = array ( ) )
         {
             $cached_page    = file_get_contents ( $this->getFile ( ) );
             $keys           = array ( );
@@ -75,7 +139,7 @@
                         switch ( $gui_self )
                         {
                             case 'selectField':
-                                // loop through the select field options
+                                // loop through the selected field options
                                 foreach ( $gui->getOptions ( ) as $option => $text )
                                 {
                                     array_push ( $keys, "{selected_" . $gui->getId ( ) . "_" . $option . "}" );

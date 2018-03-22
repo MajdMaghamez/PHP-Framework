@@ -6,7 +6,7 @@
          * @param $arrComponents
          * @return bool
          */
-        public static function validate ($arrComponents )
+        public static function validate ( $arrComponents )
         {
             foreach ( $arrComponents as $row => $columns )
             {
