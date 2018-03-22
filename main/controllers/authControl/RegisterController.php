@@ -1,7 +1,6 @@
 <?php namespace main\controllers\authControl;
 
     use main\models\User;
-    use main\emails\email;
     use main\gui\links\link;
     use main\gui\fields\textField;
     use main\gui\fields\emailField;
