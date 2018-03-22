@@ -34,18 +34,6 @@
                     [
                         0 =>
                         [
-                            "parent"        => "fields",
-                            "class"         => "honeyPotField",
-                            "label"         => "username",
-                            "name"          => "username",
-                            "id"            => "username",
-                            "setTabs"       => $Tabs
-                        ]
-                    ],
-                    2   =>
-                    [
-                        0 =>
-                        [
                             "parent"        => "links",
                             "class"         => "link",
                             "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login",

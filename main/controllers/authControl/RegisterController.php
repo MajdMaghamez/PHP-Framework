@@ -47,6 +47,7 @@
             $components ["confPassword"]= new passwordField ( "Confirm Password", "confPassword", "confPassword" );
             $components ["confPassword"]->setFieldsize ( 1 );
             $components ["confPassword"]->setRequired ( true );
+            $components ["confPassword"]->setEqualTo ( "password");
             $components ["confPassword"]->setTabs ( $Tabs );
 
             $components ["question1"]   = new selectField ( "Security Question", "question1", "question1" );
@@ -152,8 +153,8 @@
             $errors = false;
 
             $cacheManager = new cacheManager ($folder, $file);
-            if (!$cacheManager->isCacheExists()) { $errors = !$cacheManager->write($this->preRenderPage ( ) ); }
-            if (! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
+            if ( ! $cacheManager->isCacheExists()) { $errors = !$cacheManager->write( $this->preRenderPage ( ) ); }
+            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
             return "";
         }
 
@@ -197,19 +198,19 @@
             else
             {
                 $errors = ! $this->registerUser ( );
-                if ( $errors )
+                if ( ! $errors )
                 {
-                    $_REQUEST ["ALERT_HEAD"] = "Oops!";
-                    $_REQUEST ["ALERT_MSG"] = "We weren't able to create your account, try again later.";
-                    $_REQUEST ["ALERT_TYPE"]= 4;
+                    $_REQUEST ["ALERT_HEAD"] = "Success!";
+                    $_REQUEST ["ALERT_MSG"] = "A verification email has been sent! Please verify your email before logging in.";
+                    $_REQUEST ["ALERT_TYPE"]= 3;
                 }
-                $_REQUEST ["ALERT_HEAD"] = "Success!";
-                $_REQUEST ["ALERT_MSG"] = "A verification email has been sent! Please verify your email before logging in.";
-                $_REQUEST ["ALERT_TYPE"]= 3;
             }
             $this->onGet();
         }
 
+        /**
+         * @return bool
+         */
         protected function registerUser( )
         {
             $data ['firstname']     = ucwords ( $this->arrComponents [0][0]->getValue ( ) );
@@ -228,14 +229,15 @@
             define('send_email' , 3);
 
             $state = user_exists;
-            while ($state > stop)
+            while ( $state > stop )
             {
-                switch ($state)
+                switch ( $state )
                 {
                     case user_exists:
-                        if ( User::is_emailExists ( $data ["email"] ) )
+                        if ( User::isExists( ["EMAIL", $data["email"] ] ) )
                         {
                             $_REQUEST ["ALERT_TYPE"] = 5;
+                            $_REQUEST ["ALERT_HEAD"] = "User Found!";
                             $_REQUEST ["ALERT_MSG"] = "This email address is already associated with an account.";
                             return false;
                         }

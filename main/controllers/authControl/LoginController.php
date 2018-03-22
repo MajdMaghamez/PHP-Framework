@@ -1,15 +1,15 @@
 <?php namespace main\controllers\authControl;
 
+    use main\models\User;
     use main\gui\guiCreator;
-    use main\gui\alerts\alert;
     use main\layouts\bootstrap\main;
     use main\controllers\Controller;
     use main\gui\renderer\bootstrapForm;
     use main\frameworkHelper\cacheManager;
     use main\frameworkHelper\fieldsValidator;
+
     class LoginController extends Controller
     {
-        protected $errors = false;
         protected $arrComponents;
 
         /**
@@ -54,18 +54,6 @@
                         [
                             0 =>
                                 [
-                                    "parent"        => "fields",
-                                    "class"         => "honeyPotField",
-                                    "label"         => "User Name",
-                                    "name"          => "username",
-                                    "id"            => "username",
-                                    "setTabs"       => $Tabs
-                                ]
-                        ],
-                    3   =>
-                        [
-                            0 =>
-                                [
                                     "parent"        => "links",
                                     "class"         => "link",
                                     "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset",
@@ -74,7 +62,7 @@
                                     "setTabs"       => $Tabs
                                 ]
                         ],
-                    4   =>
+                    3   =>
                         [
                             0 =>
                                 [
@@ -125,18 +113,17 @@
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" . basename ( __DIR__ );
             $file   = $folder . "/login.html";
+            $errors = false;
 
             $cacheManager = new cacheManager ( $folder, $file );
-            if ( ! $cacheManager->isCacheExists ( ) ) { $this->errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
-            if ( ! $this->errors ) { return $cacheManager->read ( $this->arrComponents ); }
+            if ( ! $cacheManager->isCacheExists ( ) ) { $errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
+            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
             return "";
         }
 
-        public function onGet ( )
+        protected function onGet ( )
         {
             $layoutTemplate = new main( );
-            $alert  = new alert ( "Oops!", "Something went wrong, please make a correction and try again", 4 );
-            $alert->setTabs ( "\t\t\t\t\t" );
 
             $html   = "<!DOCTYPE html>\n";
             $html   .= "<html lang=\"en\">\n";
@@ -147,7 +134,7 @@
             $html   .= "\t\t<div class=\"container login\">\n";
             $html   .= "\t\t\t<div class=\"row justify-content-center\">\n";
             $html   .= "\t\t\t\t<div class=\"col-md-6 col-lg-6 col-xl-6\">\n";
-            if ( $this->errors ) { $html .= $alert->renderBootstrap ( ); }
+            $html   .= flash_message ( "\t\t\t\t\t" );
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
             $html   .= "\t\t\t\t\t<h4 class=\"center\">" . $GLOBALS ["BS_NAME"] . "</h4><hr/>\n";
             $html   .= $this->renderPage ( );
@@ -162,13 +149,109 @@
             echo $html;
         }
 
-        public function onPost ( )
+        protected function onPost ( )
         {
-            $this->errors = ! fieldsValidator::validate ( $this->arrComponents );
+            $errors = ! fieldsValidator::validate ( $this->arrComponents );
 
-            if ( $this->Errors )
+            if ( $errors )
             {
-                $this->onGet ( );
+                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
+                $_REQUEST ["ALERT_TYPE"]= 4;
+            }
+            else
+            {
+                $errors = ! $this->authenticateUser ( );
+                if ( ! $errors )
+                {
+echo "loged in";
+                }
+            }
+            $this->onGet();
+        }
+
+        /**
+         * @return bool
+         */
+        protected function authenticateUser ( )
+        {
+            $data ["email"]     = $this->arrComponents [0][0]->getValue ( );
+            $data ["password"]  = $this->arrComponents [1][0]->getValue ( );
+
+            $user = new User( ["EMAIL", $data ["email"] ] );
+
+            if ( ! isset ( $user ) )
+            {
+                $_REQUEST ["ALERT_HEAD"] = "User Not Found!";
+                $_REQUEST ["ALERT_TYPE"] = 5;
+                $_REQUEST ["ALERT_MSG"]  = "This email address is unassociated with any account.";
+                return false;
+            }
+
+            define ( 'stop'         , 0 );
+            define ( 'user_active'  , 1 );
+            define ( 'user_verified', 2 );
+            define ( 'user_auth'    , 3 );
+            define ( 'user_failed'  , 4 );
+            define ( 'user_login'   , 5 );
+
+            $state = user_active;
+            while ( $state > stop )
+            {
+                switch ( $state )
+                {
+                    case user_active:
+                        if ( $user->isActive ( ) )
+                        {
+                            $state = user_verified;
+                        }
+                        else
+                        {
+                            $_REQUEST ["ALERT_HEAD"] = "Disabled Account!";
+                            $_REQUEST ["ALERT_TYPE"] = 4;
+                            $_REQUEST ["ALERT_MSG"]  = "Contact support to re-enable this account";
+                            return false;
+                        }
+                    break;
+
+                    case user_verified:
+                        if ( $user->isVerified ( ) )
+                        {
+                            $state = user_auth;
+                        }
+                        else
+                        {
+                            $_REQUEST ["ALERT_HEAD"] = "Unverified Account!";
+                            $_REQUEST ["ALERT_TYPE"] = 5;
+                            $_REQUEST ["ALERT_MSG"]  = "Verify your account in order to be able to login, a verification email is sent right after a successful registration";
+                            return false;
+                        }
+                    break;
+
+                    case user_auth:
+                        if ( ! $user->isAuth ( $data ["password"] ) )
+                            $state = user_failed;
+                        else
+                            $state = user_login;
+                    break;
+
+                    case user_failed:
+                        $attempts = $user->incrementFailed ( $user->getID ( ) );
+                        $_REQUEST ["ALERT_HEAD"] = "Incorrect Password!";
+                        $_REQUEST ["ALERT_TYPE"] = 4;
+                        $_REQUEST ["ALERT_MSG"]  = "You have entered an incorrect password " . isset ( $attempts ) ? " attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"] : "";
+
+                        if ( isset ( $attempts ) )
+                        {
+                            if ( $attempts >= $GLOBALS ["MAX_FAILED"] )
+                                User::disable ( $user->getID ( ) );
+                        }
+                        return false;
+                    break;
+
+                    case user_login:
+                        return User::setLastLogin( $user->getID ( ) );
+                    break;
+                }
             }
         }
     }

@@ -4,7 +4,202 @@
     use main\storage\database;
     class User
     {
-        public function __construct ( ) {}
+        protected $object = null;
+
+        /**
+         * User constructor.
+         * @param array $data
+         *
+         * @note example data [ 'ID', 1 ] or [ 'email', 'user@example.com' ]
+         */
+        public function __construct ( $data )
+        {
+            $sql_select = "SELECT * FROM `users` WHERE `" . $data [0] . "` = :" . $data [0] . " AND `DELETED` = 0";
+            $sql_params = array ( ":" . $data[0] => ["TYPE" => "STR", "VALUE" => $data [1] ] );
+            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
+
+            if ( isset ( $sql_result ) )
+                $this->object = $sql_result [0];
+        }
+
+        /**
+         * @return integer
+         */
+        public function getID ( )
+        {
+            return $this->object ["ID"];
+        }
+
+        /**
+         * @return string
+         */
+        public function getFirst ( )
+        {
+            return $this->object ["FIRSTNAME"];
+        }
+
+        /**
+         * @return string
+         */
+        public function getLast ( )
+        {
+            return $this->object ["LASTNAME"];
+        }
+
+        /**
+         * @return string
+         */
+        public function getName ( )
+        {
+            return $this->object ["FIRSTNAME"] . " " . $this->object ["LASTNAME"];
+        }
+
+        /**
+         * @return string
+         */
+        public function getEmail ( )
+        {
+            return $this->object ["EMAIL"];
+        }
+
+        /**
+         * @return integer
+         */
+        public function isActive ( )
+        {
+            return $this->object ["ACTIVE"];
+        }
+
+        /**
+         * @return integer
+         */
+        public function isVerified ( )
+        {
+            return $this->object ["VERIFIED"];
+        }
+
+        /**
+         * @return integer
+         */
+        public function isDeleted ( )
+        {
+            return $this->object ["DELETED"];
+        }
+
+        /**
+     * @return false|string
+     */
+        public function getCreated ( )
+        {
+            return date ( 'm/d/Y h:i:s A', $this->object ["CREATED"] );
+        }
+
+        /**
+         * @return false|string
+         */
+        public function getUpdated ( )
+        {
+            return date ( "m/d/Y h:i:s A", $this->object ["UPDATED"] );
+        }
+
+        /**
+         * @param integer $id
+         * @return mixed
+         */
+        public function getFailed ( $id )
+        {
+            $sql_select = "SELECT `FAILED` FROM `users` WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $id ] );
+            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
+            return isset ( $sql_result ) ? $sql_result [0]["FAILED"] : null;
+        }
+
+        /**
+         * @param integer $id
+         * @return mixed|null
+         */
+        public function incrementFailed ( $id )
+        {
+            $sql_update = "UPDATE `users` SET `FAILED` = `FAILED` + 1 WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $id ] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+                return $this->getFailed( $id );
+            return null;
+        }
+
+        /**
+         * @param $password
+         * @return bool
+         */
+        public function isAuth ( $password )
+        {
+            if ( password_verify ( $password, $this->object ["PASSWORD"] ) )
+                return true;
+            return false;
+        }
+
+
+
+        /**
+         * @return integer
+         */
+        public function mustChangePassword ( )
+        {
+            return $this->object ["CHANGE_PASSWORD"];
+        }
+
+        /**
+         * @return integer
+         */
+        public function getRole ( )
+        {
+            return $this->object ["ROLE"];
+        }
+
+
+        /**
+         * @param integer $id
+         * @return bool
+         */
+        public static function disable ($id )
+        {
+            $sql_update = "UPDATE `users` SET `ACTIVE` = 0 WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( "ID" => ["TYPE" => "INT", "VALUE" => $id] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+                return true;
+            return false;
+        }
+
+        /**
+         * @param integer $id
+         * @return bool
+         */
+        public static function enable ($id )
+        {
+            $sql_update = "UPDATE `users` SET `ACTIVE` = 1 WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( "ID" => ["TYPE" => "INT", "VALUE" => $id] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+                return true;
+            return false;
+        }
+
+        /**
+         * @param integer $id
+         * @return bool
+         */
+        public static function setLastLogin ($id )
+        {
+            $sql_update = "UPDATE `users` SET `LAST_LOGGED_IP` = :IP, `LAST_LOGGED_IN` = CURRENT_TIMESTAMP WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( ":IP" => ["TYPE" => "STR", "VALUE" => get_ip() ], ":ID" => ["TYPE" => "STR", "VALUE" => $id ] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+                return true;
+            return false;
+        }
+
 
         /**
          * @param $user
@@ -31,29 +226,18 @@
         }
 
         /**
-         * @param $email
+         * @param $data
          * @return bool
+         *
+         * @note ex. $data = array ( 'ID', 1 ) or array ( 'EMAIL' => 'user@example.com' )
          */
-        public static function is_emailExists ( $email )
+        public static function isExists ( $data )
         {
-            $sql_select = "SELECT `ID` FROM `users` WHERE `EMAIL` = :EMAIL;";
-            $sql_params = array(":EMAIL" => ["TYPE" => "STR", "VALUE" => $email]);
-            $sql_result = database::runSelectQuery($sql_select, $sql_params);
-            if (isset ($sql_result))
-                return true;
-            return false;
-        }
+            $sql_select = "SELECT `ID` FROM `users` WHERE `" . $data [0] . "` = :" . $data [0] . " AND `DELETED` = 0";
+            $sql_params = array ( ":" . $data[0] => ["TYPE" => "STR", "VALUE" => $data [1] ] );
+            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
 
-        /**
-         * @param $id
-         * @return bool
-         */
-        public static function is_idExists ( $id )
-        {
-            $sql_select = "SELECT `ID` FROM `users` WHERE `ID` = :ID;";
-            $sql_params = array(":EMAIL" => ["TYPE" => "STR", "VALUE" => $id]);
-            $sql_result = database::runSelectQuery($sql_select, $sql_params);
-            if (isset ($sql_result))
+            if ( isset ( $sql_result ) )
                 return true;
             return false;
         }
@@ -62,7 +246,7 @@
          * @param $token
          * @return string
          */
-        private static function generateVerificationLink ($token )
+        private static function generateVerificationLink ( $token )
         {
             return base64urlEncode ($GLOBALS ["RELATIVE_TO_ROOT"] . "/verify?token=" . $token );
         }
