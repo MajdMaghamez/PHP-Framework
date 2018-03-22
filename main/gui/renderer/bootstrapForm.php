@@ -1,5 +1,7 @@
 <?php namespace main\gui\renderer;
 
+    use main\gui\fields\honeyPotField;
+
     class bootstrapForm
     {
         /**
@@ -12,11 +14,22 @@
          */
         public static function renderStatic ( $guiComponents, $tabs, $id, $method, $action )
         {
+            $honeyPot   = new honeyPotField ( "username", "username", "username" );
+            $honeyPot->setSize ( 40 );
+            $honeyPot->setTabs ( $tabs . "\t\t\t" );
+
             $html   = $tabs . "<form id=\"" . $id . "\" ";
             $html   .= "method=\"" . $method . "\" ";
             $html   .= "action=\"" . $action . "\" ";
             $html   .= "enctype=\"application/x-www-form-urlencoded\" ";
             $html   .= "data-parsley-validate=\"\">\n";
+
+            // add honey pot to forms
+            $html   .= $tabs . "\t<div class=\"row\">\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $honeyPot->renderBootstrap ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t</div>\n";
 
             foreach ( $guiComponents as $row => $columns )
             {
@@ -44,11 +57,25 @@
          */
         public static function renderInline ( $guiComponents, $tabs, $id, $method, $action )
         {
+            $honeyPot   = new honeyPotField ( "username", "username", "username" );
+            $honeyPot->setSize ( 40 );
+            $honeyPot->setTabs ( $tabs . "\t\t\t" );
+
             $html   = $tabs . "<form id=\"" . $id . "\" ";
             $html   .= "method=\"" . $method . "\" ";
             $html   .= "action=\"" . $action . "\" ";
             $html   .= "enctype=\"application/x-www-form-urlencoded\" ";
             $html   .= "data-parsley-validate=\"\">\n";
+
+            // add honey pot to forms
+            $html   .= $tabs . "\t<div class=\"row\">\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $honeyPot->renderBootstrapLabel ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $honeyPot->renderBootstrapField ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t</div>\n";
 
             foreach ( $guiComponents as $row => $columns )
             {
