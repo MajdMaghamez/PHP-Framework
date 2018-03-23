@@ -24,7 +24,7 @@
                     "ID"        =>  "HOME",
                     "TITLE"		=>	"Home",
                     "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-home\" aria-hidden=\"true\"></i>",
+                    "ICON"		=>	"<i class=\"fas fa-home\" aria-hidden=\"true\"></i>",
                     "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
@@ -33,7 +33,7 @@
                     "ID"        =>  "REPORTS",
                     "TITLE"		=>	"Reports",
                     "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-bar-chart\" aria-hidden=\"true\"></i>",
+                    "ICON"		=>	"<i class=\"fas fa-chart-bar\" aria-hidden=\"true\"></i>",
                     "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/reports/index.php",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
@@ -42,7 +42,7 @@
                     "ID"        =>  "STATISTICS",
                     "TITLE"		=>	"Statistics",
                     "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-line-chart\" aria-hidden=\"true\"></i>",
+                    "ICON"		=>	"<i class=\"fas fa-chart-pie\" aria-hidden=\"true\"></i>",
                     "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/stats/index.php",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
@@ -69,7 +69,7 @@
                             "ID"        =>  "SYSADMIN",
                             "TITLE"     =>  "Developer Tools",
                             "ACTIVE"    =>  "",
-                            "ICON"      =>  "<i class=\"fa fa-magic\" aria-hidden=\"true\"></i>",
+                            "ICON"      =>  "<i class=\"fas fa-magic\" aria-hidden=\"true\"></i>",
                             "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/sysadmin/index.php"
                         ],
                         1               =>
@@ -77,7 +77,7 @@
                             "ID"        =>  "MYACCOUNT",
                             "TITLE"		=>	"My Account",
                             "ACTIVE"	=> 	"",
-                            "ICON"		=>	"<i class=\"fa fa-user-o\" aria-hidden=\"true\"></i>",
+                            "ICON"		=>	"<i class=\"far fa-user\" aria-hidden=\"true\"></i>",
                             "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/userMngmnt/index.php"
                         ],
                         2               =>
@@ -85,7 +85,7 @@
                             "ID"        =>  "MESSAGES",
                             "TITLE"		=>	"Messages",
                             "ACTIVE"	=> 	"",
-                            "ICON"		=> 	"<i class=\"fa fa-envelope-o\" aria-hidden=\"true\"></i>",
+                            "ICON"		=> 	"<i class=\"far fa-envelope-open\" aria-hidden=\"true\"></i>",
                             "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/messages/index.php"
                         ],
                         3               =>
@@ -93,7 +93,7 @@
                             "ID"        =>  "LOGOUT",
                             "TITLE"		=>	"Logout",
                             "ACTIVE"	=>	"",
-                            "ICON"		=>	"<i class=\"fa fa-sign-out\" aria-hidden=\"true\"></i>",
+                            "ICON"		=>	"<i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i>",
                             "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout"
                         ]
                     ]
