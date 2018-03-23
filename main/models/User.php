@@ -23,6 +23,14 @@
         }
 
         /**
+         * @return object|null
+         */
+        public function getUser ( )
+        {
+            return $this->object;
+        }
+
+        /**
          * @return integer
          */
         public function getID ( )

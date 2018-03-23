@@ -193,7 +193,7 @@
 
             $user = new User( ["EMAIL", $data ["email"] ] );
 
-            if ( ! isset ( $user ) )
+            if ( is_null ( $user->getUser ( ) ) )
             {
                 $_REQUEST ["ALERT_HEAD"] = "User Not Found!";
                 $_REQUEST ["ALERT_TYPE"] = 5;
