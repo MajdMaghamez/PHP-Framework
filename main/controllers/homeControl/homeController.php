@@ -1,12 +1,11 @@
 <?php namespace main\controllers\homeControl;
 
+    use main\layouts\bootstrap\main;
     use main\controllers\Controller;
     use main\frameworkHelper\cacheManager;
-    use main\layouts\bootstrap\main;
 
     class homeController extends Controller
     {
-        protected $errors = false;
         protected $arrComponents;
 
         /**
@@ -22,8 +21,7 @@
          */
         private function preRenderPage ( )
         {
-            $html   = "";
-            return $html;
+            return "";
         }
 
         /**
@@ -33,16 +31,21 @@
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" . basename ( __DIR__ );
             $file   = $folder . "/home.html";
+            $errors = false;
 
             $cacheManager = new cacheManager ( $folder, $file );
-            if ( ! $cacheManager->isCacheExists ( ) ) { $this->errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
-            if ( ! $this->errors ) { return $cacheManager->read ( $this->arrComponents ); }
+            if ( ! $cacheManager->isCacheExists ( ) ) { $errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
+            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
             return "";
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onGet ( )
         {
-            $layoutTemplate = new main ( );
+            session_auth ( );
+            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
 
             $html   = "<!DOCTYPE html>\n";
             $html   .= "<html lang=\"en\">\n";
@@ -50,7 +53,10 @@
             $html   .= $layoutTemplate->render_header ( [ "TITLE" => "Home Page" ] );
             $html   .= "\t</head>\n";
             $html   .= "\t<body>\n";
+            $html   .= $layoutTemplate->render_navbar ( );
+            $html   .= "\t\t<div class=\"container\">\n";
             $html   .= $this->renderPage ( );
+            $html   .= "\t\t</div>\n";
             $html   .= $layoutTemplate->render_footer ( array ( ) );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
