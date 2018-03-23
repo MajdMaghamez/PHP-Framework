@@ -1,8 +1,6 @@
 {
     "require": {
-        "swiftmailer/swiftmailer": "^6.0",
-        "phpunit/phpunit": "^7.0",
-        "phpunit/dbunit": "^4.0"
+        "swiftmailer/swiftmailer": "^6.0"
     },
 
     "autoload": {

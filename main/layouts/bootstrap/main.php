@@ -2,17 +2,20 @@
 
     class main
     {
+        protected $no_cache = false;
+        protected $navbar = array ( );
+
         /**
          * main constructor.
          * @param string $parent
          * @param string $child
-         * @param bool $re_cache
+         * @param bool $no_cache
          */
-        public function __construct ($parent = "", $child = "", $re_cache = FALSE )
+        public function __construct ($parent = "", $child = "", $no_cache = false )
         {
             if ( isset ( $_SESSION ["USER_NAME"] ) ) { $user_full_name = $_SESSION ["USER_NAME"]; } else { $user_full_name = ""; }
 
-            $this->cache = $re_cache;
+            $this->no_cache = $no_cache;
 
             $this->navbar =
             [
@@ -239,7 +242,7 @@
             $html    = "\t\t<meta charset=\"utf-8\"/>\n";
             $html   .= "\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"/>\n";
 
-            if ( $this->cache )
+            if ( $this->no_cache )
             {
                 $html   .= "\t\t<meta http-equiv=\"cache-control\" content=\"max-age=0\"/>\n";
                 $html   .= "\t\t<meta http-equiv=\"cache-control\" content=\"no-cache\"/>\n";
@@ -249,6 +252,7 @@
             }
 
             $html   .= "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\"/>\n";
+            $html   .= "\t\t<meta name=\"csrf-token\" content=\"" . CSRFToken() . "\">\n";
 
             if ( isset ( $elements ["TITLE"] ) ) { $html .= "\t\t<title>" . $elements ["TITLE"] . "</title>\n"; }
 

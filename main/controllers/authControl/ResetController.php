@@ -5,6 +5,8 @@
     use main\controllers\Controller;
     use main\gui\renderer\bootstrapForm;
     use main\frameworkHelper\cacheManager;
+    use main\frameworkHelper\fieldsValidator;
+
     class ResetController extends controller
     {
         protected $errors;
@@ -120,8 +122,28 @@
 
         protected function onPost()
         {
-            // TODO: Implement onPost() method.
+            $errors = ! fieldsValidator::validate ( $this->arrComponents );
+
+            if ( $errors )
+            {
+                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
+                $_REQUEST ["ALERT_TYPE"]= 4;
+            }
+            else
+            {
+                $errors = ! $this->resetUser ( );
+                if ( ! $errors )
+                {
+                    $_REQUEST ["ALERT_HEAD"]= "Success";
+                    $_REQUEST ["ALERT_MSG"] = "Check your email for the reset link";
+                    $_REQUEST ["ALERT_TYPE"]= 3;
+                }
+            }
         }
 
 
+        protected function resetUser ( )
+        {
+
+        }
     }

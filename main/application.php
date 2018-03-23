@@ -85,7 +85,18 @@
      */
     function CSRFToken ( )
     {
-        return md5 ( uniqid ( ) );
+        try
+        {
+            return bin2hex ( random_bytes (32) );
+        }
+        catch ( \Exception $E )
+        {
+            error_log ( 'error generating csrf token using bin2hex ' . $E->getMessage(), 0 );
+        }
+        finally
+        {
+            return md5 ( uniqid ( rand ( ), true ) );
+        }
     }
 
 
@@ -230,7 +241,7 @@
     {
         session_start ( );
         session_regenerate_id ( true );
-        setcookie ( session_name ( ), session_id ( ), $GLOBALS ["S_COOKIE_LIFE"], '/' );
+        setcookie ( session_name ( ), session_id ( ), $GLOBALS ["S_COOKIE_LIFE"], '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
 
         if ( isset ( $_SESSION ["TIMEOUT"] ) )
         {
@@ -272,7 +283,7 @@
                 if ( session_destroy ( ) )
                 {
                     session_write_close ( );
-                    setcookie ( session_name ( ), '', 0, '/' );
+                    setcookie ( session_name ( ), '', 0, '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
                 }
             }
             else
@@ -395,4 +406,3 @@
     } );
 
     //echo "<a href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Init/?RUN=1&AUTH=VMiJhPgR43UWdnKXyPFH5E8" . "\">create database and necessary tables for application to run</a>";
-?>
