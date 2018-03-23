@@ -90,6 +90,13 @@
 
             $arrComponents  = new guiCreator ( $components );
             $this->arrComponents = $arrComponents->getContainer ( );
+
+            if ( findInURL( '1' ) )
+            {
+                $_REQUEST ["ALERT_HEAD"] = "Timed out";
+                $_REQUEST ["ALERT_TYPE"] = 5;
+                $_REQUEST ["ALERT_MSG"] = "You have not been active for a while so we logged you out.";
+            }
         }
 
         /**
@@ -121,8 +128,12 @@
             return "";
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onGet ( )
         {
+            session_auth ( true );
             $layoutTemplate = new main( );
 
             $html   = "<!DOCTYPE html>\n";
@@ -149,6 +160,9 @@
             echo $html;
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onPost ( )
         {
             $errors = ! fieldsValidator::validate ( $this->arrComponents );
@@ -163,7 +177,7 @@
                 $errors = ! $this->authenticateUser ( );
                 if ( ! $errors )
                 {
-echo "loged in";
+                    redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . $_SESSION ["USER_HOME"] );
                 }
             }
             $this->onGet();
@@ -235,7 +249,7 @@ echo "loged in";
                     break;
 
                     case user_failed:
-                        $attempts = $user->incrementFailed ( $user->getID ( ) );
+                        $attempts = User::incrementFailed ( $user->getID ( ) );
                         $_REQUEST ["ALERT_HEAD"] = "Incorrect Password!";
                         $_REQUEST ["ALERT_TYPE"] = 4;
                         $_REQUEST ["ALERT_MSG"]  = "You have entered an incorrect password " . isset ( $attempts ) ? " attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"] : "";
@@ -249,6 +263,28 @@ echo "loged in";
                     break;
 
                     case user_login:
+
+                        $logoutTime = new \datetime ( 'now', new \DateTimeZone( $GLOBALS ["TIME_ZONE"] ) );
+                        try
+                        {
+                            $logoutTime->add ( new \DateInterval ( 'PT' . $GLOBALS ["S_TIMEOUT"] . 'M' ) );
+                        }
+                        catch ( \Exception $E )
+                        {
+                            error_log ( 'Setting Session Time Error ' . $E->getMessage(), 0 );
+                            return false;
+                        }
+
+                        session_start ( );
+                        $_SESSION ["USER_ID"] = $user->getID ( );
+                        $_SESSION ["USER_NAME"] = $user->getName ( );
+                        $_SESSION ["USER_EMAIL"] = $user->getEmail ( );
+                        $_SESSION ["USER_ROLE"] = $user->getRole ( );
+                        $_SESSION ["USER_HOME"] = $user->getHomePage ( );
+                        $_SESSION ["CSRF_TOKEN"] = CSRFToken ( );
+                        $_SESSION ["TIMEOUT"] = $logoutTime->format ( 'm/d/Y H:i:s' );
+                        $_SESSION ["CHANGE_PASS"] = $user->mustChangePassword ( );
+
                         return User::setLastLogin( $user->getID ( ) );
                     break;
                 }

@@ -158,9 +158,13 @@
             return "";
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onGet()
         {
-            $layoutTemplate = new main();
+            session_auth( true );
+            $layoutTemplate = new main ( );
 
             $html = "<!DOCTYPE html>\n";
             $html .= "<html lang=\"en\">\n";
@@ -186,6 +190,9 @@
             echo $html;
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onPost()
         {
             $errors = ! fieldsValidator::validate ( $this->arrComponents );

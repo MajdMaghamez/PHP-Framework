@@ -87,8 +87,12 @@
             return "";
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onGet()
         {
+            session_auth ( true );
             $layoutTemplate = new main ( );
 
             $html   = "<!DOCTYPE html>\n";
