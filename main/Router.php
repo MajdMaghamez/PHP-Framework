@@ -1,8 +1,11 @@
 <?php namespace main;
 
+    use main\controllers\init;
+    use main\controllers\notFound;
+    use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
-    use main\controllers\authControl\RegisterController;
     use main\controllers\authControl\ResetController;
+    use main\controllers\authControl\RegisterController;
 
     Class Router {
 
@@ -15,6 +18,8 @@
             $this->routes["Login"]      = LoginController::class;
             $this->routes["Register"]   = RegisterController::class;
             $this->routes["Reset"]      = ResetController::class;
+
+            $this->routes["Home"]       = homeController::class;
         }
 
         public static function getApplicationRouter ( ) {
@@ -43,7 +48,7 @@
             }
             else
             {
-                die ( "page not found");
+                ( new notFound ( ) )->onRequestStart ( );
             }
         }
     }
