@@ -22,7 +22,7 @@
                     "TITLE"		=>	"Home",
                     "ACTIVE"	=>	"",
                     "ICON"		=>	"<i class=\"fa fa-home\" aria-hidden=\"true\"></i>",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/index.php",
+                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
                 1        		=>
@@ -91,7 +91,7 @@
                             "TITLE"		=>	"Logout",
                             "ACTIVE"	=>	"",
                             "ICON"		=>	"<i class=\"fa fa-sign-out\" aria-hidden=\"true\"></i>",
-                            "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/logout.php"
+                            "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout"
                         ]
                     ]
                 ]
@@ -105,7 +105,7 @@
                     "TITLE"			=>  "Dashboard",
                     "ACTIVE"		=>	"",
                     "ICON"			=>	"",
-                    "LINK"			=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/index.php",
+                    "LINK"			=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
                     "CHILDREN"	    =>	ARRAY ( )
                 ],
                 1        			=>
@@ -139,7 +139,7 @@
 
             switch ( $parent )
             {
-                case "views"        : $this->navbar [0]["ACTIVE"] = " active"; break;
+                case "homeControl"  : $this->navbar [0]["ACTIVE"] = " active"; break;
                 case "reports"      : $this->navbar [1]["ACTIVE"] = " active"; break;
                 case "stats"        : $this->navbar [2]["ACTIVE"] = " active"; break;
                 case "help"         : $this->navbar [3]["ACTIVE"] = " active"; break;
@@ -150,7 +150,7 @@
 
             switch ( $child )
             {
-                case "views"        : $this->sub_navbar [0]["ACTIVE"] = " active"; break;
+                case "homeControl"  : $this->sub_navbar [0]["ACTIVE"] = " active"; break;
                 case "clients"      : $this->sub_navbar [1]["ACTIVE"] = " active"; break;
                 case "inventory"    : $this->sub_navbar [2]["ACTIVE"] = " active"; break;
                 case "admin"        : $this->sub_navbar [3]["ACTIVE"] = " active"; break;
@@ -161,7 +161,7 @@
         {
             $html    = "\t\t<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top\">\n";
             $html   .= "\t\t\t<div class=\"container\">\n";
-            $html   .= "\t\t\t\t<a class=\"navbar-brand\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/index.php\">" . $GLOBALS ["BS_NAME"] . "</a>\n";
+            $html   .= "\t\t\t\t<a class=\"navbar-brand\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Home\">" . $GLOBALS ["BS_NAME"] . "</a>\n";
             $html   .= "\t\t\t\t\t<button type=\"button\" class=\"navbar-toggler\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-controls=\"navbar\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
             $html   .= "\t\t\t\t\t\t<span class=\"navbar-toggler-icon\"></span>\n";
             $html   .= "\t\t\t\t\t</button>\n";
@@ -320,7 +320,7 @@
             $html   .= "\t\t\t\t\$('#countdown').countdown(upto, function (event) {\n";
             $html   .= "\t\t\t\t\t\$(this).html (event.strftime (\"%H :%M :%S\"));\n";
             $html   .= "\t\t\t\t}).on (\"finish.countdown\", function ( ) {\n";
-            $html   .= "\t\t\t\t\twindow.location.replace (\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/logout.php?timeout=true\");\n";
+            $html   .= "\t\t\t\t\twindow.location.replace (\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout/1/\");\n";
             $html   .= "\t\t\t\t});\n\n";
             $html   .= "\t\t\t\t\$('[data-toggle=\"tooltip\"]').tooltip ( );\n";
             $html   .= "\t\t\t});\n";

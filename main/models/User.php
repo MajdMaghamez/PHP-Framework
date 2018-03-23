@@ -87,8 +87,8 @@
         }
 
         /**
-     * @return false|string
-     */
+         * @return false|string
+         */
         public function getCreated ( )
         {
             return date ( 'm/d/Y h:i:s A', $this->object ["CREATED"] );
@@ -101,45 +101,6 @@
         {
             return date ( "m/d/Y h:i:s A", $this->object ["UPDATED"] );
         }
-
-        /**
-         * @param integer $id
-         * @return mixed
-         */
-        public function getFailed ( $id )
-        {
-            $sql_select = "SELECT `FAILED` FROM `users` WHERE `ID` = :ID AND `DELETED` = 0";
-            $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $id ] );
-            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
-            return isset ( $sql_result ) ? $sql_result [0]["FAILED"] : null;
-        }
-
-        /**
-         * @param integer $id
-         * @return mixed|null
-         */
-        public function incrementFailed ( $id )
-        {
-            $sql_update = "UPDATE `users` SET `FAILED` = `FAILED` + 1 WHERE `ID` = :ID AND `DELETED` = 0";
-            $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $id ] );
-            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
-            if ( $sql_result > 0 )
-                return $this->getFailed( $id );
-            return null;
-        }
-
-        /**
-         * @param $password
-         * @return bool
-         */
-        public function isAuth ( $password )
-        {
-            if ( password_verify ( $password, $this->object ["PASSWORD"] ) )
-                return true;
-            return false;
-        }
-
-
 
         /**
          * @return integer
@@ -157,6 +118,25 @@
             return $this->object ["ROLE"];
         }
 
+        /**
+         * @return string
+         */
+        public function getHomePage ( )
+        {
+            return $this->object ["HOME_DIR"];
+        }
+
+        /**
+         * @param $password
+         * @return bool
+         */
+        public function isAuth ( $password )
+        {
+            if ( password_verify ( $password, $this->object ["PASSWORD"] ) )
+                return true;
+            return false;
+        }
+
 
         /**
          * @param integer $id
@@ -164,7 +144,7 @@
          */
         public static function disable ($id )
         {
-            $sql_update = "UPDATE `users` SET `ACTIVE` = 0 WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_update = "UPDATE `users` SET `ACTIVE` = 0, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID AND `DELETED` = 0";
             $sql_params = array ( "ID" => ["TYPE" => "INT", "VALUE" => $id] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
             if ( $sql_result > 0 )
@@ -178,7 +158,7 @@
          */
         public static function enable ($id )
         {
-            $sql_update = "UPDATE `users` SET `ACTIVE` = 1 WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_update = "UPDATE `users` SET `ACTIVE` = 1, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID AND `DELETED` = 0";
             $sql_params = array ( "ID" => ["TYPE" => "INT", "VALUE" => $id] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
             if ( $sql_result > 0 )
@@ -192,7 +172,7 @@
          */
         public static function setLastLogin ($id )
         {
-            $sql_update = "UPDATE `users` SET `LAST_LOGGED_IP` = :IP, `LAST_LOGGED_IN` = CURRENT_TIMESTAMP WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_update = "UPDATE `users` SET `LAST_LOGGED_IP` = :IP, `FAILED` = 0, `LAST_LOGGED_IN` = CURRENT_TIMESTAMP (), `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID AND `DELETED` = 0";
             $sql_params = array ( ":IP" => ["TYPE" => "STR", "VALUE" => get_ip() ], ":ID" => ["TYPE" => "STR", "VALUE" => $id ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
             if ( $sql_result > 0 )
@@ -200,15 +180,43 @@
             return false;
         }
 
+        /**
+         * @param integer $id
+         * @return mixed
+         */
+        public static function getFailed ( $id )
+        {
+            $sql_select = "SELECT `FAILED` FROM `users` WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $id ] );
+            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
+            return isset ( $sql_result ) ? $sql_result [0]["FAILED"] : null;
+        }
+
+        /**
+         * @param integer $id
+         * @return mixed|null
+         */
+        public static function incrementFailed ( $id )
+        {
+            $sql_update = "UPDATE `users` SET `FAILED` = `FAILED` + 1, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID AND `DELETED` = 0";
+            $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $id ] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+                return self::getFailed ( $id );
+            return null;
+        }
+
 
         /**
          * @param $user
          * @return integer UserID
+         *
+         * @note storing users from public registration
          */
         public static function store_public ( $user )
         {
-            $sql_insert = "INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED` ) ";
-            $sql_insert .= "VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ) );";
+            $sql_insert = "INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `HOME_DIR` ) ";
+            $sql_insert .= "VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), '/Home' );";
 
             $sql_params = array
             (

@@ -80,6 +80,14 @@
         return password_hash ( $password, PASSWORD_DEFAULT );
     }
 
+    /**
+     * @return string
+     */
+    function CSRFToken ( )
+    {
+        return md5 ( uniqid ( ) );
+    }
+
 
     /**
      * @param string $url
@@ -198,6 +206,23 @@
     }
 
     /**
+     * @return array
+     */
+    function getURLParams ( )
+    {
+        return explode ( '/', $_SERVER ["REQUEST_URI"] );
+    }
+
+    /**
+     * @param $data
+     * @return false|int|string
+     */
+    function findInURL ($data )
+    {
+        return array_search( $data, getURLParams(), true );
+    }
+
+    /**
      * @param bool $public
      * @throws Exception
      */
@@ -214,17 +239,25 @@
 
             if ( $session < $current )
             {
-                header ( "location:" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/logout.php?timeout=true" ); exit ( );
+                redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout/1/" );
             }
             else
             {
                 unset ( $_SESSION ["TIMEOUT"] );
-                $session = $current->add ( new \DateInterval ( 'PT' . $GLOBALS ["S_TIMEOUT"] . 'M' ) );
-                $_SESSION ["TIMEOUT"] = $session->format ( "Y-m-d H:i:s" );
+                try
+                {
+                    $session = $current->add ( new \DateInterval ( 'PT' . $GLOBALS ["S_TIMEOUT"] . 'M' ) );
+                    $_SESSION ["TIMEOUT"] = $session->format ( "m/d/Y H:i:s" );
+                }
+                catch ( \Exception $E )
+                {
+                    $_SESSION ["TIMEOUT"] = $session->format ( "m/d/Y H:i:s" );
+                    error_log ( 'Setting Session Time Error: ' . $E->getMessage(), 0 );
+                }
 
                 if ( $public )
                 {
-                    header ( "location:" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/index.php" ); exit ( );
+                    redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Home" );
                 }
             }
 
@@ -244,9 +277,18 @@
             }
             else
             {
-                header ( "location:" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/logout.php" ); exit ( );
+                redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout" );
             }
         }
+    }
+
+    /**
+     * @param string $location
+     */
+    function redirect ($location )
+    {
+        header ( 'location:' . $location );
+        exit;
     }
 
 

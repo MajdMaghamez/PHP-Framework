@@ -4,6 +4,7 @@
     use main\controllers\notFound;
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
+    use main\controllers\authControl\LogoutController;
     use main\controllers\authControl\ResetController;
     use main\controllers\authControl\RegisterController;
 
@@ -16,6 +17,7 @@
             $this->routes["Init"]       = init::class;
 
             $this->routes["Login"]      = LoginController::class;
+            $this->routes["Logout"]     = LogoutController::class;
             $this->routes["Register"]   = RegisterController::class;
             $this->routes["Reset"]      = ResetController::class;
 
