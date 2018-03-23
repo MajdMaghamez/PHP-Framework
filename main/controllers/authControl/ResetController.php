@@ -126,17 +126,14 @@
 
             if ( $errors )
             {
-                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
-                $_REQUEST ["ALERT_TYPE"]= 4;
+                setFlashMessage ( "", "Something went wrong, please make a correction and try again", 4 );
             }
             else
             {
                 $errors = ! $this->resetUser ( );
                 if ( ! $errors )
                 {
-                    $_REQUEST ["ALERT_HEAD"]= "Success";
-                    $_REQUEST ["ALERT_MSG"] = "Check your email for the reset link";
-                    $_REQUEST ["ALERT_TYPE"]= 3;
+                    setFlashMessage ( "Success", "Check your email for the reset link", 3 );
                 }
             }
         }

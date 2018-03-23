@@ -93,9 +93,7 @@
 
             if ( findInURL( '1' ) )
             {
-                $_REQUEST ["ALERT_HEAD"] = "Timed out";
-                $_REQUEST ["ALERT_TYPE"] = 5;
-                $_REQUEST ["ALERT_MSG"] = "You have not been active for a while so we logged you out.";
+                setFlashMessage( "Timed out", "You have not been active for a while so we logged you out.", 5 );
             }
         }
 
@@ -169,8 +167,7 @@
 
             if ( $errors )
             {
-                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
-                $_REQUEST ["ALERT_TYPE"]= 4;
+                setFlashMessage("", "Something went wrong, please make a correction and try again", 4 );
             }
             else
             {
@@ -195,9 +192,7 @@
 
             if ( is_null ( $user->getUser ( ) ) )
             {
-                $_REQUEST ["ALERT_HEAD"] = "User Not Found!";
-                $_REQUEST ["ALERT_TYPE"] = 5;
-                $_REQUEST ["ALERT_MSG"]  = "This email address is unassociated with any account.";
+                setFlashMessage( "User Not Found!", "This email address is unassociated with any account.", 5 );
                 return false;
             }
 
@@ -220,9 +215,7 @@
                         }
                         else
                         {
-                            $_REQUEST ["ALERT_HEAD"] = "Disabled Account!";
-                            $_REQUEST ["ALERT_TYPE"] = 4;
-                            $_REQUEST ["ALERT_MSG"]  = "Contact support to re-enable this account";
+                            setFlashMessage( "Disabled Account!", "Contact support to re-enable this account", 4 );
                             return false;
                         }
                     break;
@@ -234,9 +227,7 @@
                         }
                         else
                         {
-                            $_REQUEST ["ALERT_HEAD"] = "Unverified Account!";
-                            $_REQUEST ["ALERT_TYPE"] = 5;
-                            $_REQUEST ["ALERT_MSG"]  = "Verify your account in order to be able to login, a verification email is sent right after a successful registration";
+                            setFlashMessage( "Unverified Account!", "Verify your account in order to be able to login, a verification email is sent right after a successful registration", 5 );
                             return false;
                         }
                     break;
@@ -250,9 +241,7 @@
 
                     case user_failed:
                         $attempts = User::incrementFailed ( $user->getID ( ) );
-                        $_REQUEST ["ALERT_HEAD"] = "Incorrect Password!";
-                        $_REQUEST ["ALERT_TYPE"] = 4;
-                        $_REQUEST ["ALERT_MSG"]  = "You have entered an incorrect password " . isset ( $attempts ) ? " attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"] : "";
+                        setFlashMessage( "Incorrect Password!", "You have entered an incorrect password " . isset ( $attempts ) ? " attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"] : "", 4 );
 
                         if ( isset ( $attempts ) )
                         {

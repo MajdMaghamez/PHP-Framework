@@ -199,17 +199,14 @@
 
             if ( $errors )
             {
-                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
-                $_REQUEST ["ALERT_TYPE"]= 4;
+                setFlashMessage( "", "Something went wrong, please make a correction and try again", 4 );
             }
             else
             {
                 $errors = ! $this->registerUser ( );
                 if ( ! $errors )
                 {
-                    $_REQUEST ["ALERT_HEAD"] = "Success!";
-                    $_REQUEST ["ALERT_MSG"] = "A verification email has been sent! Please verify your email before logging in.";
-                    $_REQUEST ["ALERT_TYPE"]= 3;
+                    setFlashMessage ( "Success!", "A verification email has been sent! Please verify your email before logging in.", 3 );
                 }
             }
             $this->onGet();
@@ -243,9 +240,7 @@
                     case user_exists:
                         if ( User::isExists( ["EMAIL", $data["email"] ] ) )
                         {
-                            $_REQUEST ["ALERT_TYPE"] = 5;
-                            $_REQUEST ["ALERT_HEAD"] = "User Found!";
-                            $_REQUEST ["ALERT_MSG"] = "This email address is already associated with an account.";
+                            setFlashMessage ( "User Found!", "This email address is already associated with an account.", 5 );
                             return false;
                         }
                         $state = user_store;
@@ -260,9 +255,7 @@
                         }
                         else
                         {
-                            $_REQUEST ["ALERT_HEAD"] = "Error!";
-                            $_REQUEST ["ALERT_TYPE"] = 4;
-                            $_REQUEST ["ALERT_MSG"] = "We were unable to create your account, try again later.";
+                            setFlashMessage ( "Error!", "We were unable to create your account, try again later.", 4 );
                             return false;
                         }
                     break;

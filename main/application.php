@@ -3,12 +3,6 @@
     // Get the time of request start
     $_REQUEST ["ON_REQUEST_START"] = microtime ( true );
 
-    // Global variables
-    $_REQUEST ["ALERT_HEAD"]    = "";
-    $_REQUEST ["ALERT_TYPE"]    = "";
-    $_REQUEST ["ALERT_MSG"]     = "";
-
-
     // Include application configuration values
     require_once __DIR__ . "/application.config.php";
 
@@ -198,6 +192,18 @@
         set_error_handler ( function ( $number, $message, $filename, $line, $variable ) {
 
         });
+    }
+
+    /**
+     * @param string $header
+     * @param string $content
+     * @param int $type
+     */
+    function setFlashMessage ($header = "", $content = "", $type = 1 )
+    {
+        $_REQUEST ["ALERT_HEAD"] = $header;
+        $_REQUEST ["ALERT_TYPE"] = $type;
+        $_REQUEST ["ALERT_MSG"]  = $content;
     }
 
     /**
