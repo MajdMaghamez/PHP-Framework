@@ -23,7 +23,7 @@
 
         public function seed ( )
         {
-            $sql_insert = "INSERT INTO " . $this->table . " ( " . implode ( ',', $this->insertable ) . " ) VALUES ";
+            $sql_insert = "TRUNCATE TABLE " . $this->table . "; INSERT INTO " . $this->table . " ( " . implode ( ',', $this->insertable ) . " ) VALUES ";
             $sql_insert.= " ( " . implode( ',', $this->bag [0] ) . " ) ";
 
             for ( $i = 1; $i < sizeOf ( $this->bag ); $i++ )

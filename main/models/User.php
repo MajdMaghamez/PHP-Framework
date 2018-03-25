@@ -111,6 +111,38 @@
         }
 
         /**
+         * @return mixed
+         */
+        public function getQuestion1 ( )
+        {
+            return $this->object ["QUESTIONID1"];
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getQuestion2 ( )
+        {
+            return $this->object ["QUESTIONID2"];
+        }
+
+        /**
+         * @return string
+         */
+        public function getAnswer1 ( )
+        {
+            return decrypt ( $this->object ["ASNWER1"] );
+        }
+
+        /**
+         * @return string
+         */
+        public function getAnswer2 ( )
+        {
+            return decrypt ( $this->object ["ANSWER2"] );
+        }
+
+        /**
          * @return integer
          */
         public function mustChangePassword ( )
@@ -241,21 +273,9 @@
             return database::runInsertQuery($sql_insert, $sql_params, "ID");
         }
 
-        /**
-         * @param $data
-         * @return bool
-         *
-         * @note ex. $data = array ( 'ID', 1 ) or array ( 'EMAIL' => 'user@example.com' )
-         */
-        public static function isExists ( $data )
+        public static function getSecurityQuestions ( )
         {
-            $sql_select = "SELECT `ID` FROM `users` WHERE `" . $data [0] . "` = :" . $data [0] . " AND `DELETED` = 0";
-            $sql_params = array ( ":" . $data[0] => ["TYPE" => "STR", "VALUE" => $data [1] ] );
-            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
 
-            if ( isset ( $sql_result ) )
-                return true;
-            return false;
         }
 
         /**
