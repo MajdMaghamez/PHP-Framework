@@ -20,6 +20,11 @@
             $html   .= "\t\t\t\t\t<p>The page you have requested cannot be found.</p>\n";
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
+            $html   .= "\t\t\t<div class=\"row justify-content-center align-items-center\">\n";
+            $html   .= "\t\t\t\t<div class=\"col-md-4 col-lg-4 col-xl-4 center\">\n";
+            $html   .= "\t\t\t\t\t<a class=\"btn btn-light btn-outline-light\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login\">Back to Login</a>\n";
+            $html   .= "\t\t\t\t</div>\n";
+            $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</div>\n";
             $html   .= $layoutTemplate->render_footer ( array ( ) );
             $html   .= "\t</body>\n";
@@ -30,6 +35,6 @@
 
         protected function onPost()
         {
-            // TODO: Implement onPost() method.
+            $this->onGet();
         }
     }

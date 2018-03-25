@@ -50,12 +50,7 @@
             $components ["confPassword"]->setEqualTo ( "password");
             $components ["confPassword"]->setTabs ( $Tabs );
 
-            $components ["question1"]   = new selectField ( "Security Question", "question1", "question1" );
-            $components ["question1"]->setOptions ( 1, "What was the name of your elementary school?" );
-            $components ["question1"]->setOptions ( 2, "In What city were you born?" );
-            $components ["question1"]->setOptions ( 3, "What is your pet name?" );
-            $components ["question1"]->setOptions ( 4, "In What month did you get married?" );
-            $components ["question1"]->setOptions ( 5, "What is the name of your favorite teacher?" );
+            $components ["question1"]   = new selectField ( "Security Question", "question1", "question1", 1 );
             $components ["question1"]->setFieldsize ( 1 );
             $components ["question1"]->setRequired ( true );
             $components ["question1"]->setTabs ( $Tabs );
@@ -65,12 +60,7 @@
             $components ["answer1"]->setRequired ( true );
             $components ["answer1"]->setTabs ( $Tabs );
 
-            $components ["question2"]   = new selectField ( "Security Question", "question2", "question2" );
-            $components ["question2"]->setOptions ( 1, "What is your favorite ice cream flavor?" );
-            $components ["question2"]->setOptions ( 2, "In What city was your high school?" );
-            $components ["question2"]->setOptions ( 3, "What is your mother middle name?" );
-            $components ["question2"]->setOptions ( 4, "Who is your favorite cousin?" );
-            $components ["question2"]->setOptions ( 5, "What is your favorite fruit?" );
+            $components ["question2"]   = new selectField ( "Security Question", "question2", "question2", 2 );
             $components ["question2"]->setFieldsize ( 1 );
             $components ["question2"]->setRequired ( true );
             $components ["question2"]->setTabs ( $Tabs );
@@ -199,17 +189,14 @@
 
             if ( $errors )
             {
-                $_REQUEST ["ALERT_MSG"] = "Something went wrong, please make a correction and try again";
-                $_REQUEST ["ALERT_TYPE"]= 4;
+                setFlashMessage( "", "Something went wrong, please make a correction and try again", 4 );
             }
             else
             {
                 $errors = ! $this->registerUser ( );
                 if ( ! $errors )
                 {
-                    $_REQUEST ["ALERT_HEAD"] = "Success!";
-                    $_REQUEST ["ALERT_MSG"] = "A verification email has been sent! Please verify your email before logging in.";
-                    $_REQUEST ["ALERT_TYPE"]= 3;
+                    setFlashMessage ( "Success!", "A verification email has been sent! Please verify your email before logging in.", 3 );
                 }
             }
             $this->onGet();
@@ -230,27 +217,23 @@
             $data ['answer1']       = encrypt ( $this->arrComponents [4][0]->getValue ( ) );
             $data ['answer2']       = encrypt ( $this->arrComponents [6][0]->getValue ( ) );
 
-            define('stop'       , 0);
-            define('user_exists', 1);
-            define('user_store' , 2);
-            define('send_email' , 3);
+            $user = new User( ["EMAIL", $data ["email"] ] );
 
-            $state = user_exists;
+            if ( ! is_null ( $user->getUser ( ) ) )
+            {
+                setFlashMessage( "User Found!", "You have entered an email address that is already associated with an account.", 5 );
+                return false;
+            }
+
+            define('stop'       , 0);
+            define('user_store' , 1);
+            define('send_email' , 2);
+
+            $state = user_store;
             while ( $state > stop )
             {
                 switch ( $state )
                 {
-                    case user_exists:
-                        if ( User::isExists( ["EMAIL", $data["email"] ] ) )
-                        {
-                            $_REQUEST ["ALERT_TYPE"] = 5;
-                            $_REQUEST ["ALERT_HEAD"] = "User Found!";
-                            $_REQUEST ["ALERT_MSG"] = "This email address is already associated with an account.";
-                            return false;
-                        }
-                        $state = user_store;
-                    break;
-
                     case user_store:
                         $data ['id'] = User::store_public ( $data );
 
@@ -260,9 +243,7 @@
                         }
                         else
                         {
-                            $_REQUEST ["ALERT_HEAD"] = "Error!";
-                            $_REQUEST ["ALERT_TYPE"] = 4;
-                            $_REQUEST ["ALERT_MSG"] = "We were unable to create your account, try again later.";
+                            setFlashMessage ( "Error!", "We were unable to create your account, try again later.", 4 );
                             return false;
                         }
                     break;

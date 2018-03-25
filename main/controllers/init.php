@@ -1,40 +1,117 @@
 <?php namespace main\controllers;
 
     use main\storage\database;
+    use main\layouts\bootstrap\main;
+
     class init extends Controller
     {
+        protected $errors = false;
+
+        public function __construct()
+        {
+            if ( ! isset ( $_GET ["RUN"] ) )
+            {
+                setFlashMessage ( "UNDEFINED METHOD!", "", 4 );
+                $this->errors = true;
+            }
+
+            if ( ! isset ( $_GET ["AUTH"] ) )
+            {
+                setFlashMessage ( "UNDEFINED AUTHENTICATION TOKEN!", "", 4 );
+                $this->errors = true;
+            }
+        }
 
         protected function onGet()
         {
-            if ( ( isset ( $_GET ["RUN"] ) ) && ( sanitize_integer ( $_GET ["RUN"] ) == 1 ) )
+            $layoutTemplate = new main ( );
+
+            $html = "<!DOCTYPE html>\n";
+            $html .= "<html lang=\"en\">\n";
+            $html .= "\t<head>\n";
+            $html .= $layoutTemplate->render_header(["TITLE" => "Application Helper"], ".page { margin-top: 25px; }" );
+            $html .= "\t</head>\n";
+            $html .= "\t<body>\n";
+            $html .= "\t\t<div class=\"container page\">\n";
+            $html .= "\t\t\t<div class=\"row justify-content-center\">\n";
+            $html .= "\t\t\t\t<div class=\"col-sm-12 col-md-8 col-lg-8 col-xl-8\">\n";
+            $html .= flash_message ( "\t\t\t\t\t" );
+            $html .= "\t\t\t\t\t<div class=\"card\">\n";
+            $html .= $this->process ( );
+            $html .= "\t\t\t\t\t</div>\n";
+            $html .= "\t\t\t\t</div>\n";
+            $html .= "\t\t\t</div>\n";
+            $html .= "\t\t</div>\n";
+            $html .= $layoutTemplate->render_footer(array());
+            $html .= "\t</body>\n";
+            $html .= "</html>\n";
+
+            echo $html;
+        }
+
+        protected function onPost()
+        {
+            $this->onGet();
+        }
+
+        /**
+         * @return string
+         */
+        protected function process ( )
+        {
+            if ( $this->errors ) { return ""; }
+
+            $RESULTS = "";
+            $RedirectLink = "<a class=\"btn btn-info\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login\">Back To Main Page</a>\n";
+
+            if ( sanitize_string ( $_GET ["AUTH"] ) == $GLOBALS ["MACHINE_AUTH"] )
             {
-                if ( sanitize_string ( $_GET ["AUTH"] ) == $GLOBALS ["MACHINE_AUTH"] )
+                if ( sanitize_integer ( $_GET ["RUN"] ) == 1 )
                 {
                     $results = database::createDatabase ( $GLOBALS ["DB_NAME"] );
 
                     if ( $results )
                     {
-                        $directory = array_slice ( scandir ( $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/storage/tables/" ), 2 );
+                        $tables = array_slice ( scandir ( $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/storage/tables/" ), 2 );
 
-                        foreach ( $directory as $key => $value )
+                        foreach ( $tables as $key => $value )
                         {
-                            $table = basename ( $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/storage/tables/" . $value, ".php" );
-                            $class = "\\main\\storage\\tables\\" . $table;
-                            $class = new $class ( );
+                            $table  = basename ( $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/storage/tables/" . $value, ".php" );
+                            $class  = "\\main\\storage\\tables\\" . $table;
+                            $class  = new $class ( );
                             $class->up ( );
                         }
 
-                        echo "TABLES WERE CREATED SUCCESSFULLY, CHECK IF YOU NEED TO RUN SCRIPTS TO POPULATE TABLES WITH DATA;";
-                    }
-                    else
-                    {
-                        die ( "AUTHENTICATION FAILED!" );
+                        $seeds = array_slice ( scandir ( $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/storage/seeds/" ), 2 );
+
+                        foreach ( $seeds as $key => $value )
+                        {
+                            $seed   = basename ( $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/main/storage/seeds/" . $value, ".php" );
+                            $class  = "\\main\\storage\\seeds\\" . $seed;
+                            $class  = new $class;
+                            $class->seed ( );
+                        }
+
+                        $RESULTS .= "<h3>TABLES WERE CREATED AND SEEDED SUCCESSFULLY.</h3><hr/><p>" . $RedirectLink . "</p>\n";
                     }
                 }
-                else
+                elseif ( sanitize_integer ( $_GET ["RUN"] ) == 2 )
                 {
-                    die ( "UNDEFINED METHOD" );
+                    // clear the cache folder
+                    $cache_directory = array_slice ( scandir ( $GLOBALS ["CACHE_FOLDER"] ), 2 );
+                    foreach ( $cache_directory as $index => $folder )
+                    {
+                        array_map ( 'unlink', glob ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder . "/*.html" ) );
+                        rmdir ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder );
+                    }
+
+                    echo "<script type='text/javascript'>alert ( 'APPLICATION CACHE HAS BEEN CLEARED!' );</script>";
+                    $RESULTS .= "<h3>APPLICATION CACHE DIRECTORY HAS BEEN CLEARED.</h3><hr/><p>" . $RedirectLink . "</p>\n";
                 }
+            }
+            else
+            {
+                $RESULTS .= "<h3>FAILED TO AUTHENTICATE!</h3>\n";
             }
 
             // check if secure directory exists
@@ -42,7 +119,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["OFF_WEB_ROOT"], 0777, true ) )
                 {
-                    die ( "error: cannot create web root folders" );
+                    $RESULTS .= "<h3>Error: cannot create web root folders</h3>\n";
                 }
             }
 
@@ -51,7 +128,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["ERROR_FOLDER"], 0777, true ) )
                 {
-                    die ( "error: cannot create errors folder" );
+                    $RESULTS .= "<h3>Error: cannot create errors folder</h3>\n";
                 }
             }
 
@@ -60,7 +137,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["E_HTML_FOLDER"], 0777, true ) )
                 {
-                    die ( "error: cannot create html errors folder" );
+                    $RESULTS .= "<h3>Error: cannot create html errors folder</h3>\n";
                 }
             }
 
@@ -69,7 +146,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["E_XML_FOLDER"], 0777, true ) )
                 {
-                    die ( "error: cannot create xml errors folder" );
+                    $RESULTS .= "<h3>Error: cannot create xml errors folder</h3>\n";
                 }
             }
 
@@ -78,7 +155,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["LOG_FOLDER"], 0777, true ) )
                 {
-                    die ( "error: cannot create log folder" );
+                    $RESULTS .= "<h3>Error: cannot create log folder</h3>\n";
                 }
             }
 
@@ -87,7 +164,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["CACHE_FOLDER"], 0777, true ) )
                 {
-                    die ( "error: cannot create cache folder" );
+                    $RESULTS .= "<h3>Error: cannot create cache folder</h3>\n";
                 }
             }
 
@@ -96,17 +173,10 @@
             {
                 if ( ! mkdir ( $GLOBALS ["S_PATH"], 0777, true ) )
                 {
-                    die ( "error: cannot create session folder" );
+                    $RESULTS .= "<h3>Error: cannot create session folder</h3>\n";
                 }
             }
 
-        }
-
-        protected function onPost()
-        {
-            // TODO: Implement onPost() method.
+            return $RESULTS;
         }
     }
-
-
-

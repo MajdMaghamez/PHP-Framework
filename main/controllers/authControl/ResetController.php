@@ -1,10 +1,13 @@
 <?php namespace main\controllers\authControl;
 
+    use main\models\User;
     use main\gui\guiCreator;
     use main\layouts\bootstrap\main;
     use main\controllers\Controller;
     use main\gui\renderer\bootstrapForm;
     use main\frameworkHelper\cacheManager;
+    use main\frameworkHelper\fieldsValidator;
+
     class ResetController extends controller
     {
         protected $errors;
@@ -118,10 +121,55 @@
             echo $html;
         }
 
+        /**
+         * @throws \Exception
+         */
         protected function onPost()
         {
-            // TODO: Implement onPost() method.
+            $errors = ! fieldsValidator::validate ( $this->arrComponents );
+
+            if ( $errors )
+            {
+                setFlashMessage ( "", "Something went wrong, please make a correction and try again", 4 );
+            }
+            else
+            {
+                $errors = ! $this->resetUser ( );
+                if ( ! $errors )
+                {
+                    setFlashMessage ( "Success", "Check your email for the reset link", 3 );
+                }
+            }
+            $this->onGet();
         }
 
 
+        protected function resetUser ( )
+        {
+            $data ["email"] = $this->arrComponents [0][0]->getValue ( );
+
+            $user = new User( ["EMAIL", $data ["email"] ] );
+
+            if ( is_null ( $user->getUser ( ) ) )
+            {
+                setFlashMessage( "User Not Found!", "This email address is unassociated with any account.", 5 );
+                return false;
+            }
+
+            define ( 'stop'         , 0 );
+            define ( 'user_secure'  , 1 );
+            define ( 'user_active'  , 2 );
+            define ( 'user_reset'   , 3 );
+
+            $state = user_secure;
+            while ( $state > stop )
+            {
+                switch ( $state )
+                {
+                    case user_secure:
+
+                    break;
+                }
+            }
+        }
     }

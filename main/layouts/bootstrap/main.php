@@ -2,17 +2,20 @@
 
     class main
     {
+        protected $no_cache = false;
+        protected $navbar = array ( );
+
         /**
          * main constructor.
          * @param string $parent
          * @param string $child
-         * @param bool $re_cache
+         * @param bool $no_cache
          */
-        public function __construct ($parent = "", $child = "", $re_cache = FALSE )
+        public function __construct ($parent = "", $child = "", $no_cache = false )
         {
             if ( isset ( $_SESSION ["USER_NAME"] ) ) { $user_full_name = $_SESSION ["USER_NAME"]; } else { $user_full_name = ""; }
 
-            $this->cache = $re_cache;
+            $this->no_cache = $no_cache;
 
             $this->navbar =
             [
@@ -21,7 +24,7 @@
                     "ID"        =>  "HOME",
                     "TITLE"		=>	"Home",
                     "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-home\" aria-hidden=\"true\"></i>",
+                    "ICON"		=>	"<i class=\"fas fa-home\" aria-hidden=\"true\"></i>",
                     "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
@@ -30,7 +33,7 @@
                     "ID"        =>  "REPORTS",
                     "TITLE"		=>	"Reports",
                     "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-bar-chart\" aria-hidden=\"true\"></i>",
+                    "ICON"		=>	"<i class=\"fas fa-chart-bar\" aria-hidden=\"true\"></i>",
                     "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/reports/index.php",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
@@ -39,7 +42,7 @@
                     "ID"        =>  "STATISTICS",
                     "TITLE"		=>	"Statistics",
                     "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-line-chart\" aria-hidden=\"true\"></i>",
+                    "ICON"		=>	"<i class=\"fas fa-chart-pie\" aria-hidden=\"true\"></i>",
                     "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/stats/index.php",
                     "CHILDREN"	=>	ARRAY ( )
                 ],
@@ -66,7 +69,7 @@
                             "ID"        =>  "SYSADMIN",
                             "TITLE"     =>  "Developer Tools",
                             "ACTIVE"    =>  "",
-                            "ICON"      =>  "<i class=\"fa fa-magic\" aria-hidden=\"true\"></i>",
+                            "ICON"      =>  "<i class=\"fas fa-magic\" aria-hidden=\"true\"></i>",
                             "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/sysadmin/index.php"
                         ],
                         1               =>
@@ -74,7 +77,7 @@
                             "ID"        =>  "MYACCOUNT",
                             "TITLE"		=>	"My Account",
                             "ACTIVE"	=> 	"",
-                            "ICON"		=>	"<i class=\"fa fa-user-o\" aria-hidden=\"true\"></i>",
+                            "ICON"		=>	"<i class=\"far fa-user\" aria-hidden=\"true\"></i>",
                             "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/userMngmnt/index.php"
                         ],
                         2               =>
@@ -82,7 +85,7 @@
                             "ID"        =>  "MESSAGES",
                             "TITLE"		=>	"Messages",
                             "ACTIVE"	=> 	"",
-                            "ICON"		=> 	"<i class=\"fa fa-envelope-o\" aria-hidden=\"true\"></i>",
+                            "ICON"		=> 	"<i class=\"far fa-envelope-open\" aria-hidden=\"true\"></i>",
                             "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/messages/index.php"
                         ],
                         3               =>
@@ -90,7 +93,7 @@
                             "ID"        =>  "LOGOUT",
                             "TITLE"		=>	"Logout",
                             "ACTIVE"	=>	"",
-                            "ICON"		=>	"<i class=\"fa fa-sign-out\" aria-hidden=\"true\"></i>",
+                            "ICON"		=>	"<i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i>",
                             "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout"
                         ]
                     ]
@@ -239,7 +242,7 @@
             $html    = "\t\t<meta charset=\"utf-8\"/>\n";
             $html   .= "\t\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"/>\n";
 
-            if ( $this->cache )
+            if ( $this->no_cache )
             {
                 $html   .= "\t\t<meta http-equiv=\"cache-control\" content=\"max-age=0\"/>\n";
                 $html   .= "\t\t<meta http-equiv=\"cache-control\" content=\"no-cache\"/>\n";
@@ -249,6 +252,7 @@
             }
 
             $html   .= "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\"/>\n";
+            $html   .= "\t\t<meta name=\"csrf-token\" content=\"" . CSRFToken() . "\">\n";
 
             if ( isset ( $elements ["TITLE"] ) ) { $html .= "\t\t<title>" . $elements ["TITLE"] . "</title>\n"; }
 

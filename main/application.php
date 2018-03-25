@@ -3,12 +3,6 @@
     // Get the time of request start
     $_REQUEST ["ON_REQUEST_START"] = microtime ( true );
 
-    // Global variables
-    $_REQUEST ["ALERT_HEAD"]    = "";
-    $_REQUEST ["ALERT_TYPE"]    = "";
-    $_REQUEST ["ALERT_MSG"]     = "";
-
-
     // Include application configuration values
     require_once __DIR__ . "/application.config.php";
 
@@ -85,7 +79,18 @@
      */
     function CSRFToken ( )
     {
-        return md5 ( uniqid ( ) );
+        try
+        {
+            return bin2hex ( random_bytes (32) );
+        }
+        catch ( \Exception $E )
+        {
+            error_log ( 'error generating csrf token using bin2hex ' . $E->getMessage(), 0 );
+        }
+        finally
+        {
+            return md5 ( uniqid ( rand ( ), true ) );
+        }
     }
 
 
@@ -153,19 +158,8 @@
     /**
      * @return bool
      */
-    function defineApplicationVariables ( )
+    function clearErrorQueue ( )
     {
-        // clear the cache folder
-        $cache_directory = array_slice ( scandir ( $GLOBALS ["CACHE_FOLDER"] ), 2 );
-        foreach ( $cache_directory as $index => $folder )
-        {
-            if ( $folder !== 'images' )
-            {
-                array_map ( 'unlink', glob ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder . "/*.html" ) );
-                rmdir ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder );
-            }
-        }
-
         // clear the error queue
         $file_handler = @fopen ( $GLOBALS ["ERROR_QUEUE"], "w+" );
         @ftruncate ( $file_handler, 0 );
@@ -176,12 +170,6 @@
         return true;
     }
 
-    if ( isset ( $_GET ["RedefineApplicationVariables"] ) )
-    {
-        defineApplicationVariables ( );
-        echo "<script type='text/javascript'>alert ( 'Application variables has been redefined!' );</script>";
-    }
-
     if ( $GLOBALS ["ERROR_SYSTEM"] )
     {
         set_error_handler ( function ( $number, $message, $filename, $line, $variable ) {
@@ -190,12 +178,24 @@
     }
 
     /**
+     * @param string $header
+     * @param string $content
+     * @param int $type
+     */
+    function setFlashMessage ($header = "", $content = "", $type = 1 )
+    {
+        $_REQUEST ["ALERT_HEAD"] = $header;
+        $_REQUEST ["ALERT_TYPE"] = $type;
+        $_REQUEST ["ALERT_MSG"]  = $content;
+    }
+
+    /**
      * @param string $tabs
      * @return string html
      */
     function flash_message ($tabs = "" )
     {
-        if ( ! empty ( $_REQUEST ["ALERT_MSG"] ) )
+        if ( ! empty ( $_REQUEST ["ALERT_TYPE"] ) )
         {
             $alert = new \main\gui\alerts\alert ( $_REQUEST ["ALERT_HEAD"], $_REQUEST ["ALERT_MSG"], $_REQUEST ["ALERT_TYPE"] );
             $alert->setDismiss ( true );
@@ -230,7 +230,7 @@
     {
         session_start ( );
         session_regenerate_id ( true );
-        setcookie ( session_name ( ), session_id ( ), $GLOBALS ["S_COOKIE_LIFE"], '/' );
+        setcookie ( session_name ( ), session_id ( ), $GLOBALS ["S_COOKIE_LIFE"], '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
 
         if ( isset ( $_SESSION ["TIMEOUT"] ) )
         {
@@ -272,7 +272,7 @@
                 if ( session_destroy ( ) )
                 {
                     session_write_close ( );
-                    setcookie ( session_name ( ), '', 0, '/' );
+                    setcookie ( session_name ( ), '', 0, '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
                 }
             }
             else
@@ -395,4 +395,3 @@
     } );
 
     //echo "<a href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Init/?RUN=1&AUTH=VMiJhPgR43UWdnKXyPFH5E8" . "\">create database and necessary tables for application to run</a>";
-?>
