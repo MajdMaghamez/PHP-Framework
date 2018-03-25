@@ -158,19 +158,8 @@
     /**
      * @return bool
      */
-    function defineApplicationVariables ( )
+    function clearErrorQueue ( )
     {
-        // clear the cache folder
-        $cache_directory = array_slice ( scandir ( $GLOBALS ["CACHE_FOLDER"] ), 2 );
-        foreach ( $cache_directory as $index => $folder )
-        {
-            if ( $folder !== 'images' )
-            {
-                array_map ( 'unlink', glob ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder . "/*.html" ) );
-                rmdir ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder );
-            }
-        }
-
         // clear the error queue
         $file_handler = @fopen ( $GLOBALS ["ERROR_QUEUE"], "w+" );
         @ftruncate ( $file_handler, 0 );
@@ -179,12 +168,6 @@
         @fclose ( $file_handler );
 
         return true;
-    }
-
-    if ( isset ( $_GET ["RedefineApplicationVariables"] ) )
-    {
-        defineApplicationVariables ( );
-        echo "<script type='text/javascript'>alert ( 'Application variables has been redefined!' );</script>";
     }
 
     if ( $GLOBALS ["ERROR_SYSTEM"] )
@@ -212,7 +195,7 @@
      */
     function flash_message ($tabs = "" )
     {
-        if ( ! empty ( $_REQUEST ["ALERT_MSG"] ) )
+        if ( ! empty ( $_REQUEST ["ALERT_TYPE"] ) )
         {
             $alert = new \main\gui\alerts\alert ( $_REQUEST ["ALERT_HEAD"], $_REQUEST ["ALERT_MSG"], $_REQUEST ["ALERT_TYPE"] );
             $alert->setDismiss ( true );

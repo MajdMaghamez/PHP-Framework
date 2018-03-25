@@ -54,7 +54,7 @@
             [
                 "COLUMN_NAME"		=> "`QUESTIONID1`",
                 "COLUMN_TYPE"		=> "int(8)",
-                "COLUMN_DEFAULT"	=> "",
+                "COLUMN_DEFAULT"	=> "default 0",
                 "IS_NULLABLE"		=> "not null",
                 "EXTRA"				=> ""
             ],
@@ -72,7 +72,7 @@
             [
                 "COLUMN_NAME"		=> "`QUESTIONID2`",
                 "COLUMN_TYPE"		=> "int(8)",
-                "COLUMN_DEFAULT"	=> "",
+                "COLUMN_DEFAULT"	=> "default 0",
                 "IS_NULLABLE"		=> "not null",
                 "EXTRA"				=> ""
             ],
