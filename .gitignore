@@ -4,3 +4,4 @@ vendor/
 .DS_Store
 main/.env
 .env
+phpmyadmin/
