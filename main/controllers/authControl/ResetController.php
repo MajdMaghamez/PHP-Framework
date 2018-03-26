@@ -156,6 +156,8 @@
                 return false;
             }
 
+
+
             define ( 'stop'         , 0 );
             define ( 'user_secure'  , 1 );
             define ( 'user_active'  , 2 );

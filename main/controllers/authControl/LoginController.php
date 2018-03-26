@@ -240,13 +240,13 @@
                     break;
 
                     case user_failed:
-                        $attempts = User::incrementFailed ( $user->getID ( ) );
+                        $attempts = $user->incrementFailed ( );
                         setFlashMessage( "Incorrect Password!", "You have entered an incorrect password " . isset ( $attempts ) ? " attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"] : "", 4 );
 
                         if ( isset ( $attempts ) )
                         {
                             if ( $attempts >= $GLOBALS ["MAX_FAILED"] )
-                                User::disable ( $user->getID ( ) );
+                                $user->setActive ( false );
                         }
                         return false;
                     break;
@@ -272,9 +272,9 @@
                         $_SESSION ["USER_HOME"] = $user->getHomePage ( );
                         $_SESSION ["CSRF_TOKEN"] = CSRFToken ( );
                         $_SESSION ["TIMEOUT"] = $logoutTime->format ( 'm/d/Y H:i:s' );
-                        $_SESSION ["CHANGE_PASS"] = $user->mustChangePassword ( );
+                        $_SESSION ["CHANGE_PASS"] = $user->getChangePassword ( );
 
-                        return User::setLastLogin( $user->getID ( ) );
+                        return $user->updateLogin ( );
                     break;
                 }
             }
