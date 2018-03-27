@@ -23,77 +23,77 @@
                     0    =>
                         [
                             0 =>
-                                [
-                                    "parent"        => "fields",
-                                    "class"         => "emailField",
-                                    "label"         => "Email Address",
-                                    "name"          => "email",
-                                    "id"            => "email",
-                                    "setRequired"   => true,
-                                    "setShowStar"   => false,
-                                    "setIcon"       => "<i class=\"fas fa-envelope\"></i>",
-                                    "setTabs"       => $Tabs
-                                ]
+                            [
+                                "parent"        => "fields",
+                                "class"         => "emailField",
+                                "label"         => "Email Address",
+                                "name"          => "email",
+                                "id"            => "email",
+                                "setRequired"   => true,
+                                "setShowStar"   => false,
+                                "setIcon"       => "<i class=\"fas fa-envelope\"></i>",
+                                "setTabs"       => $Tabs
+                            ]
                         ],
                     1   =>
                         [
                             0 =>
-                                [
-                                    "parent"        => "fields",
-                                    "class"         => "passwordField",
-                                    "label"         => "Password",
-                                    "name"          => "password",
-                                    "id"            => "password",
-                                    "setRequired"   => true,
-                                    "setShowStar"   => false,
-                                    "setIcon"       => "<i class=\"fas fa-key\"></i>",
-                                    "setTabs"       => $Tabs
-                                ],
+                            [
+                                "parent"        => "fields",
+                                "class"         => "passwordField",
+                                "label"         => "Password",
+                                "name"          => "password",
+                                "id"            => "password",
+                                "setRequired"   => true,
+                                "setShowStar"   => false,
+                                "setIcon"       => "<i class=\"fas fa-key\"></i>",
+                                "setTabs"       => $Tabs
+                            ],
                         ],
                     2   =>
                         [
                             0 =>
-                                [
-                                    "parent"        => "links",
-                                    "class"         => "link",
-                                    "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset",
-                                    "label"         => "Having trouble logging in?",
-                                    "setformItem"   => true,
-                                    "setTabs"       => $Tabs
-                                ]
+                            [
+                                "parent"        => "links",
+                                "class"         => "link",
+                                "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset",
+                                "label"         => "Having trouble logging in?",
+                                "setformItem"   => true,
+                                "setTabs"       => $Tabs
+                            ]
                         ],
                     3   =>
                         [
                             0 =>
-                                [
-                                    "parent"        => "buttons",
-                                    "class"         => "formButton",
-                                    "label"         => "Login",
-                                    "id"            => "login",
-                                    "type"          => 1,
-                                    "setTabs"       => $Tabs
-                                ],
+                            [
+                                "parent"        => "buttons",
+                                "class"         => "formButton",
+                                "label"         => "Login",
+                                "id"            => "login",
+                                "type"          => 1,
+                                "setTabs"       => $Tabs
+                            ],
                             1 =>
-                                [
-                                    "parent"        => "links",
-                                    "class"         => "link",
-                                    "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Register",
-                                    "label"         => "Register",
-                                    "setClass"      => "right",
-                                    "setOutLine"    => true,
-                                    "setformItem"   => true,
-                                    "setLikeBtn"    => true,
-                                    "setTabs"       => $Tabs
-                                ]
+                            [
+                                "parent"        => "links",
+                                "class"         => "link",
+                                "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Register",
+                                "label"         => "Register",
+                                "setClass"      => "right",
+                                "setOutLine"    => true,
+                                "setformItem"   => true,
+                                "setLikeBtn"    => true,
+                                "setTabs"       => $Tabs
+                            ]
                         ]
                 ];
 
             $arrComponents  = new guiCreator ( $components );
             $this->arrComponents = $arrComponents->getContainer ( );
 
-            if ( findInURL( '1' ) )
+            if ( findInURL( 'TimedOut' ) )
             {
-                setFlashMessage( "Timed out", "You have not been active for a while so we logged you out.", 5 );
+                setFlashMessage( "Timed out", "You havn&#39;t been active for a while so we logged you out.", 5 );
             }
         }
 
@@ -185,72 +185,48 @@
          */
         protected function authenticateUser ( )
         {
-            $data ["email"]     = $this->arrComponents [0][0]->getValue ( );
-            $data ["password"]  = $this->arrComponents [1][0]->getValue ( );
+            $email      = $this->arrComponents [0][0]->getValue ( );
+            $password   = $this->arrComponents [1][0]->getValue ( );
 
-            $user = new User( ["EMAIL", $data ["email"] ] );
+            $user = new User( [ "EMAIL", $email ] );
 
             // check if the user exists
             if ( is_null ( $user->getUser ( ) ) )
             {
-                setFlashMessage( "User Not Found!", "This email address is unassociated with any account.", 5 );
+                setFlashMessage( "User Not Found!", "This email address isn&#39;t associated with any account.", 5 );
                 return false;
             }
 
             // check if the user has an active account
             if ( ! $user->isActive ( ) )
             {
-                setFlashMessage( "Disabled Account!", "Contact support to re-enable this account", 4 );
+                setFlashMessage( "Disabled Account!", "This account is disabled due to excessive failed login attempts. You may enable it again by resetting your password.", 4 );
                 return false;
             }
 
             // check if the user account was verified
             if ( ! $user->isVerified ( ) )
             {
-                setFlashMessage( "Unverified Account!", "Verify your account in order to be able to login, a verification email is sent right after a successful registration", 5 );
+                setFlashMessage( "Unverified Account!", "This account hasn&#39;t been verified yet. A verification email was sent upon your registration.", 5 );
                 return false;
             }
 
-            // authenticate
-            if ( ! $user->isAuth ( $data ['password'] ) )
+            // check if the user entered the correct password
+            if ( ! $user->isAuth ( $password ) )
             {
                 // increment failed login attempts and the return the total number of failed attempts
                 $attempts = $user->incrementFailed ( );
 
                 // check if the user reached the maximum allowed login attempts
                 if ( $attempts >= $GLOBALS ["MAX_FAILED"] )
-                {
                     // disable user account
                     $user->setActive ( false );
-                }
 
-                setFlashMessage( "Incorrect Password!", "You have entered an incorrect password " . isset ( $attempts ) ? " attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"] : "", 4 );
+                setFlashMessage( "Incorrect Password!", "You&#39;ve entered an incorrect password attempt " . $attempts . " out of " . $GLOBALS ["MAX_FAILED"], 4 );
                 return false;
             }
-            else
-            {
-                $logoutTime = new \datetime ( 'now', new \DateTimeZone( $GLOBALS ["TIME_ZONE"] ) );
-                try
-                {
-                    $logoutTime->add ( new \DateInterval ( 'PT' . $GLOBALS ["S_TIMEOUT"] . 'M' ) );
-                }
-                catch ( \Exception $E )
-                {
-                    error_log ( 'Setting Session Time Error ' . $E->getMessage(), 0 );
-                    return false;
-                }
 
-                session_start ( );
-                $_SESSION ["USER_ID"] = $user->getID ( );
-                $_SESSION ["USER_NAME"] = $user->getName ( );
-                $_SESSION ["USER_EMAIL"] = $user->getEmail ( );
-                $_SESSION ["USER_ROLE"] = $user->getRole ( );
-                $_SESSION ["USER_HOME"] = $user->getHomePage ( );
-                $_SESSION ["CSRF_TOKEN"] = randomToken ( );
-                $_SESSION ["TIMEOUT"] = $logoutTime->format ( 'm/d/Y H:i:s' );
-                $_SESSION ["CHANGE_PASS"] = $user->getChangePassword ( );
-            }
-
-            return $user->updateLogin ( );
+            // Authenticate the user
+            return $user->setAuthentication ( );
         }
     }

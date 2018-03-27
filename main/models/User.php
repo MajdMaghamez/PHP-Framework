@@ -269,7 +269,7 @@
          */
         public function setPassword ( $password )
         {
-            $sql_update = "UPDATE `users` SET `PASSWORD` = :PASSWORD, `PASSWORD_TOKEN` = NULL, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_update = "UPDATE `users` SET `PASSWORD` = :PASSWORD, `FAILED` = 0, `ACTIVE` = 1, `PASSWORD_TOKEN` = NULL, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array ( ":PASSWORD" => [ "TYPE" => "STR", "VALUE" => password ( $password ) ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
 
@@ -653,13 +653,38 @@
         /**
          * @return bool
          */
-        public function updateLogin ( )
+        public function setAuthentication ( )
         {
             $sql_update = "UPDATE `users` SET `LAST_LOGGED_IP` = :IP, `FAILED` = 0, `LAST_LOGGED_IN` = CURRENT_TIMESTAMP (), `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID AND `DELETED` = 0";
             $sql_params = array ( ":IP" => ["TYPE" => "STR", "VALUE" => get_ip() ], ":ID" => ["TYPE" => "STR", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+
             if ( $sql_result > 0 )
+            {
+                $logoutTime = new \datetime ( 'now', new \DateTimeZone( $GLOBALS ["TIME_ZONE"] ) );
+                try
+                {
+                    $logoutTime->add ( new \DateInterval( 'PT' . $GLOBALS ["S_TIMEOUT"] . 'M' ) );
+                }
+                catch ( \Exception $E )
+                {
+                    error_log( 'Error Setting Session Timeout ' . $E->getMessage ( ) );
+                    return false;
+                }
+
+                session_start ( );
+                $_SESSION ["USER_ID"] = $this->getID ( );
+                $_SESSION ["USER_NAME"] = $this->getName ( );
+                $_SESSION ["USER_EMAIL"] = $this->getEmail ( );
+                $_SESSION ["USER_ROLE"] = $this->getRole ( );
+                $_SESSION ["USER_HOME"] = $this->getHomePage ( );
+                $_SESSION ["CSRF_TOKEN"] = randomToken ( );
+                $_SESSION ["TIMEOUT"] = $logoutTime->format ( 'm/d/Y H:i:s' );
+                $_SESSION ["CHANGE_PASS"] = $this->getChangePassword ( );
+
                 return true;
+            }
+
             return false;
         }
 

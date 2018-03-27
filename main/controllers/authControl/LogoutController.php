@@ -14,9 +14,9 @@
                 session_write_close ( );
                 setcookie ( session_name ( ), '', 0, '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
 
-                if ( findInURL( '1' ) )
+                if ( findInURL( 'TimedOut' ) )
                 {
-                    redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login/1" );
+                    redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login/TimedOut" );
                 }
 
                 redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login" );

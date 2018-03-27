@@ -273,7 +273,7 @@
 
             if ( $session < $current )
             {
-                redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout/1/" );
+                redirect ( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout/TimedOut/" );
             }
             else
             {

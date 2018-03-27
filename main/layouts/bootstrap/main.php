@@ -323,7 +323,7 @@
             $html   .= "\t\t\t\t\$('#countdown').countdown(upto, function (event) {\n";
             $html   .= "\t\t\t\t\t\$(this).html (event.strftime (\"%H :%M :%S\"));\n";
             $html   .= "\t\t\t\t}).on (\"finish.countdown\", function ( ) {\n";
-            $html   .= "\t\t\t\t\twindow.location.replace (\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout/1/\");\n";
+            $html   .= "\t\t\t\t\twindow.location.replace (\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout/TimedOut/\");\n";
             $html   .= "\t\t\t\t});\n\n";
             $html   .= "\t\t\t\t\$('[data-toggle=\"tooltip\"]').tooltip ( );\n";
             $html   .= "\t\t\t});\n";

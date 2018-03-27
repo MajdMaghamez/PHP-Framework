@@ -100,7 +100,7 @@
 
 
     // Set session timeout interval ( must at least be 2 digits ) time in minutes
-    $GLOBALS ["S_TIMEOUT"]      = 200;
+    $GLOBALS ["S_TIMEOUT"]      = 60;
 
     // Set session location
     $GLOBALS ["S_PATH"]         = $GLOBALS ["OFF_WEB_ROOT"] . "/sessions";
@@ -134,5 +134,3 @@
 
     // Set encryption initialization vector
     $GLOBALS ["IV"]             = hex2bin ( "83b4002851ee81a226de34e6f9512cf4" );
-
- ?>

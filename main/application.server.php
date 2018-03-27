@@ -36,5 +36,3 @@
 
     // Disable session cookie from being accessed by JavaScript ( @param int 1 'disable' )
     ini_set ( "session.cookie_httponly", 1 );
-
-?>
