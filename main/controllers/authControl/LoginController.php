@@ -246,7 +246,7 @@
                 $_SESSION ["USER_EMAIL"] = $user->getEmail ( );
                 $_SESSION ["USER_ROLE"] = $user->getRole ( );
                 $_SESSION ["USER_HOME"] = $user->getHomePage ( );
-                $_SESSION ["CSRF_TOKEN"] = CSRFToken ( );
+                $_SESSION ["CSRF_TOKEN"] = randomToken ( );
                 $_SESSION ["TIMEOUT"] = $logoutTime->format ( 'm/d/Y H:i:s' );
                 $_SESSION ["CHANGE_PASS"] = $user->getChangePassword ( );
             }

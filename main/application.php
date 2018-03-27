@@ -75,25 +75,6 @@
     }
 
     /**
-     * @return string
-     */
-    function CSRFToken ( )
-    {
-        try
-        {
-            return bin2hex ( random_bytes (32) );
-        }
-        catch ( \Exception $E )
-        {
-            error_log ( 'error generating csrf token using bin2hex ' . $E->getMessage(), 0 );
-        }
-        finally
-        {
-            return md5 ( uniqid ( rand ( ), true ) );
-        }
-    }
-
-    /**
      * @param integer $length
      * @return string
      */
@@ -134,43 +115,76 @@
 
 
     /**
-     * @param $string
+     * @param string $string
+     * @param string $regex
      * @return mixed|string
      */
-    function sanitize_string ( $string )
+    function sanitize_string ( $string, $regex = '' )
     {
         $string = trim ( $string );
         $string = stripcslashes ( $string );
         $string = htmlspecialchars ( $string );
         $string = filter_var ( $string, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW );
         $string = filter_var ( $string, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH );
+
+        if ( ! empty ( $regex ) )
+        {
+            if ( preg_match ( $regex, $string ) )
+            {
+                return $string;
+            }
+            return '';
+        }
+
         return $string;
     }
 
     /**
-     * @param $integer
+     * @param integer $integer
+     * @param string $regex
      * @return mixed|string
      */
-    function sanitize_integer ( $integer )
+    function sanitize_integer ( $integer, $regex = '' )
     {
         $integer = trim ( $integer );
         $integer = stripslashes ( $integer );
         $integer = htmlspecialchars ( $integer );
         $integer = filter_var ( $integer, FILTER_SANITIZE_NUMBER_INT );
+
+        if ( ! empty ( $regex ) )
+        {
+            if ( preg_match ( $regex, $integer ) )
+            {
+                return $integer;
+            }
+            return '';
+        }
+
         return $integer;
     }
 
     /**
-     * @param $email
+     * @param string $email
+     * @param string $regex
      * @return mixed|string
      */
-    function sanitize_email ( $email )
+    function sanitize_email ( $email, $regex = '' )
     {
         $email = trim ( $email );
         $email = stripslashes ( $email );
         $email = htmlspecialchars ( $email );
         $email = filter_var ( $email, FILTER_SANITIZE_EMAIL );
         $email = strtolower ( $email );
+
+        if ( ! empty ( $regex ) )
+        {
+            if ( preg_match ( $regex, $email ) )
+            {
+                return $email;
+            }
+            return '';
+        }
+
         return $email;
     }
 
@@ -235,7 +249,7 @@
 
     /**
      * @param $data
-     * @return false|int|string
+     * @return false|int
      */
     function findInURL ( $data )
     {
@@ -414,4 +428,4 @@
         }
     } );
 
-    //echo "<a href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Init/?RUN=1&AUTH=VMiJhPgR43UWdnKXyPFH5E8" . "\">create database and necessary tables for application to run</a>";
+    //echo "<a href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Init/RUN/1/AUTH/VMiJhPgR43UWdnKXyPFH5E8" . "\">create database and necessary tables for application to run</a>";

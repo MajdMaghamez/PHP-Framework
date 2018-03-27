@@ -47,7 +47,7 @@
             $components ["confPassword"]= new passwordField ( "Confirm Password", "confPassword", "confPassword" );
             $components ["confPassword"]->setFieldsize ( 1 );
             $components ["confPassword"]->setRequired ( true );
-            $components ["confPassword"]->setEqualTo ( "password");
+            $components ["confPassword"]->setEqualTo ( "password" );
             $components ["confPassword"]->setTabs ( $Tabs );
 
             $components ["question1"]   = new selectField ( "Security Question", "question1", "question1", 1 );

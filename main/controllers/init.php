@@ -9,13 +9,13 @@
 
         public function __construct()
         {
-            if ( ! isset ( $_GET ["RUN"] ) )
+            if ( ! findInURL ( 'RUN' ) )
             {
                 setFlashMessage ( "UNDEFINED METHOD!", "", 4 );
                 $this->errors = true;
             }
 
-            if ( ! isset ( $_GET ["AUTH"] ) )
+            if ( ! findInURL ( 'AUTH' ) )
             {
                 setFlashMessage ( "UNDEFINED AUTHENTICATION TOKEN!", "", 4 );
                 $this->errors = true;
@@ -63,10 +63,14 @@
 
             $RESULTS = "";
             $RedirectLink = "<a class=\"btn btn-info\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login\">Back To Main Page</a>\n";
+            $URL = getURLParams ( );
 
-            if ( sanitize_string ( $_GET ["AUTH"] ) == $GLOBALS ["MACHINE_AUTH"] )
+            ! is_null ( findInURL( 'RUN' ) ) ? $RUN = findInURL('RUN' ) + 1 : $RUN = 0;
+            ! is_null ( findInURL( 'AUTH' ) )? $AUTH= findInURL( 'AUTH' ) + 1 : $AUTH = 0;
+
+            if ( sanitize_string ( $URL[$AUTH] ) == $GLOBALS ["MACHINE_AUTH"] )
             {
-                if ( sanitize_integer ( $_GET ["RUN"] ) == 1 )
+                if ( sanitize_integer ( $URL[$RUN] ) == 1 )
                 {
                     $results = database::createDatabase ( $GLOBALS ["DB_NAME"] );
 
@@ -95,7 +99,7 @@
                         $RESULTS .= "<h3>TABLES WERE CREATED AND SEEDED SUCCESSFULLY.</h3><hr/><p>" . $RedirectLink . "</p>\n";
                     }
                 }
-                elseif ( sanitize_integer ( $_GET ["RUN"] ) == 2 )
+                elseif ( sanitize_integer ( $URL[$RUN] ) == 2 )
                 {
                     // clear the cache folder
                     $cache_directory = array_slice ( scandir ( $GLOBALS ["CACHE_FOLDER"] ), 2 );

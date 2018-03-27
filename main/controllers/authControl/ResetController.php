@@ -28,7 +28,6 @@
                             "name"          => "email",
                             "id"            => "email",
                             "setRequired"   => true,
-                            "setShowStar"   => true,
                             "setIcon"       => "<i class=\"fas fa-envelope\"></i>",
                             "setTabs"       => $Tabs
                         ]
@@ -99,7 +98,7 @@
             $layoutTemplate = new main ( );
 
             $html   = "<!DOCTYPE html>\n";
-            $html   .= "<html lang=\en\">\n";
+            $html   .= "<html lang=\"en\">\n";
             $html   .= "\t<head>\n";
             $html   .= $layoutTemplate->render_header ( [ "TITLE" => "Reset Password" ], ".reset { margin-top: 50px; }" );
             $html   .= "\t</head>\n";
@@ -107,6 +106,7 @@
             $html   .= "\t\t<div class=\"container reset\">\n";
             $html   .= "\t\t\t<div class=\"row justify-content-center\">\n";
             $html   .= "\t\t\t\t<div class=\"col-md-6 col-lg-6 col-xl-6\">\n";
+            $html   .= flash_message( "\t\t\t\t\t" );
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
             $html   .= "\t\t\t\t\t\t<h4 class=\"center\">Password Reset</h4><hr/>\n";
             $html   .= $this->renderPage ( );
@@ -137,7 +137,7 @@
                 $errors = ! $this->resetUser ( );
                 if ( ! $errors )
                 {
-                    setFlashMessage ( "Success", "Check your email for the reset link", 3 );
+                    setFlashMessage ( "Success", "We have emailed your reset link, for security purposes it will expire in " . $GLOBALS ["TOKEN_EXPIRY"] . " minutes.", 3 );
                 }
             }
             $this->onGet();
@@ -173,5 +173,6 @@
                 return false;
             }
 
+            return true;
         }
     }

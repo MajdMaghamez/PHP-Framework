@@ -252,7 +252,6 @@
             }
 
             $html   .= "\t\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\"/>\n";
-            $html   .= "\t\t<meta name=\"csrf-token\" content=\"" . CSRFToken() . "\">\n";
 
             if ( isset ( $elements ["TITLE"] ) ) { $html .= "\t\t<title>" . $elements ["TITLE"] . "</title>\n"; }
 
