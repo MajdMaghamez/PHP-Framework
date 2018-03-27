@@ -10,7 +10,6 @@
 
     class ResetController extends controller
     {
-        protected $errors;
         protected $arrComponents;
 
         public function __construct ( )
@@ -82,10 +81,11 @@
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" .basename ( __DIR__ );
             $file   = $folder . "/reset.html";
+            $errors = false;
 
             $cacheManager   = new cacheManager ( $folder, $file );
-            if ( ! $cacheManager->isCacheExists ( ) ) { $this->errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
-            if ( ! $this->errors ) { return $cacheManager->read ( $this->arrComponents ); }
+            if ( ! $cacheManager->isCacheExists ( ) ) { $errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
+            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
             return "";
         }
 

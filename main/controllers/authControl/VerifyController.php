@@ -109,7 +109,7 @@
 
             $cacheManager   = new cacheManager ( $folder, $file );
             if ( ! $cacheManager->isCacheExists ( ) ) { $errors = ! $cacheManager->write ( $this->preRenderPage ( ) ); }
-            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents, [ '{TokenValue}'], [ $TOKEN_VAL ] ); }
+            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents, [ '{TokenValue}' ], [ $TOKEN_VAL ] ); }
             return "";
         }
 
