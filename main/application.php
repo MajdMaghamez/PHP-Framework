@@ -69,7 +69,7 @@
      * @param $password
      * @return bool|string
      */
-    function password ($password )
+    function password ( $password )
     {
         return password_hash ( $password, PASSWORD_DEFAULT );
     }
@@ -93,12 +93,32 @@
         }
     }
 
+    /**
+     * @param integer $length
+     * @return string
+     */
+    function randomToken ( )
+    {
+        try
+        {
+            return bin2hex ( random_bytes ( 32 ) );
+        }
+        catch ( \Exception $E )
+        {
+            error_log ( 'error generating a random token using bin2hex' . $E->getMessage ( ), 0 );
+        }
+        finally
+        {
+            return md5 ( uniqid ( rand ( ), true ) );
+        }
+    }
+
 
     /**
      * @param string $url
      * @return string
      */
-    function base64urlEncode ($url )
+    function base64StringEncode ( $url )
     {
         return rtrim ( strtr ( base64_encode ( $url ), '+/', '-_' ), '=' );
     }
@@ -107,7 +127,7 @@
      * @param string $url
      * @return bool|string
      */
-    function base64urlDecode ($url )
+    function base64StringDecode ( $url )
     {
         return base64_decode ( str_pad ( strtr ( $url, '-_', '+/' ), strlen ( $url ) % 4, '=', STR_PAD_RIGHT ) );
     }
@@ -182,7 +202,7 @@
      * @param string $content
      * @param int $type
      */
-    function setFlashMessage ($header = "", $content = "", $type = 1 )
+    function setFlashMessage ( $header = "", $content = "", $type = 1 )
     {
         $_REQUEST ["ALERT_HEAD"] = $header;
         $_REQUEST ["ALERT_TYPE"] = $type;
@@ -193,7 +213,7 @@
      * @param string $tabs
      * @return string html
      */
-    function flash_message ($tabs = "" )
+    function flash_message ( $tabs = "" )
     {
         if ( ! empty ( $_REQUEST ["ALERT_TYPE"] ) )
         {
@@ -217,7 +237,7 @@
      * @param $data
      * @return false|int|string
      */
-    function findInURL ($data )
+    function findInURL ( $data )
     {
         return array_search( $data, getURLParams(), true );
     }
@@ -285,7 +305,7 @@
     /**
      * @param string $location
      */
-    function redirect ($location )
+    function redirect ( $location )
     {
         header ( 'location:' . $location );
         exit;

@@ -219,40 +219,24 @@
 
             $user = new User( ["EMAIL", $data ["email"] ] );
 
+            // check if user already exists
             if ( ! is_null ( $user->getUser ( ) ) )
             {
                 setFlashMessage( "User Found!", "You have entered an email address that is already associated with an account.", 5 );
                 return false;
             }
 
-            define('stop'       , 0);
-            define('user_store' , 1);
-            define('send_email' , 2);
+            // save the user in database and return their ID
+            $data ['id'] = User::store_public ( $data );
 
-            $state = user_store;
-            while ( $state > stop )
+            // send a verification email
+            if ( $data ['id'] > 0 )
             {
-                switch ( $state )
-                {
-                    case user_store:
-                        $data ['id'] = User::store_public ( $data );
-
-                        if ( $data ['id'] > 0 )
-                        {
-                            $state = send_email;
-                        }
-                        else
-                        {
-                            setFlashMessage ( "Error!", "We were unable to create your account, try again later.", 4 );
-                            return false;
-                        }
-                    break;
-
-                    case send_email:
-                        User::sendVerificationEmail ( $data );
-                        return true;
-                    break;
-                }
+                return $user->sendVerificationEmail ( );
             }
+
+            setFlashMessage ( "Error!", "We were unable to create your account, try again later.", 4 );
+            return false;
+
         }
     }

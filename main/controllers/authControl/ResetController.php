@@ -143,35 +143,35 @@
             $this->onGet();
         }
 
-
+        /**
+         * @return bool
+         */
         protected function resetUser ( )
         {
             $data ["email"] = $this->arrComponents [0][0]->getValue ( );
 
             $user = new User( ["EMAIL", $data ["email"] ] );
 
+            // check if the user exists
             if ( is_null ( $user->getUser ( ) ) )
             {
                 setFlashMessage( "User Not Found!", "This email address is unassociated with any account.", 5 );
                 return false;
             }
 
-
-
-            define ( 'stop'         , 0 );
-            define ( 'user_secure'  , 1 );
-            define ( 'user_active'  , 2 );
-            define ( 'user_reset'   , 3 );
-
-            $state = user_secure;
-            while ( $state > stop )
+            // generate reset token
+            if ( ! $user->setPasswordToken ( randomToken ( ) ) )
             {
-                switch ( $state )
-                {
-                    case user_secure:
-
-                    break;
-                }
+                setFlashMessage( "Error!", "An error has occurred please try again later.", 4 );
+                return false;
             }
+
+            // email the reset token
+            if ( ! $user->sendResetEmail ( ) )
+            {
+                setFlashMessage( "Error!", "An error has occurred please try again later.", 4 );
+                return false;
+            }
+
         }
     }
