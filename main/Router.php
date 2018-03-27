@@ -52,6 +52,7 @@
             }
             else
             {
+                $router = null;
                 $route = explode( '/', $route );
                 $controller = $route[0];
 
@@ -59,10 +60,13 @@
                 {
                     $controller .= '/' . $route[$i];
                     if ( array_key_exists ( $controller, $this->routes ) )
-                        $this->routeTo($controller);
+                    {
+                        $router = $controller;
+                        break;
+                    }
                 }
 
-                $this->routeTo($route[0]);
+                ! is_null ( $router ) ? $this->routeTo( $router ) : $this->routeTo( $route[0] );
             }
         }
 
