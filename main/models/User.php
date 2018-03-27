@@ -269,13 +269,13 @@
          */
         public function setPassword ( $password )
         {
-            $sql_update = "UPDATE `users` SET `PASSWORD` = :PASSWORD, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
-            $sql_params = array ( ":PASSWORD" => [ "TYPE" => "STR", "VALUE" => $password ( $password ) ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
+            $sql_update = "UPDATE `users` SET `PASSWORD` = :PASSWORD, `PASSWORD_TOKEN` = NULL, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_params = array ( ":PASSWORD" => [ "TYPE" => "STR", "VALUE" => password ( $password ) ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
 
             if ( $sql_result > 0 )
             {
-                $this->object ["PASSWORD"] = $password ( $password );
+                $this->object ["PASSWORD"] = password ( $password );
                 return true;
             }
 
@@ -333,13 +333,62 @@
          */
         public function setPasswordToken ( $token )
         {
-            $sql_update = "UPDATE `users` SET `PASSWORD_TOKEN` = :PASSWORD_TOKEN, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_update = "UPDATE `users` SET `PASSWORD_TOKEN` = :PASSWORD_TOKEN, `UPDATED` = CURRENT_TIMESTAMP (), `TOKEN_CREATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array ( ":PASSWORD_TOKEN" => [ "TYPE" => "STR", "VALUE" => $token ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
             if ( $sql_result > 0 )
             {
                 $this->object ["PASSWORD_TOKEN"] = $token;
                 return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @return false|string
+         */
+        public function getTokenCreated ( )
+        {
+            return date ( 'm/d/Y h:i:s A', $this->object ["TOKEN_CREATED"] );
+        }
+
+        /**
+         * @param $date
+         * @return bool
+         */
+        public function setTokenCreated ( $date )
+        {
+            $sql_update = "UPDATE `users` SET `TOKEN_CREATED` = :CREATED, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_params = array ( ":CREATED" => [ "TYPE" => "STR", "VALUE" => date ( 'Y-m-d H:i:s', $date ) ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+            {
+                $this->object ["TOKEN_CREATED"] = date ( 'Y-m-d H:i:s', $date );
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @return bool
+         */
+        public function isTokenExpired ( )
+        {
+            // last created password reset token
+            $token = new \DateTime ( $this->object ["TOKEN_CREATED"], new \DateTimeZone( $GLOBALS ["TIME_ZONE"] ) );
+            $current = new \DateTime ( 'now', new \DateTimeZone( $GLOBALS ["TIME_ZONE"] ) );
+
+            try
+            {
+                $token = $token->add ( new \DateInterval( 'PT' . $GLOBALS ["TOKEN_EXPIRY"] . 'M' ) );
+                if ( $token < $current )
+                    return true;
+            }
+            catch ( \Exception $E )
+            {
+                error_log ( 'error: could not add time to password reset token ' . $E->getMessage() );
             }
 
             return false;

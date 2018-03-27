@@ -194,6 +194,15 @@
                 "EXTRA"             => ""
             ],
 
+            "TOKEN_CREATED"     =>
+            [
+                "COLUMN_NAME"       => "`TOKEN_CREATED`",
+                "COLUMN_TYPE"       => "datetime(6)",
+                "COLUMN_DEFAULT"    => "null",
+                "IS_NULLABLE"       => "null",
+                "EXTRA"             => ""
+            ],
+
             "HOME_DIRECTORY"	=>
             [
                 "COLUMN_NAME"		=> "`HOME_DIR`",

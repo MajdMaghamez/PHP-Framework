@@ -6,6 +6,7 @@
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
     use main\controllers\authControl\ResetController;
+    use main\controllers\authControl\VerifyController;
     use main\controllers\authControl\RegisterController;
 
     Class Router {
@@ -20,6 +21,7 @@
             $this->routes["Logout"]     = LogoutController::class;
             $this->routes["Register"]   = RegisterController::class;
             $this->routes["Reset"]      = ResetController::class;
+            $this->routes["Verify"]     = VerifyController::class;
 
             $this->routes["Home"]       = homeController::class;
         }
