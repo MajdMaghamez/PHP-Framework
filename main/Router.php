@@ -5,9 +5,10 @@
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
-    use main\controllers\authControl\ResetController;
     use main\controllers\authControl\VerifyController;
     use main\controllers\authControl\RegisterController;
+    use main\controllers\authControl\ResetPassController;
+    use main\controllers\authControl\ResetEmailController;
 
     Class Router {
 
@@ -15,15 +16,16 @@
         private static $instance = null;
 
         private function __construct ( ) {
-            $this->routes["Init"]       = init::class;
+            $this->routes["Init"]           = init::class;
 
-            $this->routes["Login"]      = LoginController::class;
-            $this->routes["Logout"]     = LogoutController::class;
-            $this->routes["Register"]   = RegisterController::class;
-            $this->routes["Reset"]      = ResetController::class;
-            $this->routes["Verify"]     = VerifyController::class;
+            $this->routes["Login"]          = LoginController::class;
+            $this->routes["Logout"]         = LogoutController::class;
+            $this->routes["Register"]       = RegisterController::class;
+            $this->routes["Reset/Email"]    = ResetEmailController::class;
+            $this->routes["Reset/Password"] = ResetPassController::class;
+            $this->routes["Verify"]         = VerifyController::class;
 
-            $this->routes["Home"]       = homeController::class;
+            $this->routes["Home"]           = homeController::class;
         }
 
         public static function getApplicationRouter ( ) {
@@ -39,9 +41,20 @@
             $uri = $_SERVER["REQUEST_URI"];
             $route = preg_replace ("/\..+$/","", $uri );
             $route = trim ( $route,"/" );
-            $route = explode( '/', $route );
 
-            $this->routeTo($route[0]);
+            // checking if the route already exists in the queue ?
+            // otherwise try again using the first part of the route
+            // if none exists forward to 404 page not found in the routeTo function
+
+            if ( array_key_exists ( $route, $this->routes ) )
+            {
+                $this->routeTo($route);
+            }
+            else
+            {
+                $route = explode( '/', $route );
+                $this->routeTo($route[0]);
+            }
         }
 
         public function routeTo( $route ) {
