@@ -43,7 +43,7 @@
             $route = trim ( $route,"/" );
 
             // checking if the route already exists in the queue ?
-            // otherwise try again using the first part of the route
+            // otherwise try again by looping through
             // if none exists forward to 404 page not found in the routeTo function
 
             if ( array_key_exists ( $route, $this->routes ) )
@@ -53,6 +53,15 @@
             else
             {
                 $route = explode( '/', $route );
+                $controller = $route[0];
+
+                for ( $i = 1; $i < sizeof($route); $i++ )
+                {
+                    $controller .= '/' . $route[$i];
+                    if ( array_key_exists ( $controller, $this->routes ) )
+                        $this->routeTo($controller);
+                }
+
                 $this->routeTo($route[0]);
             }
         }
