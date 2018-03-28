@@ -219,6 +219,15 @@
                 "COLUMN_DEFAULT"	=> "null",
                 "IS_NULLABLE"		=> "null",
                 "EXTRA"				=> ""
+            ],
+
+            "PICTURE_DIR"       =>
+            [
+                "COLUMN_NAME"       => "`PICTURE`",
+                "COLUMN_TYPE"       => "varchar(60)",
+                "COLUMN_DEFAULT"    => "null",
+                "IS_NULLABLE"       => "null",
+                "EXTRA"             => ""
             ]
         ];
 		

@@ -1,10 +1,16 @@
-ErrorDocument 403 http://%{HTTP_HOST}/
+ErrorDocument 404 http://%{HTTP_HOST}/404.html
 RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
 RewriteRule ^(.*)$ index.php?q=$1 [L,QSA]
-RewriteRule ^/?\.gitignore$ - [F,L]
-RewriteRule ^/?composer.*$ - [F,L]
-RewriteRule ^/?main/.*$ - [F,L]
-RewriteRule ^/?cache/.*$ - [F,L]
+
+RewriteRule ^/?main/.*$ - [L,R=404]
+RewriteRule ^/?cache/.*$ - [L,R=404]
+
+RewriteRule ^/?composer.*$ - [L,R=404]
+RewriteRule ^/?\.gitignore$ - [L,R=404]
+RewriteRule ^/?README.md$ - [L,R=404]
+RewriteRule ^/?vendor/.*$ - [L,R=404]
+
 Options -Indexes

@@ -657,6 +657,32 @@
             return false;
         }
 
+        /**
+         * @return string
+         */
+        public function getProfilePicture ( )
+        {
+            return $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $this->object ["PICTURE"];
+        }
+
+        /**
+         * @param string $picture
+         * @return bool
+         */
+        public function setProfilePicture ($picture )
+        {
+            $sql_update = "UPDATE `users` SET `PICTURE` = :PICTURE, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_params = array ( ":PICTURE" => [ "TYPE" => "STR", "VALUE" => $picture ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID ( ) ] );
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+            {
+                $this->object["PICTURE"] = $picture;
+                return true;
+            }
+
+            return false;
+        }
+
 
         /**
          * @return bool
@@ -722,9 +748,10 @@
          */
         public static function store_public ( $user )
         {
-            $sql_insert = "INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `VERIFY_TOKEN`, `HOME_DIR` ) ";
-            $sql_insert .= "VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), :VERIFY_TOKEN, '/Home' );";
-
+            $sql_insert = <<<EOT
+            INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `VERIFY_TOKEN`, `HOME_DIR`, `PICTURE` ) 
+            VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), :VERIFY_TOKEN, '/Home', :PICTURE );
+EOT;
             $sql_params = array
             (
                 ":FIRSTNAME" => ["TYPE" => "STR", "VALUE" => $user ['firstname']],
@@ -735,8 +762,14 @@
                 ":QUESTIONID2" => ["TYPE" => "INT", "VALUE" => $user ['question2']],
                 ":ANSWER1" => ["TYPE" => "STR", "VALUE" => $user ['answer1']],
                 ":ANSWER2" => ["TYPE" => "STR", "VALUE" => $user ['answer2']],
-                ":VERIFY_TOKEN" => ["TYPE" => "STR", "VALUE" => randomToken()]
+                ":VERIFY_TOKEN" => ["TYPE" => "STR", "VALUE" => randomToken()],
+                ":PICTURE" => ["TYPE" => "STR", "VALUE" => base64StringEncode( $user ['email'] ) . ".png" ]
             );
+
+            $default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
+            $destination = $GLOBALS ["CACHE_FOLDER"] . "/users/" . base64StringEncode ( $user ['email'] ) . ".png";
+
+            if ( ! file_exists ( $destination ) ) { copy ( $default, $destination ); }
 
             return database::runInsertQuery($sql_insert, $sql_params, "ID");
         }

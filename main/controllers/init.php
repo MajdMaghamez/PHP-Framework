@@ -105,8 +105,12 @@
                     $cache_directory = array_slice ( scandir ( $GLOBALS ["CACHE_FOLDER"] ), 2 );
                     foreach ( $cache_directory as $index => $folder )
                     {
-                        array_map ( 'unlink', glob ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder . "/*.html" ) );
-                        rmdir ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder );
+                        if ( $folder !== 'users' )
+                        {
+                            array_map ( 'unlink', glob ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder . "/*.html" ) );
+                            rmdir ( $GLOBALS ["CACHE_FOLDER"] . "/" . $folder );
+                        }
+
                     }
 
                     echo "<script type='text/javascript'>alert ( 'APPLICATION CACHE HAS BEEN CLEARED!' );</script>";
@@ -178,6 +182,19 @@
                 if ( ! mkdir ( $GLOBALS ["S_PATH"], 0777, true ) )
                 {
                     $RESULTS .= "<h3>Error: cannot create session folder</h3>\n";
+                }
+            }
+
+            // check if users pictures directory exists
+            if ( ! file_exists ( $GLOBALS ["CACHE_FOLDER"] . "/users/" ) )
+            {
+                if ( ! mkdir ( $GLOBALS ["CACHE_FOLDER"] . "/users/", 0777, true ) )
+                {
+                    $RESULTS .= "<h3>Error: cannot create users cache directory</h3>\n";
+                }
+                else
+                {
+                    file_put_contents ( $GLOBALS ["CACHE_FOLDER"] . "/users/.htaccess", "RewriteEngine off\nOptions -Indexes\n", LOCK_EX );
                 }
             }
 

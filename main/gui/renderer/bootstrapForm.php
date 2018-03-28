@@ -101,7 +101,7 @@
                     }
                     $html   .= $tabs . "\t\t</div>\n";
                 }
-                $html   .= $tabs . "\t</div>\n";
+                $html   .= $tabs . "\t</div><br/>\n";
             }
 
             $html   .= $tabs . "</form>\n";
