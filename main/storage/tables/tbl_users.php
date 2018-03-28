@@ -113,6 +113,15 @@
                 "EXTRA"				=> ""
             ],
 
+            "VERIFY_TOKEN"      =>
+            [
+                "COLUMN_NAME"       => "`VERIFY_TOKEN`",
+                "COLUMN_TYPE"       => "varchar(255)",
+                "COLUMN_DEFAULT"    => "null",
+                "IS_NULLABLE"       => "null",
+                "EXTRA"             => ""
+            ],
+
             "LAST_LOGGED_IP"	=>
             [
                 "COLUMN_NAME"		=> "`LAST_LOGGED_IP`",

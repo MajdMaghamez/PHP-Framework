@@ -56,7 +56,7 @@
                             [
                                 "parent"        => "links",
                                 "class"         => "link",
-                                "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset",
+                                "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset/Email",
                                 "label"         => "Having trouble logging in?",
                                 "setformItem"   => true,
                                 "setTabs"       => $Tabs
@@ -72,21 +72,25 @@
                                 "id"            => "login",
                                 "type"          => 1,
                                 "setTabs"       => $Tabs
-                            ],
-                            1 =>
-                            [
-                                "parent"        => "links",
-                                "class"         => "link",
-                                "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Register",
-                                "label"         => "Register",
-                                "setClass"      => "right",
-                                "setOutLine"    => true,
-                                "setformItem"   => true,
-                                "setLikeBtn"    => true,
-                                "setTabs"       => $Tabs
                             ]
                         ]
                 ];
+
+            if ( $GLOBALS["PUBLIC_REGISTER"] )
+            {
+                $components [3][1] =
+                    [
+                        "parent"        => "links",
+                        "class"         => "link",
+                        "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Register",
+                        "label"         => "Register",
+                        "setClass"      => "right",
+                        "setOutLine"    => true,
+                        "setformItem"   => true,
+                        "setLikeBtn"    => true,
+                        "setTabs"       => $Tabs
+                    ];
+            }
 
             $arrComponents  = new guiCreator ( $components );
             $this->arrComponents = $arrComponents->getContainer ( );
@@ -94,6 +98,11 @@
             if ( findInURL( 'TimedOut' ) )
             {
                 setFlashMessage( "Timed out", "You havn&#39;t been active for a while so we logged you out.", 5 );
+            }
+
+            if ( findInURL( 'Verified' ) )
+            {
+                setFlashMessage( "Verified!", "Thanks for verifying your email, you may login now.", 3 );
             }
         }
 

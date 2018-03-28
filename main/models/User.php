@@ -216,7 +216,7 @@
          */
         public function setVerified ( $verified )
         {
-            $sql_update = "UPDATE `users` SET `VERIFIED` = :VERIFIED, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_update = "UPDATE `users` SET `VERIFIED` = :VERIFIED, `VERIFY_TOKEN` = NULL, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array ( ":VERIFIED" => [ "TYPE" => "INT", "VALUE" => intval ($verified) ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
             if ( $sql_result > 0 )
@@ -226,6 +226,14 @@
             }
 
             return false;
+        }
+
+        /**
+         * @return string
+         */
+        public function getVerifiedToken ( )
+        {
+            return $this->object ["VERIFY_TOKEN"];
         }
 
         /**
@@ -714,8 +722,8 @@
          */
         public static function store_public ( $user )
         {
-            $sql_insert = "INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `HOME_DIR` ) ";
-            $sql_insert .= "VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), '/Home' );";
+            $sql_insert = "INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `VERIFY_TOKEN`, `HOME_DIR` ) ";
+            $sql_insert .= "VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), :VERIFY_TOKEN, '/Home' );";
 
             $sql_params = array
             (
@@ -726,7 +734,8 @@
                 ":QUESTIONID1" => ["TYPE" => "INT", "VALUE" => $user ['question1']],
                 ":QUESTIONID2" => ["TYPE" => "INT", "VALUE" => $user ['question2']],
                 ":ANSWER1" => ["TYPE" => "STR", "VALUE" => $user ['answer1']],
-                ":ANSWER2" => ["TYPE" => "STR", "VALUE" => $user ['answer2']]
+                ":ANSWER2" => ["TYPE" => "STR", "VALUE" => $user ['answer2']],
+                ":VERIFY_TOKEN" => ["TYPE" => "STR", "VALUE" => randomToken()]
             );
 
             return database::runInsertQuery($sql_insert, $sql_params, "ID");
