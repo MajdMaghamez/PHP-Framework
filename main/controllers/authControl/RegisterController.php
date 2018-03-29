@@ -20,7 +20,7 @@
         /**
          * RegisterController constructor.
          */
-        public function __construct()
+        public function __construct ( )
         {
             $Tabs = "\t\t\t\t\t\t\t\t\t";
 
@@ -123,7 +123,7 @@
         /**
          * @return string
          */
-        private function preRenderPage()
+        private function preRenderPage ( )
         {
             $formId = "form-parsley";
             $formMethod = "post";
@@ -136,7 +136,7 @@
         /**
          * @return string
          */
-        private function renderPage()
+        private function renderPage ( )
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" . basename(__DIR__);
             $file = $folder . "/register.html";

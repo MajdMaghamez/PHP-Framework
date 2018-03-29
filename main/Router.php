@@ -2,6 +2,8 @@
 
     use main\controllers\init;
     use main\controllers\notFound;
+    use main\userControl\userAccount;
+    use main\userControl\userQuestions;
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
@@ -24,6 +26,9 @@
             $this->routes["Reset/Email"]    = ResetEmailController::class;
             $this->routes["Reset/Password"] = ResetPassController::class;
             $this->routes["Verify"]         = VerifyController::class;
+
+            $this->routes["User/Account"]   = userAccount::class;
+            $this->routes["User/Questions"] = userQuestions::class;
 
             $this->routes["Home"]           = homeController::class;
         }

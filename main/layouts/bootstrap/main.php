@@ -57,11 +57,11 @@
                 ],
                 4            	=>
                 [
-                    "ID"        =>  "USERMNGMNT",
+                    "ID"        =>  "USER",
                     "TITLE"		=> 	$user_full_name,
                     "ACTIVE"	=>	"",
                     "ICON"		=>	"",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/userMngmnt/index.php",
+                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account",
                     "CHILDREN"	=>
                     [
                         0               =>
@@ -78,7 +78,7 @@
                             "TITLE"		=>	"My Account",
                             "ACTIVE"	=> 	"",
                             "ICON"		=>	"<i class=\"far fa-user\" aria-hidden=\"true\"></i>",
-                            "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/userMngmnt/index.php"
+                            "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account"
                         ],
                         2               =>
                         [
@@ -147,7 +147,7 @@
                 case "stats"        : $this->navbar [2]["ACTIVE"] = " active"; break;
                 case "help"         : $this->navbar [3]["ACTIVE"] = " active"; break;
                 case "sysadmin"     : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][0]["ACTIVE"] = " active"; break;
-                case "userMngmnt"   : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][1]["ACTIVE"] = " active"; break;
+                case "userControl"  : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][1]["ACTIVE"] = " active"; break;
                 case "messages"     : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][2]["ACTIVE"] = " active"; break;
             }
 
