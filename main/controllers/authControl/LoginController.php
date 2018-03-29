@@ -14,9 +14,12 @@
 
         /**
          * LoginController constructor.
+         * @throws \Exception
          */
         public function __construct ( )
         {
+            session_auth ( true );
+
             $Tabs   = "\t\t\t\t\t\t\t\t\t";
             $components =
                 [
@@ -135,12 +138,8 @@
             return "";
         }
 
-        /**
-         * @throws \Exception
-         */
         protected function onGet ( )
         {
-            session_auth ( true );
             $layoutTemplate = new main( );
 
             $html   = "<!DOCTYPE html>\n";
@@ -167,9 +166,6 @@
             echo $html;
         }
 
-        /**
-         * @throws \Exception
-         */
         protected function onPost ( )
         {
             $errors = ! fieldsValidator::validate ( $this->arrComponents );

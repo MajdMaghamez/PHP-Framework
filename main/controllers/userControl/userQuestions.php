@@ -8,6 +8,7 @@
     use main\gui\buttons\formButton;
     use main\gui\renderer\bootstrapForm;
     use main\frameworkHelper\cacheManager;
+    use main\frameworkHelper\fieldsValidator;
 
     class userQuestions extends Controller
     {
@@ -15,8 +16,14 @@
 
         protected $arrComponents;
 
+        /**
+         * userQuestions constructor.
+         * @throws \Exception
+         */
         public function __construct ( )
         {
+            session_auth ( );
+
             $Tabs   = "\t\t\t\t\t\t\t\t";
 
             $components ["question1"]   = new selectField ( "Security Question", "question1", "question1", 1 );
@@ -97,12 +104,8 @@
             return "";
         }
 
-        /**
-         * @throws \Exception
-         */
         protected function onGet ( )
         {
-            session_auth ( );
             $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
 
             $user   = new User ( [ "ID", $_SESSION ["USER_ID"] ] );
@@ -142,6 +145,37 @@
 
         protected function onPost()
         {
-            // TODO: Implement onPost() method.
+            $errors = ! fieldsValidator::validate ( $this->arrComponents );
+
+            if ( $errors )
+            {
+                setFlashMessage( '', 'Something went wrong, please make a correction and try again', 4 );
+            }
+            else
+            {
+                $errors = ! $this->updateQuestions ( );
+                if ( ! $errors )
+                {
+                    setFlashMessage( '', 'Your information has been successfully updated.', 3 );
+                }
+            }
+            $this->onGet();
+        }
+
+        /**
+         * @return bool
+         */
+        protected function updateQuestions ( )
+        {
+            $question1  = $this->arrComponents[0][0]->getValue ( );
+            $question2  = $this->arrComponents[2][0]->getValue ( );
+
+            $answer1    = $this->arrComponents[1][0]->getValue ( );
+            $answer2    = $this->arrComponents[3][0]->getValue ( );
+
+            // update information
+            $user   = new User( ["ID", $_SESSION ["USER_ID"] ] );
+
+            return $user->setQuestionsAnswers($question1, $question2, $answer1, $answer2);
         }
     }

@@ -3,6 +3,7 @@
     use main\controllers\init;
     use main\controllers\notFound;
     use main\userControl\userAccount;
+    use main\userControl\userPassword;
     use main\userControl\userQuestions;
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
@@ -28,6 +29,7 @@
             $this->routes["Verify"]         = VerifyController::class;
 
             $this->routes["User/Account"]   = userAccount::class;
+            $this->routes["User/Password"]  = userPassword::class;
             $this->routes["User/Questions"] = userQuestions::class;
 
             $this->routes["Home"]           = homeController::class;

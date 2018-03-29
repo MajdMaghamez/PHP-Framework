@@ -113,13 +113,6 @@
          */
         public function setEmail ( $email )
         {
-            $sql_select = "SELECT `ID` FROM `users` WHERE `EMAIL` = :EMAIL";
-            $sql_params = array ( ":EMAIL" => [ "TYPE" => "STR", "VALUE" => $email ] );
-            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
-
-            if ( ! is_null ( $sql_result ) )
-                return false;
-
             $sql_update = "UPDATE `users` SET `EMAIL` = :EMAIL, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array ( ":EMAIL" => [ "TYPE" => "STR", "VALUE" => $email ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
@@ -501,6 +494,39 @@
             if ( $sql_result > 0 )
             {
                 $this->object ["ANSWER2"] = $answer2;
+                return true;
+            }
+
+            return false;
+        }
+
+        /**
+         * @param integer $Q1
+         * @param integer $Q2
+         * @param string $A1
+         * @param string $A2
+         * @return bool
+         */
+        public function setQuestionsAnswers ($Q1, $Q2, $A1, $A2 )
+        {
+            $sql_update = "UPDATE `users` SET `QUESTIONID1` = :QUESTIONID1, `QUESTIONID2` = :QUESTIONID2, `ANSWER1` = :ANSWER1, `ANSWER2` = :ANSWER2, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_params = array
+            (
+                ":QUESTIONID1" => [ "TYPE" => "INT", "VALUE" => $Q1 ],
+                ":QUESTIONID2" => [ "TYPE" => "INT", "VALUE" => $Q2 ],
+                ":ANSWER1" => [ "TYPE" => "STR", "VALUE" => encrypt( $A1 ) ],
+                ":ANSWER2" => [ "TYPE" => "STR", "VALUE" => encrypt( $A2 ) ],
+                ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ]
+            );
+
+            $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
+            if ( $sql_result > 0 )
+            {
+                $this->object ["QUESTIONID1"] = $Q1;
+                $this->object ["QUESTIONID2"] = $Q2;
+
+                $this->object ["ANSWER1"] = $A1;
+                $this->object ["ANSWER2"] = $A2;
                 return true;
             }
 

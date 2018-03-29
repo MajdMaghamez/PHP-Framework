@@ -4,7 +4,7 @@
 
     class LogoutController extends Controller
     {
-        protected function onGet()
+        public function __construct()
         {
             session_start ( );
             session_unset ( );
@@ -23,9 +23,15 @@
             }
         }
 
+        protected function onGet()
+        {
+            // TODO: Implement onGet() method.
+        }
+
         protected function onPost()
         {
-            $this->onGet();
+            // TODO: Implement onPost() method.
         }
+
 
     }

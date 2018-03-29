@@ -17,13 +17,24 @@
                 ],
                 1 =>
                 [
+                    "label"     => "My Password",
+                    "href"      => $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Password",
+                    "class"     => ""
+                ],
+                2 =>
+                [
                     "label"     => "Personal Questions",
                     "href"      => $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Questions",
                     "class"     => ""
                 ]
             ];
 
-            array_pop ( $path ) == 'userAccount' ? $navigation[0]['class'] = ' active' : $navigation[1]['class'] = ' active';
+            switch ( array_pop ( $path ) )
+            {
+                case 'userAccount': $navigation[0]['class'] = ' active';break;
+                case 'userPassword': $navigation[1]['class'] = ' active';break;
+                case 'userQuestions': $navigation[2]['class'] = ' active';break;
+            }
 
             $html    = $tabs . "\t<div class=\"card\">\n";
 

@@ -8,14 +8,14 @@
     use main\frameworkHelper\cacheManager;
     use main\frameworkHelper\fieldsValidator;
 
-    class userAccount extends Controller
+    class userPassword extends Controller
     {
         use userNavigation;
 
         protected $arrComponents;
 
         /**
-         * userAccount constructor.
+         * userPassword constructor.
          * @throws \Exception
          */
         public function __construct ( )
@@ -26,34 +26,50 @@
             $components =
                 [
                     0 =>
-                    [
-                        0 =>
                         [
-                            "parent"        => "fields",
-                            "class"         => "emailField",
-                            "label"         => "Email Address",
-                            "name"          => "email",
-                            "id"            => "email",
-                            "setIcon"       => "",
-                            "setFieldSize"  => 1,
-                            "setRequired"   => true,
-                            "setTabs"       => $Tabs
-                        ]
-                    ],
+                            0 =>
+                                [
+                                    "parent"        => "fields",
+                                    "class"         => "passwordField",
+                                    "label"         => "Password",
+                                    "name"          => "password",
+                                    "id"            => "password",
+                                    "setRequired"   => true,
+                                    "setIcon"       => "",
+                                    "setFieldSize"  => 1,
+                                    "setTabs"       => $Tabs
+                                ]
+                        ],
                     1 =>
-                    [
-                        0 =>
                         [
-                            "parent"        => "buttons",
-                            "class"         => "formButton",
-                            "label"         => "UPDATE",
-                            "id"            => "update",
-                            "type"          => 1,
-                            "setClass"      => "right",
-                            "setOutLine"    => true,
-                            "setTabs"       => $Tabs
+                            0 =>
+                                [
+                                    "parent"        => "fields",
+                                    "class"         => "passwordField",
+                                    "label"         => "Password Confirmation",
+                                    "name"          => "confPassword",
+                                    "id"            => "confPassword",
+                                    "setRequired"   => true,
+                                    "setIcon"       => "",
+                                    "setFieldSize"  => 1,
+                                    "setEqualTo"    => "password",
+                                    "setTabs"       => $Tabs
+                                ]
+                        ],
+                    2 =>
+                        [
+                            0 =>
+                                [
+                                    "parent"        => "buttons",
+                                    "class"         => "formButton",
+                                    "label"         => "UPDATE",
+                                    "id"            => "update",
+                                    "type"          => 1,
+                                    "setClass"      => "right",
+                                    "setOutLine"    => true,
+                                    "setTabs"       => $Tabs
+                                ]
                         ]
-                    ]
                 ];
 
             $arrComponents  = new guiCreator ( $components );
@@ -67,7 +83,7 @@
         {
             $formId     = "form-parsley";
             $formMethod = "post";
-            $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account";
+            $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Password";
             $formTabs   = "\t\t\t\t\t\t";
             $html       = bootstrapForm::renderInline( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
             return $html;
@@ -79,7 +95,7 @@
         private function renderPage ( )
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" .basename ( __DIR__ );
-            $file   = $folder . "/userAccount.html";
+            $file   = $folder . "/userPassword.html";
             $errors = false;
 
             $cacheManager = new cacheManager( $folder, $file );
@@ -92,12 +108,11 @@
         {
             $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
             $user   = new User ( [ "ID", $_SESSION ["USER_ID"] ] );
-            $this->arrComponents[0][0]->setValue ( $user->getEmail() );
 
             $html   = "<!DOCTYPE html>\n";
             $html   .= "<html lang=\"en\">\n";
             $html   .= "\t<head>\n";
-            $html   .= $layoutTemplate->render_header ( [ "TITLE" => "User Account" ], ".box { margin-top: 15px; }" );
+            $html   .= $layoutTemplate->render_header ( [ "TITLE" => "User Password" ], ".box { margin-top: 15px; }" );
             $html   .= "\t</head>\n";
             $html   .= "\t<body>\n";
             $html   .= $layoutTemplate->render_navbar ( );
@@ -109,7 +124,7 @@
             $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
             $html   .= flash_message ( "\t\t\t\t\t" );
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
-            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Account</h4><hr/>\n";
+            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Password</h4><hr/>\n";
             $html   .= $this->renderPage();
             $html   .= $this->renderProfilePicModal ( );
             $html   .= "\t\t\t\t\t</div>\n";
@@ -123,7 +138,7 @@
             echo $html;
         }
 
-        protected function onPost()
+        protected function onPost( )
         {
             $errors = ! fieldsValidator::validate ( $this->arrComponents );
 
@@ -133,38 +148,37 @@
             }
             else
             {
-                $errors = ! $this->updateEmail ( );
+                $errors = ! $this->updatePassword ( );
                 if ( ! $errors )
                 {
-                    setFlashMessage( '', 'Your email has been successfully updated.', 3 );
+                    setFlashMessage( '', 'Your password has been successfully updated.', 3 );
                 }
             }
+
+            // clear the password fields
+            $this->arrComponents[0][0]->setValue ( '' );
+            $this->arrComponents[1][0]->setValue ( '' );
+
             $this->onGet();
         }
 
         /**
          * @return bool
          */
-        protected function updateEmail ( )
+        protected function updatePassword ( )
         {
-            $email  = $this->arrComponents[0][0]->getValue ( );
+            $password       = $this->arrComponents[0][0]->getValue ( );
+            $confPassword   = $this->arrComponents[1][0]->getValue ( );
 
-            // check if the user email is the same as the enter email
-            if ( $email == $_SESSION ["USER_EMAIL"] )
+            // check if password and confirm password are equal
+            if ( $password != $confPassword )
             {
-                return true;
-            }
-
-            // check if the email does not exists
-            $user   = new User( ["EMAIL", $email ] );
-            if ( ! is_null ( $user->getUser ( ) ) )
-            {
-                setFlashMessage("Failed!", "This email address is associated with another user", 4 );
+                setFlashMessage( 'Error!', 'Your password and password confirmation must be the same', 4 );
                 return false;
             }
 
+            // update password
             $user   = new User( ["ID", $_SESSION ["USER_ID"] ] );
-            // update user email
-            return $user->setEmail ( $email );
+            return $user->setPassword( $password );
         }
     }

@@ -7,15 +7,15 @@
     {
         /**
          * VerifyController constructor.
-         */
-        public function __construct ( ){}
-
-        /**
          * @throws \Exception
          */
-        protected function onGet()
+        public function __construct ( )
         {
             session_auth ( true );
+        }
+
+        protected function onGet()
+        {
             $TOKEN = findInURL( 'token' );
             $TOKEN > 0 ? $TOKEN++ : $TOKEN = 0;
             $URL = getURLParams();
@@ -38,9 +38,6 @@
             redirect( $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login" );
         }
 
-        /**
-         * @throws \Exception
-         */
         protected function onPost()
         {
             $this->onGet();

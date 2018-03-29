@@ -10,9 +10,12 @@
 
         /**
          * homeController constructor.
+         * @throws \Exception
          */
         public function __construct ( )
         {
+            session_auth ( );
+
             $this->arrComponents = array ( );
         }
 
@@ -39,12 +42,8 @@
             return "";
         }
 
-        /**
-         * @throws \Exception
-         */
         protected function onGet ( )
         {
-            session_auth ( );
             $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
 
             $html   = "<!DOCTYPE html>\n";
