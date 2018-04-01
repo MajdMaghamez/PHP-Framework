@@ -2,6 +2,7 @@
 
     use main\controllers\init;
     use main\controllers\notFound;
+    use main\userControl\userProfile;
     use main\userControl\userAccount;
     use main\userControl\userPassword;
     use main\userControl\userQuestions;
@@ -31,6 +32,7 @@
             $this->routes["User/Account"]   = userAccount::class;
             $this->routes["User/Password"]  = userPassword::class;
             $this->routes["User/Questions"] = userQuestions::class;
+            $this->routes["User/Profile"]   = userProfile::class;
 
             $this->routes["Home"]           = homeController::class;
         }

@@ -688,14 +688,14 @@
          */
         public function getProfilePicture ( )
         {
-            return $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $this->object ["PICTURE"];
+            return $this->object ["PICTURE"];
         }
 
         /**
          * @param string $picture
          * @return bool
          */
-        public function setProfilePicture ($picture )
+        public function setProfilePicture ( $picture )
         {
             $sql_update = "UPDATE `users` SET `PICTURE` = :PICTURE, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array ( ":PICTURE" => [ "TYPE" => "STR", "VALUE" => $picture ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID ( ) ] );

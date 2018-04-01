@@ -2,6 +2,7 @@
 
     trait userNavigation
     {
+
         public static function renderNavigationLinks ( $image )
         {
             $tabs   = "\t\t\t\t";
@@ -39,7 +40,7 @@
             $html    = $tabs . "\t<div class=\"card\">\n";
 
             $html   .= $tabs . "\t\t<div class=\"profile-pic center\">\n";
-            $html   .= $tabs . "\t\t\t<img src=\"" . $image . "\" height=\"100\" width=\"100\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
+            $html   .= $tabs . "\t\t\t<img src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $image . "\" height=\"100\" width=\"100\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
             $html   .= $tabs . "\t\t\t<div class=\"editProfilePic\">\n";
             $html   .= $tabs . "\t\t\t\t<button type=\"button\" class=\"btn btn-outline-primary\" data-toggle=\"modal\" data-target=\"#ProfileUploader\"><i class=\"far fa-image\"></i></button>\n";
             $html   .= $tabs . "\t\t\t</div>\n";
@@ -72,16 +73,62 @@
             $html   .= $tabs . "\t\t\t\t\t</button>\n";
             $html   .= $tabs . "\t\t\t\t</div>\n";
             $html   .= $tabs . "\t\t\t\t<div class=\"modal-body\">\n";
-
+            $html   .= $tabs . "\t\t\t\t\t<div class=\"row\">\n";
+            $html   .= $tabs . "\t\t\t\t\t\t<div class=\"col-md-12 col-lg-12 col-xl-12\">\n";
+            $html   .= $tabs . "\t\t\t\t\t\t\t<p>Upload an image of size 100 X 100 for best results.<br/><strong>Formats allowed ( PNG, JPG, JPEG, GIF ).</strong></p>\n";
+            $html   .= $tabs . "\t\t\t\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t\t\t\t<div class=\"row\">\n";
+            $html   .= $tabs . "\t\t\t\t\t\t<div class=\"col-md-12 col-lg-12 col-xl-12\">\n";
+            $html   .= $tabs . "\t\t\t\t\t\t\t<input type=\"file\" id=\"ProPicture\" name=\"ProPicture\" class=\"form-control\" accept=\"image/*\" required autofocus/>\n";
+            $html   .= $tabs . "\t\t\t\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t\t\t\t</div>\n";
             $html   .= $tabs . "\t\t\t\t</div>\n";
             $html   .= $tabs . "\t\t\t\t<div class=\"modal-footer\">\n";
             $html   .= $tabs . "\t\t\t\t\t<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>\n";
-            $html   .= $tabs . "\t\t\t\t\t<button type=\"submit\" class=\"btn btn-success\">Upload</button>\n";
+            $html   .= $tabs . "\t\t\t\t\t<button type=\"button\" id=\"upload\" class=\"btn btn-success\">Upload</button>\n";
             $html   .= $tabs . "\t\t\t\t</div>\n";
             $html   .= $tabs . "\t\t\t</div>\n";
             $html   .= $tabs . "\t\t</div>\n";
             $html   .= $tabs . "\t</div>\n";
 
             return $html;
+        }
+
+        public static function renderProfilePicJS ( $callback )
+        {
+            $url    = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Profile/";
+            $Java   = <<<EOT
+            
+            \$('#upload').prop('disabled', true);
+            
+            \$('#ProPicture').change ( function ( ) {
+                (\$(this).get(0).files.length > 0) ? \$('#upload').prop('disabled', false) : \$('#upload').prop('disabled', true);
+            });
+            
+            \$('#upload').click ( function ( ) {
+                var data = \$('#ProPicture').get(0).files[0];
+                
+                var formData = new FormData();
+                formData.append('upload', data);
+                
+                \$.ajax ({
+                    method      : 'POST',
+                    url         : '$url',
+                    processData : false,
+                    contentType : false,
+                    data        : formData,
+                    dataType    : 'JSON',
+                    success     : function ( data, status ){ if ( status = 'success' ) { \$('#ProfileUploader').modal('hide'); } },
+                    timeout     : 5000
+                });
+            });    
+            
+            \$('#ProfileUploader').on('hidden.bs.modal', function (e)
+            {
+                location.href = '$callback';
+            });
+EOT;
+            return $Java;
         }
     }

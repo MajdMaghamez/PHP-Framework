@@ -299,7 +299,7 @@
             return $html;
         }
 
-        public function render_footer ( $elements = array ( ), $js = "" )
+        public function render_footer ( $elements = array ( ), $JS = "" )
         {
             $html    = "\t\t<footer class=\"footer\">\n";
             $html   .= "\t\t\t<div class=\"container\">\n";
@@ -313,7 +313,7 @@
 
             if ( isset ( $elements ["LIBRARIES"] ) ) { $html .= $this->add_to_foot ( $elements ["LIBRARIES"] ); } else { $html .= $this->add_to_foot ( ); }
 
-            if ( ! empty ( $JS ) ) { $html .= "\t\t<script type=\"text/javascript\">\n" . $JS . "\t\t</script>\n"; }
+            if ( ! empty ( $JS ) ) { $html .= "\t\t<script type=\"text/javascript\">\n" . $JS . "\n\t\t</script>\n"; }
 
             $html   .= "\t\t<script type=\"text/javascript\">\n";
             $html   .= "\t\t\t\$(document).ready(function ( ){\n";

@@ -35,7 +35,6 @@
                             "name"          => "email",
                             "id"            => "email",
                             "setIcon"       => "",
-                            "setFieldSize"  => 1,
                             "setRequired"   => true,
                             "setTabs"       => $Tabs
                         ]
@@ -90,7 +89,7 @@
 
         protected function onGet ( )
         {
-            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
+            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ), true );
             $user   = new User ( [ "ID", $_SESSION ["USER_ID"] ] );
             $this->arrComponents[0][0]->setValue ( $user->getEmail() );
 
@@ -104,19 +103,19 @@
             $html   .= "\t\t<div class=\"container box\">\n";
             $html   .= "\t\t\t<div class=\"row\">\n";
             $html   .= "\t\t\t\t<div class=\"col-md-3 col-lg-3 col-xl-3\">\n";
-            $html   .= $this->renderNavigationLinks ( $user->getProfilePicture() );
+            $html   .= self::renderNavigationLinks ( $user->getProfilePicture() );
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
             $html   .= flash_message ( "\t\t\t\t\t" );
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
             $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Account</h4><hr/>\n";
             $html   .= $this->renderPage();
-            $html   .= $this->renderProfilePicModal ( );
+            $html   .= self::renderProfilePicModal ( );
             $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ) );
+            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderProfilePicJS( $GLOBALS ["RELATIVE_TO_ROOT"] . '/User/Account/' ) );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 
@@ -126,7 +125,6 @@
         protected function onPost()
         {
             $errors = ! fieldsValidator::validate ( $this->arrComponents );
-
             if ( $errors )
             {
                 setFlashMessage( '', 'Something went wrong, please make a correction and try again', 4 );

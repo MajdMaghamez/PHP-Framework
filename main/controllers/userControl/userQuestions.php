@@ -27,22 +27,18 @@
             $Tabs   = "\t\t\t\t\t\t\t\t";
 
             $components ["question1"]   = new selectField ( "Security Question", "question1", "question1", 1 );
-            $components ["question1"]->setFieldsize ( 1 );
             $components ["question1"]->setRequired ( true );
             $components ["question1"]->setTabs ( $Tabs );
 
             $components ["answer1"]     = new textField ( "Answer", "answer1", "answer1" );
-            $components ["answer1"]->setFieldsize ( 1 );
             $components ["answer1"]->setRequired ( true );
             $components ["answer1"]->setTabs ( $Tabs );
 
             $components ["question2"]   = new selectField ( "Security Question", "question2", "question2", 2 );
-            $components ["question2"]->setFieldsize ( 1 );
             $components ["question2"]->setRequired ( true );
             $components ["question2"]->setTabs ( $Tabs );
 
             $components ["answer2"]     = new textField ( "Answer", "answer2", "answer2" );
-            $components ["answer2"]->setFieldsize ( 1 );
             $components ["answer2"]->setRequired ( true );
             $components ["answer2"]->setTabs ( $Tabs );
 
@@ -106,7 +102,7 @@
 
         protected function onGet ( )
         {
-            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
+            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ), true );
 
             $user   = new User ( [ "ID", $_SESSION ["USER_ID"] ] );
             $this->arrComponents[0][0]->setValue( $user->getQuestion1() );
@@ -136,7 +132,7 @@
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ) );
+            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderProfilePicJS( $GLOBALS ["RELATIVE_TO_ROOT"] . '/User/Questions/' ) );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 

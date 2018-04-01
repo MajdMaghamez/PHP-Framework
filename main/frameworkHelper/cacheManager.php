@@ -85,11 +85,6 @@
                                 }
                             break;
 
-                            case 'fileField':
-                                array_push ( $keys, "" );
-                                array_push ( $values, "" );
-                            break;
-
                             default:
                                 array_push ( $keys, "{value_" . $gui->getId ( ) . "}" );
                                 array_push ( $values, "" );
@@ -150,11 +145,6 @@
                                     if ( $gui->getValue ( ) == $option ) { array_push ( $values, "selected" ); }
                                     else { array_push ( $values, "" ); }
                                 }
-                            break;
-
-                            case 'fileField':
-                                array_push ( $keys, "" );
-                                array_push ( $values, "" );
                             break;
 
                             default:

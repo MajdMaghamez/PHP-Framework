@@ -36,7 +36,6 @@
                                     "id"            => "password",
                                     "setRequired"   => true,
                                     "setIcon"       => "",
-                                    "setFieldSize"  => 1,
                                     "setTabs"       => $Tabs
                                 ]
                         ],
@@ -51,7 +50,6 @@
                                     "id"            => "confPassword",
                                     "setRequired"   => true,
                                     "setIcon"       => "",
-                                    "setFieldSize"  => 1,
                                     "setEqualTo"    => "password",
                                     "setTabs"       => $Tabs
                                 ]
@@ -106,7 +104,7 @@
 
         protected function onGet ( )
         {
-            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ) );
+            $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ), true );
             $user   = new User ( [ "ID", $_SESSION ["USER_ID"] ] );
 
             $html   = "<!DOCTYPE html>\n";
@@ -131,7 +129,7 @@
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ) );
+            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderProfilePicJS( $GLOBALS ["RELATIVE_TO_ROOT"] . '/User/Password/' ) );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 
