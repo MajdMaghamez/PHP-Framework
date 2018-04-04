@@ -29,10 +29,13 @@
             $html   .= "enctype=\"application/x-www-form-urlencoded\" ";
             $html   .= "data-parsley-validate=\"\">\n";
 
-            // add honey pot to forms
+            // add honey pot & csrf token to forms
             $html   .= $tabs . "\t<div class=\"row\">\n";
             $html   .= $tabs . "\t\t<div class=\"col\">\n";
             $html   .= $honeyPot->renderBootstrap ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $csrfToken->renderBootstrap ( );
             $html   .= $tabs . "\t\t</div>\n";
             $html   .= $tabs . "\t</div>\n";
 
@@ -47,13 +50,6 @@
                 }
                 $html   .= $tabs . "\t</div>\n";
             }
-
-            // add CSRF TOKEN to forms
-            $html   .= $tabs . "\t<div class=\"row\">\n";
-            $html   .= $tabs . "\t\t<div class=\"col\">\n";
-            $html   .= $csrfToken->renderBootstrap ( );
-            $html   .= $tabs . "\t\t</div>\n";
-            $html   .= $tabs . "\t</div>\n";
 
             $html   .= $tabs . "</form>\n";
 
@@ -72,11 +68,11 @@
         {
             $honeyPot   = new honeyPotField ( "username", "username", "username" );
             $honeyPot->setSize ( 40 );
-            $honeyPot->setTabs ( $tabs . "\t\t\t" );
+            $honeyPot->setTabs ( $tabs . "\t\t" );
 
             $csrfToken  = new csrfField ( "", "csrf-token", "csrf-token" );
             $csrfToken->setSize( 50 );
-            $csrfToken->setTabs( $tabs . "\t\t\t" );
+            $csrfToken->setTabs( $tabs . "\t\t" );
 
             $html   = $tabs . "<form id=\"" . $id . "\" ";
             $html   .= "method=\"" . $method . "\" ";
@@ -84,13 +80,13 @@
             $html   .= "enctype=\"application/x-www-form-urlencoded\" ";
             $html   .= "data-parsley-validate=\"\">\n";
 
-            // add honey pot to forms
+            // add honey pot & csrf token to forms
             $html   .= $tabs . "\t<div class=\"row\">\n";
             $html   .= $tabs . "\t\t<div class=\"col\">\n";
-            $html   .= $honeyPot->renderBootstrapLabel ( );
+            $html   .= $honeyPot->renderBootstrapField ( );
             $html   .= $tabs . "\t\t</div>\n";
             $html   .= $tabs . "\t\t<div class=\"col\">\n";
-            $html   .= $honeyPot->renderBootstrapField ( );
+            $html   .= $csrfToken->renderBootstrapField ( );
             $html   .= $tabs . "\t\t</div>\n";
             $html   .= $tabs . "\t</div>\n";
 
@@ -120,16 +116,6 @@
                 }
                 $html   .= $tabs . "\t</div><br/>\n";
             }
-
-            // add CSRF TOKEN to forms
-            $html   .= $tabs . "\t<div class=\"row\">\n";
-            $html   .= $tabs . "\t\t<div class=\"col\">\n";
-            $html   .= $csrfToken->renderBootstrapLabel ( );
-            $html   .= $tabs . "\t\t</div>\n";
-            $html   .= $tabs . "\t\t<div class=\"col\">\n";
-            $html   .= $csrfToken->renderBootstrapField ( );
-            $html   .= $tabs . "\t\t</div>\n";
-            $html   .= $tabs . "\t</div>\n";
 
             $html   .= $tabs . "</form>\n";
 
