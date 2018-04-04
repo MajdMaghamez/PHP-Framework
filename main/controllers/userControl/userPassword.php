@@ -125,7 +125,6 @@
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
             $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Password</h4><hr/>\n";
             $html   .= $this->renderPage();
-            $html   .= $this->renderProfilePicModal ( );
             $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
