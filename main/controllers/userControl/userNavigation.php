@@ -40,7 +40,7 @@
             $html    = $tabs . "\t<div class=\"card\">\n";
 
             $html   .= $tabs . "\t\t<div class=\"profile-pic center\">\n";
-            $html   .= $tabs . "\t\t\t<img src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $image . "\" height=\"100\" width=\"100\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
+            $html   .= $tabs . "\t\t\t<img id=\"imgProfile\" src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $image . "\" height=\"100\" width=\"100\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
             $html   .= $tabs . "\t\t\t<div class=\"editProfilePic\">\n";
             $html   .= $tabs . "\t\t\t\t<button type=\"button\" class=\"btn btn-outline-primary\" data-toggle=\"modal\" data-target=\"#ProfileUploader\"><i class=\"far fa-image\"></i></button>\n";
             $html   .= $tabs . "\t\t\t</div>\n";
@@ -95,16 +95,37 @@
             return $html;
         }
 
-        public static function renderProfilePicJS ( $callback )
+        public static function renderProfilePicJS ( )
         {
-            $url    = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Profile/";
-            $Java   = <<<EOT
+            $url        = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Profile/";
+            $JavaScript = <<<EOT
             
             \$('#upload').prop('disabled', true);
             
             \$('#ProPicture').change ( function ( ) {
                 (\$(this).get(0).files.length > 0) ? \$('#upload').prop('disabled', false) : \$('#upload').prop('disabled', true);
             });
+            
+            var onSuccess = function(data, status)
+            {
+                if ( status = 'success' )
+                {
+                    \$('#ProfileUploader').on('hidden.bs.modal',function ( )
+                    {
+                        \$('#imgProfile')[0].src = data.image;
+                    });
+                    
+                    \$('#ProfileUploader').modal('hide');
+                }
+            }
+            
+            var onError = function ( jqXHR, textStatus, errorThrown )
+            {
+                if ( jqXHR.status == 400 )
+                {
+                    alert ( 'There was a problem in uploading your picture, try again later' );
+                }
+            }
             
             \$('#upload').click ( function ( ) {
                 var data = \$('#ProPicture').get(0).files[0];
@@ -119,16 +140,12 @@
                     contentType : false,
                     data        : formData,
                     dataType    : 'JSON',
-                    success     : function ( data, status ){ if ( status = 'success' ) { \$('#ProfileUploader').modal('hide'); } },
+                    success     : onSuccess,
+                    error       : onError,
                     timeout     : 5000
                 });
-            });    
-            
-            \$('#ProfileUploader').on('hidden.bs.modal', function (e)
-            {
-                location.href = '$callback';
             });
 EOT;
-            return $Java;
+            return $JavaScript;
         }
     }

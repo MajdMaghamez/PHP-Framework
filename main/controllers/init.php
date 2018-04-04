@@ -167,15 +167,6 @@
                 }
             }
 
-            // check if temp directory exists
-            if ( ! file_exists ( $GLOBALS ["OFF_WEB_ROOT"] . "/tmp" ) )
-            {
-                if ( ! mkdir ( $GLOBALS ["OFF_WEB_ROOT"] . "/tmp", 0777, true ) )
-                {
-                    $RESULTS .= "<h3>Error: cannot create temp folder</h3>\n";
-                }
-            }
-
             // check if cache directory exists
             if ( ! file_exists ( $GLOBALS ["CACHE_FOLDER"] ) )
             {

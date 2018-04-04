@@ -129,7 +129,7 @@
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderProfilePicJS( $GLOBALS ["RELATIVE_TO_ROOT"] . '/User/Password/' ) );
+            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderProfilePicJS( ) );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 
