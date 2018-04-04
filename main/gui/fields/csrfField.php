@@ -103,8 +103,8 @@
             $html   .= "class=\"" . implode ( " ", $this->getClassList ( ) ) . "\" ";
             $html   .= "id=\"" . $this->getId ( ) . "\" ";
             $html   .= "name=\"" . $this->getName ( ) . "\" ";
-            $html   .= "value=\"{value_" . $this->getId ( ) . "}\"/>\n";
-            $html   .= $tabs . "\t<span class=\"error\">{error_" . $this->getId ( ) . "}</span>\n";
+            $html   .= "value=\"{value_" . $this->getId() . "}\"/>\n";
+            $html   .= $tabs . "\t<span class=\"error\"></span>\n";
             return $html;
         }
 

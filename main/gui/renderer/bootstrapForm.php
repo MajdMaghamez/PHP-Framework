@@ -1,5 +1,6 @@
 <?php namespace main\gui\renderer;
 
+    use main\gui\fields\csrfField;
     use main\gui\fields\honeyPotField;
 
     class bootstrapForm
@@ -17,6 +18,10 @@
             $honeyPot   = new honeyPotField ( "username", "username", "username" );
             $honeyPot->setSize ( 40 );
             $honeyPot->setTabs ( $tabs . "\t\t\t" );
+
+            $csrfToken  = new csrfField ( "", "csrf-token", "csrf-token" );
+            $csrfToken->setSize( 50 );
+            $csrfToken->setTabs( $tabs . "\t\t\t" );
 
             $html   = $tabs . "<form id=\"" . $id . "\" ";
             $html   .= "method=\"" . $method . "\" ";
@@ -42,6 +47,14 @@
                 }
                 $html   .= $tabs . "\t</div>\n";
             }
+
+            // add CSRF TOKEN to forms
+            $html   .= $tabs . "\t<div class=\"row\">\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $csrfToken->renderBootstrap ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t</div>\n";
+
             $html   .= $tabs . "</form>\n";
 
             return $html;
@@ -60,6 +73,10 @@
             $honeyPot   = new honeyPotField ( "username", "username", "username" );
             $honeyPot->setSize ( 40 );
             $honeyPot->setTabs ( $tabs . "\t\t\t" );
+
+            $csrfToken  = new csrfField ( "", "csrf-token", "csrf-token" );
+            $csrfToken->setSize( 50 );
+            $csrfToken->setTabs( $tabs . "\t\t\t" );
 
             $html   = $tabs . "<form id=\"" . $id . "\" ";
             $html   .= "method=\"" . $method . "\" ";
@@ -103,6 +120,16 @@
                 }
                 $html   .= $tabs . "\t</div><br/>\n";
             }
+
+            // add CSRF TOKEN to forms
+            $html   .= $tabs . "\t<div class=\"row\">\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $csrfToken->renderBootstrapLabel ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+            $html   .= $csrfToken->renderBootstrapField ( );
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t</div>\n";
 
             $html   .= $tabs . "</form>\n";
 

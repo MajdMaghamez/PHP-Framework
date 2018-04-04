@@ -266,8 +266,19 @@
         session_regenerate_id ( true );
         setcookie ( session_name ( ), session_id ( ), $GLOBALS ["S_COOKIE_LIFE"], '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
 
+        if ( ! isset ( $_SESSION ["CSRF_TOKEN"] ) )
+        {
+            $_SESSION ["CSRF_TOKEN"] = randomToken();
+            $_SESSION ["REQUEST_IP"] = get_ip();
+            $_SESSION ["REQUEST_RF"] = isset ( $_SERVER ["HTTP_REFERER"] ) ? $_SERVER ["HTTP_REFERER"] : "" ;
+            $_SESSION ["CLIENT_BRS"] = get_client_browser();
+            $_SESSION ["CLIENT_OS"] = get_os();
+        }
+
         if ( isset ( $_SESSION ["TIMEOUT"] ) )
         {
+            $_SESSION ["GUEST"] = 'NO';
+
             $current    = new \DateTime ( 'now', new \DateTimeZone ( $GLOBALS ["TIME_ZONE"] ) );
             $session    = new \DateTime ( $_SESSION ["TIMEOUT"], new \DateTimeZone ( $GLOBALS ["TIME_ZONE"] ) );
 
@@ -302,12 +313,7 @@
         {
             if ( $public )
             {
-                session_unset ( );
-                if ( session_destroy ( ) )
-                {
-                    session_write_close ( );
-                    setcookie ( session_name ( ), '', 0, '/', $_SERVER ["HTTP_HOST"], $GLOBALS ["SECURE"], true );
-                }
+                $_SESSION ["GUEST"] = 'YES';
             }
             else
             {

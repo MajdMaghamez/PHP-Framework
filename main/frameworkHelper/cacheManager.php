@@ -106,6 +106,9 @@
                 }
             }
 
+            array_push( $keys, "{value_csrf-token}" );
+            array_push( $values, $_SESSION ["CSRF_TOKEN"] );
+
             return str_replace ( $keys, $values, $cached_page );
         }
 
@@ -167,6 +170,9 @@
                     array_push ( $values, $extra_values [$key] );
                 }
             }
+
+            array_push( $keys, "{value_csrf-token}" );
+            array_push( $values, $_SESSION ["CSRF_TOKEN"] );
 
             return str_replace ( $keys, $values, $cached_page );
         }

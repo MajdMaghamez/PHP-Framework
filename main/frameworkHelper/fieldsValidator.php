@@ -15,6 +15,17 @@
                     return false;
             }
 
+            // validate csrf token
+            if ( ! isset ( $_POST ["csrf-token"] ) )
+            {
+                return false;
+            }
+            else
+            {
+                if ( $_POST ["csrf-token"] != $_SESSION ["CSRF_TOKEN"] )
+                    return false;
+            }
+
             foreach ( $arrComponents as $row => $columns )
             {
                 foreach ( $columns as $column => $gui )
