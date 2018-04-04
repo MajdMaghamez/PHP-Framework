@@ -109,7 +109,7 @@
             $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
             $html   .= flash_message ( "\t\t\t\t\t" );
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
-            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Account</h4><hr/>\n";
+            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Account Email</h4><hr/>\n";
             $html   .= $this->renderPage();
             $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t</div>\n";

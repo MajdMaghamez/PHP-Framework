@@ -7,8 +7,14 @@
     {
         protected $errors = false;
 
+        /**
+         * init constructor.
+         * @throws \Exception
+         */
         public function __construct()
         {
+            session_auth ( true );
+
             if ( ! findInURL ( 'RUN' ) )
             {
                 setFlashMessage ( "UNDEFINED METHOD!", "", 4 );
