@@ -75,7 +75,7 @@
             $html   .= $tabs . "\t\t\t\t<div class=\"modal-body\">\n";
             $html   .= $tabs . "\t\t\t\t\t<div class=\"row\">\n";
             $html   .= $tabs . "\t\t\t\t\t\t<div class=\"col-md-12 col-lg-12 col-xl-12\">\n";
-            $html   .= $tabs . "\t\t\t\t\t\t\t<p>Upload an image of size 100 X 100 for best results.<br/><strong>Formats allowed ( PNG, JPG, JPEG, GIF ).</strong></p>\n";
+            $html   .= $tabs . "\t\t\t\t\t\t\t<p>Upload an image of size less than 5 MB.<br/><strong>Formats allowed ( PNG, JPG, JPEG, GIF ).</strong></p>\n";
             $html   .= $tabs . "\t\t\t\t\t\t</div>\n";
             $html   .= $tabs . "\t\t\t\t\t</div>\n";
             $html   .= $tabs . "\t\t\t\t\t<div class=\"row\">\n";

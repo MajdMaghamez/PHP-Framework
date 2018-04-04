@@ -209,6 +209,13 @@
             if ( $this->getHeight() <= 0 && $this->getWidth() <= 0 ) return false;
             if ( $this->getFile() === null && $this->getData() === null ) return false;
 
+            // check if the destination has a picture with similar name
+            if ( $this->isDeleteIfExists() )
+            {
+                if ( file_exists( $this->getExist ( ) ) )
+                    @unlink( $this->getExist() );
+            }
+
             // setting default and meta
             $info       = $this->getFile() !== null ? getimagesize( $this->getFile() ) : getimagesizefromstring( $this->getData() );
             $image      = '';
@@ -316,13 +323,6 @@
 
                 default:
                     return false;
-            }
-
-            // check if the destination has a picture with similar name
-            if ( $this->isDeleteIfExists() )
-            {
-                if ( file_exists( $this->getExist ( ) ) )
-                    @unlink( $this->getExist() );
             }
 
             return true;

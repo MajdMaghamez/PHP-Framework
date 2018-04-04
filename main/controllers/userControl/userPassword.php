@@ -84,6 +84,7 @@
             $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Password";
             $formTabs   = "\t\t\t\t\t\t";
             $html       = bootstrapForm::renderInline( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
+            $html      .= self::renderProfilePicModal ( );
             return $html;
         }
 

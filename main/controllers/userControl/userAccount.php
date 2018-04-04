@@ -69,6 +69,7 @@
             $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account";
             $formTabs   = "\t\t\t\t\t\t";
             $html       = bootstrapForm::renderInline( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
+            $html      .= self::renderProfilePicModal ( );
             return $html;
         }
 
@@ -110,7 +111,6 @@
             $html   .= "\t\t\t\t\t<div class=\"card\">\n";
             $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Update Your Account</h4><hr/>\n";
             $html   .= $this->renderPage();
-            $html   .= self::renderProfilePicModal ( );
             $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
