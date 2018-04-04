@@ -268,11 +268,11 @@
 
         if ( ! isset ( $_SESSION ["CSRF_TOKEN"] ) )
         {
-            $_SESSION ["CSRF_TOKEN"] = randomToken();
-            $_SESSION ["REQUEST_IP"] = get_ip();
-            $_SESSION ["REQUEST_RF"] = isset ( $_SERVER ["HTTP_REFERER"] ) ? $_SERVER ["HTTP_REFERER"] : "" ;
-            $_SESSION ["CLIENT_BRS"] = get_client_browser();
-            $_SESSION ["CLIENT_OS"] = get_os();
+            $_SESSION ["CSRF_TOKEN"]        = randomToken();
+            $_SESSION ["REQUEST_IP"]        = get_ip();
+            $_SESSION ["REQUEST_REFERER"]   = isset ( $_SERVER ["HTTP_REFERER"] ) ? $_SERVER ["HTTP_REFERER"] : "" ;
+            $_SESSION ["CLIENT_BROWSER"]    = get_client_browser();
+            $_SESSION ["CLIENT_OS"]         = get_os();
         }
 
         if ( isset ( $_SESSION ["TIMEOUT"] ) )

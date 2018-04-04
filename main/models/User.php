@@ -732,7 +732,7 @@
                     return false;
                 }
 
-                session_start ( );
+
                 $_SESSION ["USER_ID"] = $this->getID ( );
                 $_SESSION ["USER_NAME"] = $this->getName ( );
                 $_SESSION ["USER_EMAIL"] = $this->getEmail ( );
