@@ -1,7 +1,7 @@
 <?php namespace main\storage\tables;
 
     use main\models\Table;
-    class tbl_user_permissions extends Table
+    class tbl_users_permission extends Table
     {
         protected $columns      =
         [
@@ -31,6 +31,24 @@
                 "IS_NULLABLE"		=> "not null",
                 "EXTRA"				=> ""
             ],
+
+            "PERMISSION_VAR"    =>
+            [
+                "COLUMN_NAME"       => "`PERMISSION_VAR`",
+                "COLUMN_TYPE"       => "varchar(20)",
+                "COLUMN_DEFAULT"    => "",
+                "IS_NULLABLE"       => "",
+                "EXTRA"             => ""
+            ],
+
+            "PERMISSION_VALUE"  =>
+            [
+                "COLUMN_NAME"       => "`PERMISSION_VALUE`",
+                "COLUMN_TYPE"       => "tinyInt(1)",
+                "COLUMN_DEFAULT"    => "default 0",
+                "IS_NULLABLE"       => "not null",
+                "EXTRA"             => ""
+            ],
                                     
             "CREATED"		    =>
             [
@@ -44,7 +62,7 @@
         
         public function __construct ( )
         {
-            $table  		= "user_permissions";
+            $table  		= "users_permission";
             $columns   		= $this->columns;
             $primary    	= "PRIMARY KEY (`ID`)";
             $unique     	= "";

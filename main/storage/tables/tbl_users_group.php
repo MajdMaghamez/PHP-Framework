@@ -1,7 +1,7 @@
 <?php namespace main\storage\tables;
 
     use main\models\Table;
-    class tbl_roles_permissions extends Table
+    class tbl_users_group extends Table
     {
         protected $columns      =
         [
@@ -50,18 +50,9 @@
                 "EXTRA"				=> ""
             ],
 
-            "ALLOW_PERMISSION"  =>
+            "PERMISSION"  =>
             [
-                "COLUMN_NAME"		=> "`ALLOW_PERMISSION`",
-                "COLUMN_TYPE"		=> "tinyint(1)",
-                "COLUMN_DEFAULT"	=> "default 0",
-                "IS_NULLABLE"		=> "not null",
-                "EXTRA"				=> ""
-            ],
-
-            "DENY_PERMISSION"   =>
-            [
-                "COLUMN_NAME"		=> "`DENY_PERMISSION`",
+                "COLUMN_NAME"		=> "`PERMISSION`",
                 "COLUMN_TYPE"		=> "tinyint(1)",
                 "COLUMN_DEFAULT"	=> "default 0",
                 "IS_NULLABLE"		=> "not null",
@@ -98,7 +89,7 @@
     
         public function __construct ( )
         {
-            $table  		= "roles_permissions";
+            $table  		= "users_group";
             $columns		= $this->columns;
             $primary       	= "";
             $unique     	= "";

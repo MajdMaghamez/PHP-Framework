@@ -792,12 +792,25 @@ EOT;
                 ":PICTURE" => ["TYPE" => "STR", "VALUE" => base64StringEncode( $user ['email'] ) . ".png" ]
             );
 
-            $default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
-            $destination = $GLOBALS ["CACHE_FOLDER"] . "/users/" . base64StringEncode ( $user ['email'] ) . ".png";
+            $sql_results = database::runInsertQuery($sql_insert, $sql_params, "ID");
 
-            if ( ! file_exists ( $destination ) ) { copy ( $default, $destination ); }
+            if ( ! is_null ( $sql_insert ) )
+            {
+                // user has been stored
 
-            return database::runInsertQuery($sql_insert, $sql_params, "ID");
+                // 1) set their default profile picture
+                $default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
+                $destination = $GLOBALS ["CACHE_FOLDER"] . "/users/" . base64StringEncode ( $user ['email'] ) . ".png";
+                if ( ! file_exists ( $destination ) ) { copy ( $default, $destination ); }
+
+                // 2) set their permissions
+                $Roles  = new Role();
+                $Roles->setUserPublic( $sql_results );
+
+                return $sql_results;
+            }
+
+            return 0;
         }
 
     }
