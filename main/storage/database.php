@@ -46,9 +46,9 @@
         }
 
         /**
-         * @param $query
+         * @param string $query
          * @param array $params
-         * @return null
+         * @return array
          */
         public static function runSelectQuery ( $query, $params = array ( ) )
         {
@@ -77,21 +77,23 @@
                 $statement->execute ( );
                 $record_count = $statement->rowCount ( );
 
-                if ( $record_count > 0 ) { return $statement->fetchAll ( \PDO::FETCH_ASSOC ); }
+                if ( $record_count > 0 )
+                    return $statement->fetchAll ( \PDO::FETCH_ASSOC );
 
-                return null;
             }
             catch ( \PDOException $E )
             {
                 error_log( "database error: could not run select query " . $E->getMessage(), 0 );
             }
+
+            return array ( );
         }
 
         /**
-         * @param $query
+         * @param string $query
          * @param array $params
          * @param string $returnedId
-         * @return mixed
+         * @return integer | null
          */
         public static function runInsertQuery ( $query, $params = array ( ), $returnedId = null )
         {
@@ -124,12 +126,14 @@
             {
                 error_log( "database error: could not run insert query " . $E->getMessage(), 0 );
             }
+
+            return null;
         }
 
         /**
-         * @param $query
+         * @param string $query
          * @param array $params
-         * @return mixed
+         * @return integer
          */
         public static function runUpdateQuery ( $query, $params = array ( ) )
         {
@@ -162,10 +166,52 @@
             {
                 error_log( "database error: could not run update query " . $E->getMessage(), 0 );
             }
+
+            return 0;
         }
 
         /**
-         * @param $query
+         * @param string $query
+         * @param array $params
+         * @return bool
+         */
+        public static function runDeleteQuery ($query, $params = array ( ) )
+        {
+            self::setConnection ( );
+
+            try
+            {
+                $statement = self::$connection->prepare ( $query );
+
+                if ( ! empty ( $params ) )
+                {
+                    foreach ( $params as $key => $value )
+                    {
+                        switch ( $value ["TYPE"] )
+                        {
+                            case "BOOL":    $statement->bindValue ( $key, $value ["VALUE"], \PDO::PARAM_BOOL ); break;
+                            case "INT":     $statement->bindValue ( $key, $value ["VALUE"], \PDO::PARAM_INT );  break;
+                            case "STR":     $statement->bindValue ( $key, $value ["VALUE"], \PDO::PARAM_STR );  break;
+                            case "LOB":     $statement->bindValue ( $key, $value ["VALUE"], \PDO::PARAM_LOB );  break;
+                            case "NULL":    $statement->bindValue ( $key, $value ["VALUE"], \PDO::PARAM_NULL ); break;
+                            default:        $statement->bindValue ( $key, $value ["VALUE"], \PDO::PARAM_NULL ); break;
+                        }
+                    }
+                }
+
+                $statement->execute ( );
+                return true;
+            }
+            catch ( \PDOException $E )
+            {
+                error_log( "database error: could not run update query " . $E->getMessage(), 0 );
+            }
+
+            return false;
+        }
+
+        /**
+         * @param string $query
          * @return bool
          */
         public static function runQuery ( $query )

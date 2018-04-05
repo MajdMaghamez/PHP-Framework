@@ -100,7 +100,7 @@
             $sql_params = array ( ":GROUP_ID" => [ "TYPE" => "INT", "VALUE" => $groupId ] );
             $results    = database::runSelectQuery ( $select_sql, $sql_params );
 
-            if ( isset ( $results ) ) { foreach ( $results as $key => $value ) { $this->setOptions ( $value ["SELECTION"], $value ["TEXT"] ); } }
+            if ( ! empty ( $results ) ) { foreach ( $results as $key => $value ) { $this->setOptions ( $value ["SELECTION"], $value ["TEXT"] ); } }
         }
 
         /**

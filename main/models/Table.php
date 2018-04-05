@@ -106,7 +106,7 @@
             $sql_select	.= "WHERE `TABLE_SCHEMA` ='". $this->getDatabase ( ) . "' AND `TABLE_NAME`='" . $this->getTable ( ) . "';";
             $results	 = database::runSelectQuery ( $sql_select );
 
-            if ( isset ( $results ) )
+            if ( ! empty ( $results ) )
             {
                 if ( SizeOf ( $results ) !== SizeOf ( $this->getColumns ( ) ) )
                 {

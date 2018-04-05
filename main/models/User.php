@@ -18,7 +18,7 @@
             $sql_params = array ( ":" . $data[0] => ["TYPE" => "STR", "VALUE" => $data [1] ] );
             $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
 
-            if ( isset ( $sql_result ) )
+            if ( ! empty ( $sql_result ) )
                 $this->object = $sql_result [0];
         }
 
@@ -161,7 +161,7 @@
             $sql_select = "SELECT `FAILED` FROM `users` WHERE `ID` = :ID AND `DELETED` = 0";
             $sql_params = array ( ":ID" => ["TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
-            return isset ( $sql_result ) ? $sql_result [0]["FAILED"] : null;
+            return ! empty ( $sql_result ) ? $sql_result [0]["FAILED"] : null;
         }
 
         /**
