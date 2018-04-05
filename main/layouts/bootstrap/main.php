@@ -1,9 +1,14 @@
 <?php namespace main\layouts\bootstrap;
 
+    use main\models\Role;
+
     class main
     {
-        protected $no_cache = false;
-        protected $navbar = array ( );
+        private $no_cache   = false;
+        private $user_name  = "";
+        private $user_id    = 0;
+        private $parent     = "";
+        private $child      = "";
 
         /**
          * main constructor.
@@ -11,157 +16,165 @@
          * @param string $child
          * @param bool $no_cache
          */
-        public function __construct ($parent = "", $child = "", $no_cache = false )
+        public function __construct ( $parent = "", $child = "", $no_cache = false )
         {
-            if ( isset ( $_SESSION ["USER_NAME"] ) ) { $user_full_name = $_SESSION ["USER_NAME"]; } else { $user_full_name = ""; }
+            if ( isset ( $_SESSION ["USER_NAME"] ) ) $this->user_name = $_SESSION ["USER_NAME"];
+            if ( isset ( $_SESSION ["USER_ID"] ) ) $this->user_id = $_SESSION ["USER_ID"];
+
+            $this->parent = $parent;
+            $this->child = $child;
 
             $this->no_cache = $no_cache;
-
-            $this->navbar =
-            [
-                0    			=>
-                [
-                    "ID"        =>  "HOME",
-                    "TITLE"		=>	"Home",
-                    "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fas fa-home\" aria-hidden=\"true\"></i>",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
-                    "CHILDREN"	=>	ARRAY ( )
-                ],
-                1        		=>
-                [
-                    "ID"        =>  "REPORTS",
-                    "TITLE"		=>	"Reports",
-                    "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fas fa-chart-bar\" aria-hidden=\"true\"></i>",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/reports/index.php",
-                    "CHILDREN"	=>	ARRAY ( )
-                ],
-                2      			=>
-                [
-                    "ID"        =>  "STATISTICS",
-                    "TITLE"		=>	"Statistics",
-                    "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fas fa-chart-pie\" aria-hidden=\"true\"></i>",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/stats/index.php",
-                    "CHILDREN"	=>	ARRAY ( )
-                ],
-                3    			=>
-                [
-                    "ID"        =>  "HELP",
-                    "TITLE"		=>	"Help",
-                    "ACTIVE"	=>	"",
-                    "ICON"		=>	"<i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/help/index.php",
-                    "CHILDREN"	=>	ARRAY ( )
-                ],
-                4            	=>
-                [
-                    "ID"        =>  "USER",
-                    "TITLE"		=> 	$user_full_name,
-                    "ACTIVE"	=>	"",
-                    "ICON"		=>	"",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account",
-                    "CHILDREN"	=>
-                    [
-                        0               =>
-                        [
-                            "ID"        =>  "SYSADMIN",
-                            "TITLE"     =>  "Developer Tools",
-                            "ACTIVE"    =>  "",
-                            "ICON"      =>  "<i class=\"fas fa-magic\" aria-hidden=\"true\"></i>",
-                            "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/sysadmin/index.php"
-                        ],
-                        1               =>
-                        [
-                            "ID"        =>  "MYACCOUNT",
-                            "TITLE"		=>	"My Account",
-                            "ACTIVE"	=> 	"",
-                            "ICON"		=>	"<i class=\"far fa-user\" aria-hidden=\"true\"></i>",
-                            "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account"
-                        ],
-                        2               =>
-                        [
-                            "ID"        =>  "MESSAGES",
-                            "TITLE"		=>	"Messages",
-                            "ACTIVE"	=> 	"",
-                            "ICON"		=> 	"<i class=\"far fa-envelope-open\" aria-hidden=\"true\"></i>",
-                            "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/messages/index.php"
-                        ],
-                        3               =>
-                        [
-                            "ID"        =>  "LOGOUT",
-                            "TITLE"		=>	"Logout",
-                            "ACTIVE"	=>	"",
-                            "ICON"		=>	"<i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i>",
-                            "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout"
-                        ]
-                    ]
-                ]
-            ];
-
-            $this->sub_navbar =
-            [
-                0    				=>
-                [
-                    "ID"      		=>  "DASHBOARD",
-                    "TITLE"			=>  "Dashboard",
-                    "ACTIVE"		=>	"",
-                    "ICON"			=>	"",
-                    "LINK"			=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
-                    "CHILDREN"	    =>	ARRAY ( )
-                ],
-                1        			=>
-                [
-                    "ID"      		=>	"CLIENTS",
-                    "TITLE"			=>	"Clients",
-                    "ACTIVE"		=> 	"",
-                    "ICON"			=>	"",
-                    "LINK"			=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/clients/index.php",
-                    "CHILDREN"	    =>	ARRAY ( )
-                ],
-                2        			=>
-                [
-                    "ID"		    => 	"INVENTORY",
-                    "TITLE"			=> 	"Inventory",
-                    "ACTIVE"		=> 	"",
-                    "ICON"			=>	"",
-                    "LINK"			=>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/inventory/index.php",
-                    "CHILDREN"	    =>	ARRAY ( )
-                ],
-                3            		=>
-                [
-                    "ID"      		=>	"ADMINISTRATOR",
-                    "TITLE"			=> 	"Administrator",
-                    "ACTIVE"		=>	"",
-                    "ICON"			=> 	"",
-                    "LINK"			=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/admin/index.php",
-                    "CHILDREN"	    =>	ARRAY ( )
-                ]
-            ];
-
-            switch ( $parent )
-            {
-                case "homeControl"  : $this->navbar [0]["ACTIVE"] = " active"; break;
-                case "reports"      : $this->navbar [1]["ACTIVE"] = " active"; break;
-                case "stats"        : $this->navbar [2]["ACTIVE"] = " active"; break;
-                case "help"         : $this->navbar [3]["ACTIVE"] = " active"; break;
-                case "sysadmin"     : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][0]["ACTIVE"] = " active"; break;
-                case "userControl"  : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][1]["ACTIVE"] = " active"; break;
-                case "messages"     : $this->navbar [4]["ACTIVE"] = " active"; $this->navbar [4]["CHILDREN"][2]["ACTIVE"] = " active"; break;
-            }
-
-            switch ( $child )
-            {
-                case "homeControl"  : $this->sub_navbar [0]["ACTIVE"] = " active"; break;
-                case "clients"      : $this->sub_navbar [1]["ACTIVE"] = " active"; break;
-                case "inventory"    : $this->sub_navbar [2]["ACTIVE"] = " active"; break;
-                case "admin"        : $this->sub_navbar [3]["ACTIVE"] = " active"; break;
-            }
         }
 
         public function render_navbar ( )
         {
+            $NavBar =
+                [
+                0    			=>
+                    [
+                        "ID"        =>  "HOME",
+                        "TITLE"		=>	"Home",
+                        "ACTIVE"	=>	"",
+                        "ICON"		=>	"<i class=\"fas fa-home\" aria-hidden=\"true\"></i>",
+                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
+                        "CHILDREN"	=>	ARRAY ( )
+                    ],
+                1        		=>
+                    [
+                        "ID"        =>  "REPORTS",
+                        "TITLE"		=>	"Reports",
+                        "ACTIVE"	=>	"",
+                        "ICON"		=>	"<i class=\"fas fa-chart-bar\" aria-hidden=\"true\"></i>",
+                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/reports/index.php",
+                        "CHILDREN"	=>	ARRAY ( )
+                    ],
+                2      			=>
+                    [
+                        "ID"        =>  "STATISTICS",
+                        "TITLE"		=>	"Statistics",
+                        "ACTIVE"	=>	"",
+                        "ICON"		=>	"<i class=\"fas fa-chart-pie\" aria-hidden=\"true\"></i>",
+                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/stats/index.php",
+                        "CHILDREN"	=>	ARRAY ( )
+                    ],
+                3    			=>
+                    [
+                        "ID"        =>  "HELP",
+                        "TITLE"		=>	"Help",
+                        "ACTIVE"	=>	"",
+                        "ICON"		=>	"<i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>",
+                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/help/index.php",
+                        "CHILDREN"	=>	ARRAY ( )
+                    ],
+                4            	=>
+                    [
+                    "ID"        =>  "USER",
+                    "TITLE"		=> 	$this->user_name,
+                    "ACTIVE"	=>	"",
+                    "ICON"		=>	"",
+                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account",
+                    "CHILDREN"	=>
+                        [
+                        0               =>
+                            [
+                                "ID"        =>  "MYACCOUNT",
+                                "TITLE"		=>	"My Account",
+                                "ACTIVE"	=> 	"",
+                                "ICON"		=>	"<i class=\"far fa-user\" aria-hidden=\"true\"></i>",
+                                "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account"
+                            ],
+                        1               =>
+                            [
+                                "ID"        =>  "MESSAGES",
+                                "TITLE"		=>	"Messages",
+                                "ACTIVE"	=> 	"",
+                                "ICON"		=> 	"<i class=\"far fa-envelope-open\" aria-hidden=\"true\"></i>",
+                                "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/messages/index.php"
+                            ],
+                        2               =>
+                            [
+                                "ID"        =>  "LOGOUT",
+                                "TITLE"		=>	"Logout",
+                                "ACTIVE"	=>	"",
+                                "ICON"		=>	"<i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i>",
+                                "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout"
+                            ]
+                        ]
+                    ]
+                ];
+
+            $SubNavBar =
+                [
+                    0    				=>
+                        [
+                            "ID"      		=>  "DASHBOARD",
+                            "TITLE"			=>  "Dashboard",
+                            "ACTIVE"		=>	"",
+                            "ICON"			=>	"",
+                            "LINK"			=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
+                            "CHILDREN"	    =>	ARRAY ( )
+                        ],
+                    1        			=>
+                        [
+                            "ID"      		=>	"CLIENTS",
+                            "TITLE"			=>	"Clients",
+                            "ACTIVE"		=> 	"",
+                            "ICON"			=>	"",
+                            "LINK"			=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/clients/index.php",
+                            "CHILDREN"	    =>	ARRAY ( )
+                        ],
+                    2        			=>
+                        [
+                            "ID"		    => 	"INVENTORY",
+                            "TITLE"			=> 	"Inventory",
+                            "ACTIVE"		=> 	"",
+                            "ICON"			=>	"",
+                            "LINK"			=>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/inventory/index.php",
+                            "CHILDREN"	    =>	ARRAY ( )
+                        ],
+                    3            		=>
+                        [
+                            "ID"      		=>	"ADMINISTRATOR",
+                            "TITLE"			=> 	"Administrator",
+                            "ACTIVE"		=>	"",
+                            "ICON"			=> 	"",
+                            "LINK"			=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/admin/index.php",
+                            "CHILDREN"	    =>	ARRAY ( )
+                        ]
+                ];
+
+            // if user is a super admin then give them developer tool option
+            if ( Role::isUserSuperAdmin ( $this->user_id ) )
+                array_unshift ( $NavBar [4]["CHILDREN"], array
+                    (
+                        "ID"        =>  "SYSADMIN",
+                        "TITLE"     =>  "Developer Tools",
+                        "ACTIVE"    =>  "",
+                        "ICON"      =>  "<i class=\"fas fa-magic\" aria-hidden=\"true\"></i>",
+                        "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/Dev/Main"
+                    )
+                );
+
+            switch ( $this->parent )
+            {
+                case "homeControl"  : $NavBar [0]["ACTIVE"] = " active"; break;
+                case "reports"      : $NavBar [1]["ACTIVE"] = " active"; break;
+                case "stats"        : $NavBar [2]["ACTIVE"] = " active"; break;
+                case "help"         : $NavBar [3]["ACTIVE"] = " active"; break;
+                case "sysadmin"     : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][0]["ACTIVE"] = " active"; break;
+                case "userControl"  : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][1]["ACTIVE"] = " active"; break;
+                case "messages"     : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][2]["ACTIVE"] = " active"; break;
+            }
+
+            switch ( $this->child )
+            {
+                case "homeControl"  : $SubNavBar [0]["ACTIVE"] = " active"; break;
+                case "clients"      : $SubNavBar [1]["ACTIVE"] = " active"; break;
+                case "inventory"    : $SubNavBar [2]["ACTIVE"] = " active"; break;
+                case "admin"        : $SubNavBar [3]["ACTIVE"] = " active"; break;
+            }
+
             $html    = "\t\t<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top\">\n";
             $html   .= "\t\t\t<div class=\"container\">\n";
             $html   .= "\t\t\t\t<a class=\"navbar-brand\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/Home\">" . $GLOBALS ["BS_NAME"] . "</a>\n";
@@ -171,7 +184,7 @@
             $html   .= "\t\t\t\t<div class=\"collapse navbar-collapse\" id=\"navbar\">\n";
             $html   .= "\t\t\t\t\t<ul class=\"nav navbar-nav ml-auto\">\n";
 
-            foreach ( $this->navbar as $index => $element )
+            foreach ( $NavBar as $index => $element )
             {
                 if ( empty ( $element ["CHILDREN"] ) )
                 {
@@ -207,7 +220,7 @@
             $html   .= "\t\t\t<div class=\"collapse navbar-collapse\" id=\"sub-navbar\">\n";
             $html   .= "\t\t\t\t<ul class=\"nav navbar-nav mr-auto\">\n";
 
-            foreach ( $this->sub_navbar AS $index => $element )
+            foreach ( $SubNavBar AS $index => $element )
             {
                 if ( empty ( $element["CHILDREN"] ) )
                 {
