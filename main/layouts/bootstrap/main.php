@@ -162,7 +162,7 @@
                 case "reports"      : $NavBar [1]["ACTIVE"] = " active"; break;
                 case "stats"        : $NavBar [2]["ACTIVE"] = " active"; break;
                 case "help"         : $NavBar [3]["ACTIVE"] = " active"; break;
-                case "sysadmin"     : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][0]["ACTIVE"] = " active"; break;
+                case "devControl"   : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][0]["ACTIVE"] = " active"; break;
                 case "userControl"  : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][1]["ACTIVE"] = " active"; break;
                 case "messages"     : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][2]["ACTIVE"] = " active"; break;
             }

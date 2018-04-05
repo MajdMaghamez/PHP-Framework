@@ -6,6 +6,7 @@
     use main\userControl\userAccount;
     use main\userControl\userPassword;
     use main\userControl\userQuestions;
+    use main\controllers\devControl\main;
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
@@ -21,6 +22,7 @@
 
         private function __construct ( ) {
             $this->routes["Init"]           = init::class;
+            $this->routes["Dev/Main"]       = main::class;
 
             $this->routes["Login"]          = LoginController::class;
             $this->routes["Logout"]         = LogoutController::class;
