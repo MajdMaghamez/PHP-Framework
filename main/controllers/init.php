@@ -102,7 +102,7 @@
                             $class->seed ( );
                         }
 
-                        $RESULTS .= "<h3>TABLES WERE CREATED AND SEEDED SUCCESSFULLY.</h3><hr/><p>" . $RedirectLink . "</p>\n";
+                        $RESULTS .= "<h4>All tables were created & seeded successfully!</h4><hr/><p>" . $RedirectLink . "</p>\n";
                     }
                 }
                 elseif ( sanitize_integer ( $URL[$RUN] ) == 2 )
@@ -120,12 +120,12 @@
                     }
 
                     echo "<script type='text/javascript'>alert ( 'APPLICATION CACHE HAS BEEN CLEARED!' );</script>";
-                    $RESULTS .= "<h3>APPLICATION CACHE DIRECTORY HAS BEEN CLEARED.</h3><hr/><p>" . $RedirectLink . "</p>\n";
+                    $RESULTS .= "<h4>Application cache directory has been cleared!</h4><hr/><p>" . $RedirectLink . "</p>\n";
                 }
             }
             else
             {
-                $RESULTS .= "<h3>FAILED TO AUTHENTICATE!</h3>\n";
+                $RESULTS .= "<h4>FAILED TO AUTHENTICATE!</h4>\n";
             }
 
             // check if secure directory exists
@@ -133,7 +133,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["OFF_WEB_ROOT"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create web root folders</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create web root folders</h4>\n";
                 }
             }
 
@@ -142,7 +142,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["ERROR_FOLDER"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create errors folder</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create errors folder</h4>\n";
                 }
             }
 
@@ -151,7 +151,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["E_HTML_FOLDER"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create html errors folder</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create html errors folder</h4>\n";
                 }
             }
 
@@ -160,7 +160,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["E_XML_FOLDER"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create xml errors folder</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create xml errors folder</h4>\n";
                 }
             }
 
@@ -169,7 +169,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["LOG_FOLDER"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create log folder</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create log folder</h4>\n";
                 }
             }
 
@@ -178,7 +178,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["CACHE_FOLDER"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create cache folder</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create cache folder</h4>\n";
                 }
             }
 
@@ -187,7 +187,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["S_PATH"], 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create session folder</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create session folder</h4>\n";
                 }
             }
 
@@ -196,7 +196,7 @@
             {
                 if ( ! mkdir ( $GLOBALS ["CACHE_FOLDER"] . "/users/", 0777, true ) )
                 {
-                    $RESULTS .= "<h3>Error: cannot create users cache directory</h3>\n";
+                    $RESULTS .= "<h4>Error: cannot create users cache directory</h4>\n";
                 }
                 else
                 {
