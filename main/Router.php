@@ -7,6 +7,7 @@
     use main\userControl\userPassword;
     use main\userControl\userQuestions;
     use main\controllers\devControl\main;
+    use main\controllers\usersControl\usersList;
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
@@ -43,6 +44,9 @@
             $this->routes["User/Password"]              = userPassword::class;
             $this->routes["User/Questions"]             = userQuestions::class;
             $this->routes["User/Profile"]               = userProfile::class;
+
+            // Users route
+            $this->routes["Users/List"]                 = usersList::class;
 
             // Home route
             $this->routes["Home"]                       = homeController::class;

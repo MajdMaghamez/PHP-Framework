@@ -51,7 +51,7 @@
          */
         public function getRoleList ( )
         {
-            return $this->role_list;
+            return array_keys ( $this->role_list );
         }
 
         /**
@@ -60,6 +60,20 @@
         public function setRoleList ( $role_list )
         {
             $this->role_list = $role_list;
+        }
+
+        /**
+         * @param integer $role
+         * @return string
+         */
+        public static function getUserRoleName ( $role )
+        {
+            $sql_select = "SELECT `PHPVAR` FROM `users_group` WHERE `ID` = :ID AND `ROLE` = 1 AND `DELETED` = 0";
+            $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $role ] );
+            $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
+            if ( ! empty ( $sql_result ) )
+                return $sql_result[0]["PHPVAR"];
+            return '';
         }
 
         /**

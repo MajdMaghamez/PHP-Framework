@@ -7,6 +7,7 @@
         {
             $tabs   = "\t\t\t\t";
             $path   = explode ( '\\', __CLASS__ );
+            $path   = array_pop ( $path );
 
             $navigation =
             [
@@ -14,28 +15,21 @@
                 [
                     "label"     => "My Account",
                     "href"      => $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account",
-                    "class"     => ""
+                    "class"     => ( $path == 'userAccount' ) ? " active" : ""
                 ],
                 1 =>
                 [
                     "label"     => "My Password",
                     "href"      => $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Password",
-                    "class"     => ""
+                    "class"     => ( $path == 'userPassword' ) ? " active" : ""
                 ],
                 2 =>
                 [
                     "label"     => "Personal Questions",
                     "href"      => $GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Questions",
-                    "class"     => ""
+                    "class"     => ( $path == 'userQuestions' ) ? " active" : ""
                 ]
             ];
-
-            switch ( array_pop ( $path ) )
-            {
-                case 'userAccount': $navigation[0]['class'] = ' active';break;
-                case 'userPassword': $navigation[1]['class'] = ' active';break;
-                case 'userQuestions': $navigation[2]['class'] = ' active';break;
-            }
 
             $html    = $tabs . "\t<div class=\"box\">\n";
 
