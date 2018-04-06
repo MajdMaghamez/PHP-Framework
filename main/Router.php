@@ -14,6 +14,8 @@
     use main\controllers\authControl\RegisterController;
     use main\controllers\authControl\ResetPassController;
     use main\controllers\authControl\ResetEmailController;
+    use main\controllers\devControl\databaseControl\system;
+    use main\controllers\devControl\databaseControl\application;
 
     Class Router {
 
@@ -21,22 +23,29 @@
         private static $instance = null;
 
         private function __construct ( ) {
-            $this->routes["Init"]           = init::class;
-            $this->routes["Dev/Main"]       = main::class;
+            $this->routes["Init"]                       = init::class;
 
-            $this->routes["Login"]          = LoginController::class;
-            $this->routes["Logout"]         = LogoutController::class;
-            $this->routes["Register"]       = RegisterController::class;
-            $this->routes["Reset/Email"]    = ResetEmailController::class;
-            $this->routes["Reset/Password"] = ResetPassController::class;
-            $this->routes["Verify"]         = VerifyController::class;
+            // Dev route
+            $this->routes["Dev"]                        = main::class;
+            $this->routes["Dev/Database/System"]        = system::class;
+            $this->routes["Dev/Database/Application"]   = application::class;
 
-            $this->routes["User/Account"]   = userAccount::class;
-            $this->routes["User/Password"]  = userPassword::class;
-            $this->routes["User/Questions"] = userQuestions::class;
-            $this->routes["User/Profile"]   = userProfile::class;
+            // Auth route
+            $this->routes["Login"]                      = LoginController::class;
+            $this->routes["Logout"]                     = LogoutController::class;
+            $this->routes["Register"]                   = RegisterController::class;
+            $this->routes["Reset/Email"]                = ResetEmailController::class;
+            $this->routes["Reset/Password"]             = ResetPassController::class;
+            $this->routes["Verify"]                     = VerifyController::class;
 
-            $this->routes["Home"]           = homeController::class;
+            // User route
+            $this->routes["User/Account"]               = userAccount::class;
+            $this->routes["User/Password"]              = userPassword::class;
+            $this->routes["User/Questions"]             = userQuestions::class;
+            $this->routes["User/Profile"]               = userProfile::class;
+
+            // Home route
+            $this->routes["Home"]                       = homeController::class;
         }
 
         public static function getApplicationRouter ( ) {

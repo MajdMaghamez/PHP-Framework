@@ -165,7 +165,7 @@
             $html .= "\t\t\t<div class=\"row justify-content-center\">\n";
             $html .= "\t\t\t\t<div class=\"col-sm-12 col-md-6 col-lg-6 col-xl-6\">\n";
             $html .= flash_message ( "\t\t\t\t\t" );
-            $html .= "\t\t\t\t\t<div class=\"card\">\n";
+            $html .= "\t\t\t\t\t<div class=\"box\">\n";
             $html .= "\t\t\t\t\t<h5 class=\"center\">Registration</h5><hr/>\n";
             $html .= $this->renderPage();
             $html .= "\t\t\t\t\t</div>\n";

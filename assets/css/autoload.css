@@ -1,4 +1,4 @@
-.card
+.box
 {
 	padding:30px 20px;
 	box-shadow:0 4px 8px 0 rgba(0,0,0,.2);
@@ -8,11 +8,11 @@
 	border-radius:5px;
 	margin-bottom: 100px;
 }
-.card_container
+.box_container
 {
 	margin-bottom: 100px;
 }
-.card:hover
+.box:hover
 {
 	box-shadow:0 8px 16px 0 rgba(0,0,0,.2)
 }

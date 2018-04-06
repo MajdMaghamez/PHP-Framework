@@ -122,7 +122,7 @@
                             {
                                 if ( $value1["COLUMN_TYPE"] !== $value2["COLUMN_TYPE"] )
                                 {
-                                    return [ "TYPE" => "3", "MESSAGE" => "<span class=\"label label-danger right\"> Column '" . $value1["COLUMN_NAME"] . "' has an invalid data taype!</span>" ];
+                                    return [ "TYPE" => "3", "MESSAGE" => "<span class=\"label label-danger right\"> Column '" . $value1["COLUMN_NAME"] . "' has an invalid data type!</span>" ];
                                 }
                             }
                         }

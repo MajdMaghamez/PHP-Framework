@@ -44,7 +44,7 @@
             "PERMISSION_VALUE"  =>
             [
                 "COLUMN_NAME"       => "`PERMISSION_VALUE`",
-                "COLUMN_TYPE"       => "tinyInt(1)",
+                "COLUMN_TYPE"       => "tinyint(1)",
                 "COLUMN_DEFAULT"    => "default 0",
                 "IS_NULLABLE"       => "not null",
                 "EXTRA"             => ""

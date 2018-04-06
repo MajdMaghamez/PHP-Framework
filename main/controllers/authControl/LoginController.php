@@ -152,7 +152,7 @@
             $html   .= "\t\t\t<div class=\"row justify-content-center\">\n";
             $html   .= "\t\t\t\t<div class=\"col-md-6 col-lg-6 col-xl-6\">\n";
             $html   .= flash_message ( "\t\t\t\t\t" );
-            $html   .= "\t\t\t\t\t<div class=\"card\">\n";
+            $html   .= "\t\t\t\t\t<div class=\"box\">\n";
             $html   .= "\t\t\t\t\t<h4 class=\"center\">" . $GLOBALS ["BS_NAME"] . "</h4><hr/>\n";
             $html   .= $this->renderPage ( );
             $html   .= "\t\t\t\t\t</div>\n";

@@ -152,7 +152,7 @@
                         "TITLE"     =>  "Developer Tools",
                         "ACTIVE"    =>  "",
                         "ICON"      =>  "<i class=\"fas fa-magic\" aria-hidden=\"true\"></i>",
-                        "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/Dev/Main"
+                        "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/Dev"
                     )
                 );
 

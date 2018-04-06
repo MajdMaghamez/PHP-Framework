@@ -37,7 +37,7 @@
                 case 'userQuestions': $navigation[2]['class'] = ' active';break;
             }
 
-            $html    = $tabs . "\t<div class=\"card\">\n";
+            $html    = $tabs . "\t<div class=\"box\">\n";
 
             $html   .= $tabs . "\t\t<div class=\"profile-pic center\">\n";
             $html   .= $tabs . "\t\t\t<img id=\"imgProfile\" src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $image . "\" height=\"100\" width=\"100\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
