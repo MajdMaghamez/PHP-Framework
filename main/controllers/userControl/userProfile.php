@@ -54,12 +54,11 @@
 
             // get new image extension
             $extension = pathinfo( $_FILES['upload']['name'], PATHINFO_EXTENSION );
-            $newPicture = pathinfo( $GLOBALS["CACHE_FOLDER"] . "/users/" . $this->user->getProfilePicture(), PATHINFO_FILENAME );
+            $NewPictureName = base64StringEncode( microtime ( true ) );
 
             // setup the image to be processed
-
             // 1) set new profile picture name and extension
-            $newPic = $GLOBALS["CACHE_FOLDER"] . "/users/" . $newPicture . '.' . $extension;
+            $newPic = $GLOBALS["CACHE_FOLDER"] . "/users/" . $NewPictureName . '.' . $extension;
             $oldPic = $GLOBALS["CACHE_FOLDER"] . "/users/" . $this->user->getProfilePicture();
 
             // 2) process image resizing
@@ -68,7 +67,7 @@
             if ( $image->process() )
             {
                 http_response_code( 200 );
-                $picture = $newPicture . '.' . $extension;
+                $picture = $NewPictureName . '.' . $extension;
                 $this->user->setProfilePicture( $picture );
                 $this->json['image'] = "/cache/users/" . $picture;
             }

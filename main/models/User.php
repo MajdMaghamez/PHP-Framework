@@ -507,7 +507,7 @@
          * @param string $A2
          * @return bool
          */
-        public function setQuestionsAnswers ($Q1, $Q2, $A1, $A2 )
+        public function setQuestionsAnswers ( $Q1, $Q2, $A1, $A2 )
         {
             $sql_update = "UPDATE `users` SET `QUESTIONID1` = :QUESTIONID1, `QUESTIONID2` = :QUESTIONID2, `ANSWER1` = :ANSWER1, `ANSWER2` = :ANSWER2, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array
@@ -669,7 +669,7 @@
          * @param string $home
          * @return bool
          */
-        public function setHomePage ($home )
+        public function setHomePage ( $home )
         {
             $sql_update = "UPDATE `users` SET `HOME_DIR` = :HOME_DIR, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
             $sql_params = array ( ":HOME_DIR" => [ "TYPE" => "STR", "VALUE" => $home ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
@@ -774,6 +774,9 @@
          */
         public static function store_public ( $user )
         {
+            $ProfilePicture_Default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
+            $ProfilePicture_New     = base64StringEncode ( microtime ( true ) ) . ".png";
+
             $sql_insert = <<<EOT
             INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `VERIFY_TOKEN`, `HOME_DIR`, `PICTURE` ) 
             VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), :VERIFY_TOKEN, '/Home', :PICTURE );
@@ -789,7 +792,7 @@ EOT;
                 ":ANSWER1" => ["TYPE" => "STR", "VALUE" => $user ['answer1']],
                 ":ANSWER2" => ["TYPE" => "STR", "VALUE" => $user ['answer2']],
                 ":VERIFY_TOKEN" => ["TYPE" => "STR", "VALUE" => randomToken()],
-                ":PICTURE" => ["TYPE" => "STR", "VALUE" => base64StringEncode( $user ['email'] ) . ".png" ]
+                ":PICTURE" => ["TYPE" => "STR", "VALUE" => $ProfilePicture_New ]
             );
 
             $sql_results = database::runInsertQuery($sql_insert, $sql_params, "ID");
@@ -799,9 +802,8 @@ EOT;
                 // user has been stored
 
                 // 1) set their default profile picture
-                $default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
-                $destination = $GLOBALS ["CACHE_FOLDER"] . "/users/" . base64StringEncode ( $user ['email'] ) . ".png";
-                if ( ! file_exists ( $destination ) ) { copy ( $default, $destination ); }
+                $destination = $GLOBALS ["CACHE_FOLDER"] . "/users/" . $ProfilePicture_New;
+                if ( ! file_exists ( $destination ) ) { copy ( $ProfilePicture_Default, $destination ); }
 
                 // 2) set their permissions
                 $Roles  = new Role();
