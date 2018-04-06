@@ -1,14 +1,18 @@
 <?php namespace main\layouts\bootstrap;
 
     use main\models\Role;
+    use main\layouts\navigation\navigation;
 
     class main
     {
         private $no_cache   = false;
         private $user_name  = "";
+        private $user_role  = "";
         private $user_id    = 0;
         private $parent     = "";
         private $child      = "";
+
+        use navigation;
 
         /**
          * main constructor.
@@ -20,160 +24,22 @@
         {
             if ( isset ( $_SESSION ["USER_NAME"] ) ) $this->user_name = $_SESSION ["USER_NAME"];
             if ( isset ( $_SESSION ["USER_ID"] ) ) $this->user_id = $_SESSION ["USER_ID"];
+            if ( isset ( $_SESSION ["USER_ROLE"] ) ) $this->user_role = Role::getUserRoleName( $_SESSION ["USER_ROLE"] );
 
             $this->parent = $parent;
             $this->child = $child;
-
             $this->no_cache = $no_cache;
         }
 
         public function render_navbar ( )
         {
-            $NavBar =
-                [
-                0    			=>
-                    [
-                        "ID"        =>  "HOME",
-                        "TITLE"		=>	"Home",
-                        "ACTIVE"	=>	"",
-                        "ICON"		=>	"<i class=\"fas fa-home\" aria-hidden=\"true\"></i>",
-                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
-                        "CHILDREN"	=>	ARRAY ( )
-                    ],
-                1        		=>
-                    [
-                        "ID"        =>  "REPORTS",
-                        "TITLE"		=>	"Reports",
-                        "ACTIVE"	=>	"",
-                        "ICON"		=>	"<i class=\"fas fa-chart-bar\" aria-hidden=\"true\"></i>",
-                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/reports/index.php",
-                        "CHILDREN"	=>	ARRAY ( )
-                    ],
-                2      			=>
-                    [
-                        "ID"        =>  "STATISTICS",
-                        "TITLE"		=>	"Statistics",
-                        "ACTIVE"	=>	"",
-                        "ICON"		=>	"<i class=\"fas fa-chart-pie\" aria-hidden=\"true\"></i>",
-                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/stats/index.php",
-                        "CHILDREN"	=>	ARRAY ( )
-                    ],
-                3    			=>
-                    [
-                        "ID"        =>  "HELP",
-                        "TITLE"		=>	"Help",
-                        "ACTIVE"	=>	"",
-                        "ICON"		=>	"<i class=\"fa fa-question-circle\" aria-hidden=\"true\"></i>",
-                        "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/help/index.php",
-                        "CHILDREN"	=>	ARRAY ( )
-                    ],
-                4            	=>
-                    [
-                    "ID"        =>  "USER",
-                    "TITLE"		=> 	$this->user_name,
-                    "ACTIVE"	=>	"",
-                    "ICON"		=>	"",
-                    "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account",
-                    "CHILDREN"	=>
-                        [
-                        0               =>
-                            [
-                                "ID"        =>  "MYACCOUNT",
-                                "TITLE"		=>	"My Account",
-                                "ACTIVE"	=> 	"",
-                                "ICON"		=>	"<i class=\"far fa-user\" aria-hidden=\"true\"></i>",
-                                "LINK"		=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/User/Account"
-                            ],
-                        1               =>
-                            [
-                                "ID"        =>  "MESSAGES",
-                                "TITLE"		=>	"Messages",
-                                "ACTIVE"	=> 	"",
-                                "ICON"		=> 	"<i class=\"far fa-envelope-open\" aria-hidden=\"true\"></i>",
-                                "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/messages/index.php"
-                            ],
-                        2               =>
-                            [
-                                "ID"        =>  "LOGOUT",
-                                "TITLE"		=>	"Logout",
-                                "ACTIVE"	=>	"",
-                                "ICON"		=>	"<i class=\"fas fa-sign-out-alt\" aria-hidden=\"true\"></i>",
-                                "LINK"		=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Logout"
-                            ]
-                        ]
-                    ]
-                ];
+            $Func = "get" . str_replace (' ', '', $this->user_role ) . "Navigation";
+            $NavBar = self::$Func ( $this->user_name, $this->parent );
 
-            $SubNavBar =
-                [
-                    0    				=>
-                        [
-                            "ID"      		=>  "DASHBOARD",
-                            "TITLE"			=>  "Dashboard",
-                            "ACTIVE"		=>	"",
-                            "ICON"			=>	"",
-                            "LINK"			=>	$GLOBALS ["RELATIVE_TO_ROOT"] . "/Home",
-                            "CHILDREN"	    =>	ARRAY ( )
-                        ],
-                    1        			=>
-                        [
-                            "ID"      		=>	"CLIENTS",
-                            "TITLE"			=>	"Clients",
-                            "ACTIVE"		=> 	"",
-                            "ICON"			=>	"",
-                            "LINK"			=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/clients/index.php",
-                            "CHILDREN"	    =>	ARRAY ( )
-                        ],
-                    2        			=>
-                        [
-                            "ID"		    => 	"INVENTORY",
-                            "TITLE"			=> 	"Inventory",
-                            "ACTIVE"		=> 	"",
-                            "ICON"			=>	"",
-                            "LINK"			=>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/views/inventory/index.php",
-                            "CHILDREN"	    =>	ARRAY ( )
-                        ],
-                    3            		=>
-                        [
-                            "ID"      		=>	"ADMINISTRATOR",
-                            "TITLE"			=> 	"Administrator",
-                            "ACTIVE"		=>	"",
-                            "ICON"			=> 	"",
-                            "LINK"			=> 	$GLOBALS ["RELATIVE_TO_ROOT"] . "/views/admin/index.php",
-                            "CHILDREN"	    =>	ARRAY ( )
-                        ]
-                ];
+            $Func = "get" . str_replace ( ' ', '', $this->user_role ) . "SubNavigation";
+            $SubNavBar = self::$Func ( $this->child );
 
-            // if user is a super admin then give them developer tool option
-            if ( Role::isUserSuperAdmin ( $this->user_id ) )
-                array_unshift ( $NavBar [4]["CHILDREN"], array
-                    (
-                        "ID"        =>  "SYSADMIN",
-                        "TITLE"     =>  "Developer Tools",
-                        "ACTIVE"    =>  "",
-                        "ICON"      =>  "<i class=\"fas fa-magic\" aria-hidden=\"true\"></i>",
-                        "LINK"      =>  $GLOBALS ["RELATIVE_TO_ROOT"] . "/Dev"
-                    )
-                );
-
-            switch ( $this->parent )
-            {
-                case "homeControl"  : $NavBar [0]["ACTIVE"] = " active"; break;
-                case "reports"      : $NavBar [1]["ACTIVE"] = " active"; break;
-                case "stats"        : $NavBar [2]["ACTIVE"] = " active"; break;
-                case "help"         : $NavBar [3]["ACTIVE"] = " active"; break;
-                case "devControl"   : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][0]["ACTIVE"] = " active"; break;
-                case "userControl"  : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][1]["ACTIVE"] = " active"; break;
-                case "messages"     : $NavBar [4]["ACTIVE"] = " active"; $NavBar [4]["CHILDREN"][2]["ACTIVE"] = " active"; break;
-            }
-
-            switch ( $this->child )
-            {
-                case "homeControl"  : $SubNavBar [0]["ACTIVE"] = " active"; break;
-                case "clients"      : $SubNavBar [1]["ACTIVE"] = " active"; break;
-                case "inventory"    : $SubNavBar [2]["ACTIVE"] = " active"; break;
-                case "admin"        : $SubNavBar [3]["ACTIVE"] = " active"; break;
-            }
+            // render the navigation bar
 
             $html    = "\t\t<nav class=\"navbar navbar-expand-lg navbar-dark bg-dark navbar-fixed-top\">\n";
             $html   .= "\t\t\t<div class=\"container\">\n";
@@ -186,19 +52,19 @@
 
             foreach ( $NavBar as $index => $element )
             {
-                if ( empty ( $element ["CHILDREN"] ) )
+                if ( empty ( $element ["children"] ) )
                 {
-                    $html   .= "\t\t\t\t\t\t<li class=\"nav-item" . $element ["ACTIVE"] . "\"><a class=\"nav-link\" href=\"" . $element ["LINK"] . "\">" . $element ["ICON"] . " " . $element ["TITLE"] . "</a></li>\n";
+                    $html   .= "\t\t\t\t\t\t<li class=\"nav-item" . $element ["active"] . "\"><a class=\"nav-link\" href=\"" . $element ["link"] . "\">" . $element ["icon"] . " " . $element ["title"] . "</a></li>\n";
                 }
                 else
                 {
-                    $html   .= "\t\t\t\t\t\t<li class=\"nav-item dropdown" . $element ["ACTIVE"] . "\">\n";
-                    $html   .= "\t\t\t\t\t\t\t<a href=\"" . $element ["LINK"] . "\" class=\"nav-link dropdown-toggle\" id=\"" . $element ["ID"] . "\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">" . $element ["ICON"] . " " . $element ["TITLE"] . "</a>\n";
-                    $html   .= "\t\t\t\t\t\t\t<div class=\"dropdown-menu\" aria-labelledby=\"" . $element ["ID"] . "\">\n";
+                    $html   .= "\t\t\t\t\t\t<li class=\"nav-item dropdown" . $element ["active"] . "\">\n";
+                    $html   .= "\t\t\t\t\t\t\t<a href=\"" . $element ["link"] . "\" class=\"nav-link dropdown-toggle\" id=\"" . $element ["id"] . "\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">" . $element ["icon"] . " " . $element ["title"] . "</a>\n";
+                    $html   .= "\t\t\t\t\t\t\t<div class=\"dropdown-menu\" aria-labelledby=\"" . $element ["id"] . "\">\n";
 
-                    foreach ( $element ["CHILDREN"] as $key => $value )
+                    foreach ( $element ["children"] as $key => $value )
                     {
-                        $html   .= "\t\t\t\t\t\t\t\t<a class=\"dropdown-item" . $value ["ACTIVE"] . "\" href=\"" . $value ["LINK"] . "\">" . $value ["ICON"] . " " . $value ["TITLE"] . "</a>\n";
+                        $html   .= "\t\t\t\t\t\t\t\t<a class=\"dropdown-item" . $value ["active"] . "\" href=\"" . $value ["link"] . "\">" . $value ["icon"] . " " . $value ["title"] . "</a>\n";
                     }
 
                     $html   .= "\t\t\t\t\t\t\t</div>\n";
@@ -212,6 +78,8 @@
             $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</nav>\n";
 
+            // render the sub navigation bar
+
             $html   .= "\t\t<div class=\"container\">\n";
             $html   .= "\t\t<nav class=\"navbar navbar-expand-lg navbar-light bg-light\">\n";
             $html   .= "\t\t\t<button type=\"button\" class=\"navbar-toggler\" data-toggle=\"collapse\" data-target=\"#sub-navbar\" aria-controls=\"navbar\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n";
@@ -222,19 +90,19 @@
 
             foreach ( $SubNavBar AS $index => $element )
             {
-                if ( empty ( $element["CHILDREN"] ) )
+                if ( empty ( $element["children"] ) )
                 {
-                    $html   .= "\t\t\t\t\t<li class=\"nav-item" . $element ["ACTIVE"] . "\"><a class=\"nav-link\" href=\"" . $element ["LINK"] . "\">" . $element ["ICON"] . " " . $element ["TITLE"] . "</a></li>\n";
+                    $html   .= "\t\t\t\t\t<li class=\"nav-item" . $element ["active"] . "\"><a class=\"nav-link\" href=\"" . $element ["link"] . "\">" . $element ["icon"] . " " . $element ["title"] . "</a></li>\n";
                 }
                 else
                 {
-                    $html   .= "\t\t\t\t\t\t<li class=\"nav-item dropdown" . $element ["ACTIVE"] . "\">\n";
-                    $html   .= "\t\t\t\t\t\t\t<a href=\"" . $element ["LINK"] . "\" class=\"nav-link dropdown-toggle\" id=\"" . $element ["ID"] . "\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">" . $element ["ICON"] . " " . $element ["TITLE"] . "</a>\n";
-                    $html   .= "\t\t\t\t\t\t\t<div class=\"dropdown-menu\" aria-labelledby=\"" . $element ["ID"] . "\">\n";
+                    $html   .= "\t\t\t\t\t\t<li class=\"nav-item dropdown" . $element ["active"] . "\">\n";
+                    $html   .= "\t\t\t\t\t\t\t<a href=\"" . $element ["link"] . "\" class=\"nav-link dropdown-toggle\" id=\"" . $element ["id"] . "\" data-toggle=\"dropdown\" role=\"button\" aria-haspopup=\"true\" aria-expanded=\"false\">" . $element ["icon"] . " " . $element ["title"] . "</a>\n";
+                    $html   .= "\t\t\t\t\t\t\t<div class=\"dropdown-menu\" aria-labelledby=\"" . $element ["id"] . "\">\n";
 
-                    foreach ( $element ["CHILDREN"] as $key => $value )
+                    foreach ( $element ["children"] as $key => $value )
                     {
-                        $html   .= "\t\t\t\t\t\t\t\t<a class=\"dropdown-item" . $value ["ACTIVE"] . "\" href=\"" . $value ["LINK"] . "\">" . $value ["ICON"] . " " . $value ["TITLE"] . "</a>\n";
+                        $html   .= "\t\t\t\t\t\t\t\t<a class=\"dropdown-item" . $value ["active"] . "\" href=\"" . $value ["link"] . "\">" . $value ["icon"] . " " . $value ["title"] . "</a>\n";
                     }
 
                     $html   .= "\t\t\t\t\t\t\t</div>\n";
