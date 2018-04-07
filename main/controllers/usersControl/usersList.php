@@ -86,6 +86,8 @@
             $primary    = 'ID';
             $this->userRoles = $this->getRoleList();
 
+            http_response_code( 404 );
+
             $table_columns = array
             (
                 array ( 'db' => 'FIRSTNAME', 'dt' => 0 ),
@@ -120,16 +122,28 @@
                     'dt'    => 5,
                     'formatter' => function ( $d, $row )
                     {
-                        $edit   = "<a href=\"/Users/Edit/" . $d . "/\" class=\"btn btn-warning margin-right-5\"><i class=\"far fa-edit\"></i></a>";
-                        $delete = "<a href=\"/Users/Delete/" . $d . "/\" class=\"btn btn-danger\"><i class=\"far fa-trash-alt\"></i></a>";
-                        return $edit . $delete;
+                        return $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/" . $d;
+                    }
+                ),
+
+                array
+                (
+                    'db'    => 'ID',
+                    'dt'    => 6,
+                    'formatter' => function ( $d, $row )
+                    {
+                        return $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Delete/" . $d;
                     }
                 )
             );
 
-            $where_results = '`DELETED` = 0';
+            if ( $this->canAccess )
+            {
+                http_response_code( 200 );
+                die ( json_encode ( datatableHelper::complex( $_POST, $table, $primary, $table_columns, null, '`DELETED` = 0' ) ) );
+            }
 
-            echo json_encode ( datatableHelper::complex( $_POST, $table, $primary, $table_columns, null, $where_results ) );
+            die ( json_encode( array( ) ) );
         }
 
         /**

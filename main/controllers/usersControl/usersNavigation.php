@@ -84,6 +84,11 @@
                     },
                     {
                         'data'          : 5,
+                        'render'        : function ( data, type, row )
+                        {
+                            return  "<a href='" + data + "' class='btn btn-warning margin-right-5'><i class='far fa-edit'></i></a>" +
+                                    "<a href='" + row[6] + "' class='btn btn-danger'><i class='far fa-trash-alt'></i></a>";
+                        },
                         'searchable'    : false,
                         'orderable'     : false
                     }
@@ -92,7 +97,8 @@
             });
             
 EOT;
-
             return $JavaScript;
         }
+
+
     }

@@ -53,8 +53,8 @@
             $order  = self::order   ( $request, $columns );
             $where  = self::filter  ( $request, $columns );
 
-            $where_result   = self::_flaten( $where_result );
-            $where_all      = self::_flaten( $where_all );
+            $where_result   = self::_flatten( $where_result );
+            $where_all      = self::_flatten( $where_all );
 
             if ( $where_result )
                 $where["WHERE"] = $where["WHERE"] ? $where["WHERE"] . ' AND ' . $where_result : 'WHERE ' . $where_result;
@@ -253,11 +253,11 @@
         }
 
         /**
-         * @param $a
+         * @param array | string $a
          * @param string $join
          * @return string
          */
-        public static function _flaten ( $a , $join = ' AND ' )
+        public static function _flatten ( $a , $join = ' AND ' )
         {
             if ( ! isset ( $a ) )
             {
