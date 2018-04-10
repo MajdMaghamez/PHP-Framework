@@ -16,7 +16,7 @@
 
         protected function onGet()
         {
-            $TOKEN = findInURL( 'token' );
+            $TOKEN = findInURL( 'Token' );
             $TOKEN > 0 ? $TOKEN++ : $TOKEN = 0;
             $URL = getURLParams();
             $TOKEN_VAL = sanitize_string( $URL[$TOKEN], '/^[a-z0-9]+$/' );

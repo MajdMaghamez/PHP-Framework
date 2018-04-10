@@ -856,7 +856,7 @@ EOT;
                 $Roles  = new Role();
                 $Role_name = "set" . str_replace ( ' ', '', Role::getUserRoleName( $user['role'] ) );
 
-                var_dump($Roles->$Role_name ( $sql_results ));
+                $Roles->$Role_name ( $sql_results );
 
                 return $sql_results;
             }
