@@ -342,7 +342,7 @@
          * @param string $active
          * @return array
          */
-        public static function getPublicNavigation ( $user_name, $active )
+        public static function getUserNavigation ( $user_name, $active )
         {
             $main = array ( );
             array_push( $main, self::Home( $active ) );
@@ -362,7 +362,7 @@
          * @param string $active
          * @return array
          */
-        public static function getPublicSubNavigation ( $active )
+        public static function getUserSubNavigation ( $active )
         {
             $sub = array ( );
             array_push( $sub, self::Dashboard( $active ) );

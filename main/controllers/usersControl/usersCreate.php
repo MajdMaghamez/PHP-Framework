@@ -1,11 +1,13 @@
 <?php namespace main\controllers\usersControl;
 
+    use main\models\User;
     use main\gui\guiCreator;
     use main\models\Permission;
     use main\layouts\bootstrap\main;
     use main\controllers\Controller;
     use main\gui\renderer\bootstrapForm;
     use main\frameworkHelper\cacheManager;
+    use main\frameworkHelper\fieldsValidator;
 
     class usersCreate extends Controller
     {
@@ -30,7 +32,7 @@
                 setFlashMessage( "Access Denied!", "You do not have permission to access this page", 4 );
             }
 
-            $Tabs       = "\t\t\t\t\t\t\t\t\t";
+            $Tabs       = "\t\t\t\t\t\t\t\t";
             $components =
             [
                 0 =>
@@ -44,17 +46,6 @@
                         "id"            => "firstname",
                         "setRequired"   => true,
                         "setTabs"       => $Tabs
-                    ],
-                    1 =>
-                    [
-                        "parent"        => "fields",
-                        "class"         => "textField",
-                        "label"         => "Last Name",
-                        "name"          => "lastname",
-                        "id"            => "lastname",
-                        "setRequired"   => true,
-                        "setTabs"       => $Tabs
-
                     ]
                 ],
                 1 =>
@@ -62,10 +53,10 @@
                     0 =>
                     [
                         "parent"        => "fields",
-                        "class"         => "selectField",
-                        "label"         => "Choose Role",
-                        "name"          => "role",
-                        "id"            => "role",
+                        "class"         => "textField",
+                        "label"         => "Last Name",
+                        "name"          => "lastname",
+                        "id"            => "lastname",
                         "setRequired"   => true,
                         "setTabs"       => $Tabs
                     ]
@@ -88,10 +79,11 @@
                     0 =>
                     [
                         "parent"        => "fields",
-                        "class"         => "passwordField",
-                        "label"         => "Password",
-                        "name"          => "password",
-                        "id"            => "password",
+                        "class"         => "selectField",
+                        "label"         => "Choose Role",
+                        "name"          => "role",
+                        "id"            => "role",
+                        "setRequired"   => true,
                         "setTabs"       => $Tabs
                     ]
                 ],
@@ -100,15 +92,27 @@
                     0 =>
                     [
                         "parent"        => "fields",
-                        "class"         => "checkboxField",
-                        "label"         => "Force user to change their password post Login",
-                        "name"          => "forcePassword",
-                        "id"            => "forcePassword",
-                        "setRequired"   => true,
+                        "class"         => "passwordField",
+                        "label"         => "Password",
+                        "name"          => "password",
+                        "id"            => "password",
                         "setTabs"       => $Tabs
                     ]
                 ],
                 5 =>
+                [
+                    0 =>
+                    [
+                        "parent"            => "fields",
+                        "class"             => "checkboxField",
+                        "label"             => "Force user to change their password post Login",
+                        "name"              => "forcePassword",
+                        "id"                => "forcePassword",
+                        "setRenderInline"   => true,
+                        "setTabs"           => $Tabs
+                    ]
+                ],
+                6 =>
                 [
                     0 =>
                     [
@@ -127,31 +131,26 @@
 
             foreach ( self::getRoleList ( ) as $index => $role )
             {
-                $this->arrComponents[1][0]->setOptions ( $role["ID"], $role["PHPVAR"] );
+                $this->arrComponents[3][0]->setOptions ( $role["ID"], $role["PHPVAR"] );
             }
         }
 
+        /**
+         * @return string
+         */
         protected function preRenderPage ( )
         {
             $formId     = "form-parsley";
             $formMethod = "post";
             $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Add";
             $formTabs   = "\t\t\t\t\t\t";
-            $html    = "\t\t\t<div class=\"row\">\n";
-            $html   .= "\t\t\t\t<div class=\"col-md-3 col-lg-3 col-xl-3\">\n";
-            $html   .= self::renderNavigationLinks();
-            $html   .= "\t\t\t\t</div>\n";
-            $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
-            $html   .= "\t\t\t\t\t<div class=\"box\">\n";
-            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Adding A New User</h4><hr/>\n";
-            $html   .= bootstrapForm::renderStatic( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
-            $html   .= "\t\t\t\t\t</div>\n";
-            $html   .= "\t\t\t\t</div>\n";
-            $html   .= "\t\t\t</div>\n";
-
+            $html   = bootstrapForm::renderInline( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
             return $html;
         }
 
+        /**
+         * @return mixed|string
+         */
         protected function renderPage ( )
         {
             $folder = $GLOBALS ["CACHE_FOLDER"] . "/" . basename ( __DIR__ );
@@ -160,8 +159,21 @@
 
             $cacheManager = new cacheManager( $folder, $file );
             if ( ! $cacheManager->isCacheExists ( ) ) { $errors = ! $cacheManager->write( $this->preRenderPage ( ) ); }
-            if ( ! $errors ) { return $cacheManager->read ( $this->arrComponents ); }
-            return "";
+
+            $html    = "\t\t\t<div class=\"row\">\n";
+            $html   .= "\t\t\t\t<div class=\"col-md-3 col-lg-3 col-xl-3\">\n";
+            $html   .= self::renderNavigationLinks();
+            $html   .= "\t\t\t\t</div>\n";
+            $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
+            $html   .= flash_message ( "\t\t\t\t\t" );
+            $html   .= "\t\t\t\t\t<div class=\"box\">\n";
+            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Adding Users</h4><hr/>\n";
+            if ( ! $errors ) { $html .=  $cacheManager->read ( $this->arrComponents ); }
+            $html   .= "\t\t\t\t\t</div>\n";
+            $html   .= "\t\t\t\t</div>\n";
+            $html   .= "\t\t\t</div>\n";
+
+            return $html;
         }
 
         protected function onGet ( )
@@ -185,8 +197,71 @@
             echo $html;
         }
 
-        protected function onPost()
+        protected function onPost ( )
         {
-            // TODO: Implement onPost() method.
+            if ( $this->canAccess )
+            {
+                $errors = ! fieldsValidator::validate( $this->arrComponents );
+                if ( $errors )
+                {
+                    setFlashMessage( '', 'Something went wrong, please make a correction and try again', 4 );
+                }
+                else
+                {
+                    $errors = ! $this->addUser ( );
+                    if ( ! $errors )
+                        setFlashMessage( '', 'User has been created successfully!', 3 );
+                }
+            }
+
+            $this->onGet();
+        }
+
+        protected function addUser ( )
+        {
+            $Data ['first']      = $this->arrComponents[0][0]->getValue ( );
+            $Data ['last']       = $this->arrComponents[1][0]->getValue ( );
+            $Data ['email']      = $this->arrComponents[2][0]->getValue ( );
+            $Data ['role']       = $this->arrComponents[3][0]->getValue ( );
+
+
+            if ( ! empty ( $this->arrComponents[4][0]->getValue ( ) ) )
+            {
+                $Data ['password'] = $this->arrComponents[4][0]->getValue ( );
+            }
+            else
+            {
+                $Data ['password'] = randomToken();
+            }
+
+            if ( $this->arrComponents[5][0]->getValue ( ) == 'checked' )
+            {
+                $Data ['changePswd'] = 1;
+            }
+            else
+            {
+                $Data ['changePswd'] = 0;
+            }
+
+            // check if user exists
+            $User       = new User( [ "EMAIL", $Data ['email'] ] );
+            if ( is_null ( $User ) )
+            {
+                setFlashMessage( 'Failed!', 'This email address is associated with another user', 4 );
+                return false;
+            }
+
+            // store user in database and return their ID
+            $Data ['id'] = $User->store( $Data );
+
+            if ( $Data ['id'] > 0 )
+            {
+                // need to send user email with username and password first
+                return $User->sendVerificationEmail();
+            }
+
+            setFlashMessage ( "Error!", "We were unable to create your account, try again later.", 4 );
+            return false;
+
         }
     }

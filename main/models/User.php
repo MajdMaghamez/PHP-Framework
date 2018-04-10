@@ -772,7 +772,7 @@
          *
          * @note storing users from public registration
          */
-        public static function store_public ( $user )
+        public function store_public ( $user )
         {
             $ProfilePicture_Default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
             $ProfilePicture_New     = base64StringEncode ( microtime ( true ) ) . ".png";
@@ -786,7 +786,7 @@ EOT;
                 ":FIRSTNAME" => ["TYPE" => "STR", "VALUE" => $user ['firstname']],
                 ":LASTNAME" => ["TYPE" => "STR", "VALUE" => $user ['lastname']],
                 ":EMAIL" => ["TYPE" => "STR", "VALUE" => $user ['email']],
-                ":PASSWORD" => ["TYPE" => "STR", "VALUE" => $user ['password']],
+                ":PASSWORD" => ["TYPE" => "STR", "VALUE" => password( $user ['password'] )],
                 ":QUESTIONID1" => ["TYPE" => "INT", "VALUE" => $user ['question1']],
                 ":QUESTIONID2" => ["TYPE" => "INT", "VALUE" => $user ['question2']],
                 ":ANSWER1" => ["TYPE" => "STR", "VALUE" => $user ['answer1']],
@@ -797,7 +797,7 @@ EOT;
 
             $sql_results = database::runInsertQuery($sql_insert, $sql_params, "ID");
 
-            if ( ! is_null ( $sql_insert ) )
+            if ( $sql_results > 0 )
             {
                 // user has been stored
 
@@ -807,7 +807,56 @@ EOT;
 
                 // 2) set their permissions
                 $Roles  = new Role();
-                $Roles->setUserPublic( $sql_results );
+                $Roles->setUser( $sql_results );
+
+                return $sql_results;
+            }
+
+            return 0;
+        }
+
+        /**
+         * @param $user
+         * @return int|null
+         */
+        public function store ( $user )
+        {
+            $ProfilePicture_Default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
+            $ProfilePicture_New     = base64StringEncode ( microtime ( true ) ) . ".png";
+
+            $sql_insert = <<<EOT
+            INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `ROLE`, `CREATED`, `CREATED_BY`, `VERIFY_TOKEN`, `CHANGE_PASSWORD`, `HOME_DIR`, `PICTURE` )
+            VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :ROLE, CURRENT_TIMESTAMP ( ), :CREATED_BY, :VERIFY_TOKEN, :CHANGE_PASS, '/Home', :PICTURE );
+EOT;
+
+            $sql_params = array
+            (
+                ":FIRSTNAME"    => ["TYPE" => "STR", "VALUE" => $user ['first']],
+                ":LASTNAME"     => ["TYPE" => "STR", "VALUE" => $user ['last']],
+                ":EMAIL"        => ["TYPE" => "STR", "VALUE" => $user ['email']],
+                ":PASSWORD"     => ["TYPE" => "STR", "VALUE" => password( $user ['password'] )],
+                ":ROLE"         => ["TYPE" => "INT", "VALUE" => $user ['role']],
+                ":CREATED_BY"   => ["TYPE" => "INT", "VALUE" => $_SESSION["USER_ID"]],
+                ":VERIFY_TOKEN" => ["TYPE" => "STR", "VALUE" => randomToken()],
+                ":CHANGE_PASS"  => ["TYPE" => "INT", "VALUE" => $user ['changePswd']],
+                ":PICTURE"      => ["TYPE" => "STR", "VALUE" => $ProfilePicture_New]
+            );
+
+            $sql_results = database::runInsertQuery( $sql_insert, $sql_params, "ID" );
+
+            if ( $sql_results > 0 )
+            {
+                // user has been stored
+
+                // 1) set their default profile picture
+                $destination = $GLOBALS ["CACHE_FOLDER"] . "/users/" . $ProfilePicture_New;
+                if ( ! file_exists ( $destination ) ) { copy ( $ProfilePicture_Default, $destination ); }
+
+                // 2) set their permissions
+                $Roles  = new Role();
+                $Role_name = "set" . str_replace ( ' ', '', Role::getUserRoleName( $user['role'] ) );
+
+                var_dump($Roles->$Role_name ( $sql_results ));
 
                 return $sql_results;
             }

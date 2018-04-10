@@ -95,24 +95,39 @@
                 $html   .= $tabs . "\t<div class=\"row\">\n";
                 foreach ( $columns as $index => $column )
                 {
-                    if ( method_exists ( $column, "renderBootstrapLabel" ) )
+                    if ( basename( get_class( $column ) ) == 'checkboxField' )
                     {
                         $html   .= $tabs . "\t\t<div class=\"col\">\n";
-                        $html   .= $column->renderBootstrapLabel ( );
+                        $html   .= $column->renderBootstrap();
                         $html   .= $tabs . "\t\t</div>\n";
                     }
-
-                    $html   .= $tabs . "\t\t<div class=\"col\">\n";
-                    if ( method_exists ( $column, "renderBootstrapField" ) )
+                    else if ( basename ( get_class( $column ) ) == 'radioField' )
                     {
-
-                        $html   .= $column->renderBootstrapField ( );
+                        $html   .= $tabs . "\t\t<div class=\"col\">\n";
+                        $html   .= $column->renderBootstrap();
+                        $html   .= $tabs . "\t\t</div>\n";
                     }
                     else
                     {
-                        $html   .= $column->renderBootstrap ( );
+                        if ( method_exists ( $column, "renderBootstrapLabel" ) )
+                        {
+                            $html   .= $tabs . "\t\t<div class=\"col\">\n";
+                            $html   .= $column->renderBootstrapLabel ( );
+                            $html   .= $tabs . "\t\t</div>\n";
+                        }
+
+                        $html   .= $tabs . "\t\t<div class=\"col\">\n";
+                        if ( method_exists ( $column, "renderBootstrapField" ) )
+                        {
+
+                            $html   .= $column->renderBootstrapField ( );
+                        }
+                        else
+                        {
+                            $html   .= $column->renderBootstrap ( );
+                        }
+                        $html   .= $tabs . "\t\t</div>\n";
                     }
-                    $html   .= $tabs . "\t\t</div>\n";
                 }
                 $html   .= $tabs . "\t</div><br/>\n";
             }

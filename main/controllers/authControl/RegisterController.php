@@ -206,7 +206,7 @@
             $data ['firstname']     = ucwords ( $this->arrComponents [0][0]->getValue ( ) );
             $data ['lastname']      = ucwords ( $this->arrComponents [0][1]->getValue ( ) );
             $data ['email']         = $this->arrComponents [1][0]->getValue ( );
-            $data ['password']      = password ( $this->arrComponents [2][0]->getValue ( ) );
+            $data ['password']      = $this->arrComponents [2][0]->getValue ( );
 
             $data ['question1']     = $this->arrComponents [3][0]->getValue ( );
             $data ['question2']     = $this->arrComponents [5][0]->getValue ( );
@@ -223,7 +223,7 @@
             }
 
             // save the user in database and return their ID
-            $data ['id'] = User::store_public ( $data );
+            $data ['id'] = $user->store_public ( $data );
 
             // send a verification email
             if ( $data ['id'] > 0 )

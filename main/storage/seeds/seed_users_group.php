@@ -12,7 +12,7 @@
             [2, "'/Home'",  "'Admin'",          "'Admin Role'",         1, 0, 1, 0, "CURRENT_TIMESTAMP()" ],
             [3, "'/Home'",  "'Data Analyst'",   "'Data Analyst Role'",  1, 0, 2, 0, "CURRENT_TIMESTAMP()" ],
             [4, "'/Home'",  "'Accountant'",     "'Accountant Role'",    1, 0, 3, 0, "CURRENT_TIMESTAMP()" ],
-            [5, "'/Home'",  "'Public'",         "'Public Role'",        1, 0, 4, 0, "CURRENT_TIMESTAMP()" ],
+            [5, "'/Home'",  "'User'",           "'User'",               1, 0, 4, 0, "CURRENT_TIMESTAMP()" ],
 
             [101, "''",     "'USER_VIEW'",      "'View Users List'",    0, 1, 0, 0, "CURRENT_TIMESTAMP()" ],
             [102, "''",     "'USER_ADD'",       "'Add Users'",          0, 1, 1, 0, "CURRENT_TIMESTAMP()" ],

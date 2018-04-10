@@ -35,7 +35,7 @@
 
             ];
 
-            $this->role_list ['Public'] =
+            $this->role_list ['User'] =
             [
 
             ];
@@ -80,7 +80,7 @@
          * @param integer $id
          * @return bool
          */
-        public static function isUserSuperAdmin ( $id )
+        public static function isSuperAdmin ( $id )
         {
             $sql_select = "SELECT ( CASE `UG`.`PHPVAR` = 'Super Admin' WHEN 1 THEN 1 ELSE 0 END ) AS `Role` ";
             $sql_select.= "FROM `users` `U` INNER JOIN `users_group` `UG` ON `UG`.`ID` = `U`.`ROLE` AND `UG`.`ROLE` = 1 ";
@@ -96,7 +96,7 @@
          * @param integer $id
          * @return bool
          */
-        public static function isUserAdmin ( $id )
+        public static function isAdmin ( $id )
         {
             $sql_select = "SELECT ( CASE `UG`.`PHPVAR` = 'Admin' WHEN 1 THEN 1 ELSE 0 END ) AS `Role` ";
             $sql_select.= "FROM `users` `U` INNER JOIN `users_group` `UG` ON `UG`.`ID` = `U`.`ROLE` AND `UG`.`ROLE` = 1 ";
@@ -112,7 +112,7 @@
          * @param integer $id
          * @return bool
          */
-        public static function isUserDataAnalyst ( $id )
+        public static function isDataAnalyst ( $id )
         {
             $sql_select = "SELECT ( CASE `UG`.`PHPVAR` = 'Data Analyst' WHEN 1 THEN 1 ELSE 0 END ) AS `Role` ";
             $sql_select.= "FROM `users` `U` INNER JOIN `users_group` `UG` ON `UG`.`ID` = `U`.`ROLE` AND `UG`.`ROLE` = 1 ";
@@ -128,7 +128,7 @@
          * @param integer $id
          * @return bool
          */
-        public static function isUserAccountant ( $id )
+        public static function isAccountant ( $id )
         {
             $sql_select = "SELECT ( CASE `UG`.`PHPVAR` = 'Accountant' WHEN 1 THEN 1 ELSE 0 END ) AS `Role` ";
             $sql_select.= "FROM `users` `U` INNER JOIN `users_group` `UG` ON `UG`.`ID` = `U`.`ROLE` AND `UG`.`ROLE` = 1 ";
@@ -144,9 +144,9 @@
          * @param integer $id
          * @return bool
          */
-        public static function isUserPublic ( $id )
+        public static function isUser ( $id )
         {
-            $sql_select = "SELECT ( CASE `UG`.`PHPVAR` = 'Public' WHEN 1 THEN 1 ELSE 0 END ) AS `Role` ";
+            $sql_select = "SELECT ( CASE `UG`.`PHPVAR` = 'User' WHEN 1 THEN 1 ELSE 0 END ) AS `Role` ";
             $sql_select.= "FROM `users` `U` INNER JOIN `users_group` `UG` ON `UG`.`ID` = `U`.`ROLE` AND `UG`.`ROLE` = 1 ";
             $sql_select.= "WHERE `U`.`ID` = :ID AND `U`.`DELETED` = 0 and `UG`.`DELETED` = 0";
             $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $id ] );
@@ -160,7 +160,7 @@
          * @param integer $id
          * @return bool
          */
-        public function setUserSuperAdmin ( $id )
+        public function setSuperAdmin ( $id )
         {
             // Clear User Permissions
             $sql_delete = "DELETE FROM `users_permission` WHERE `USERID` = :ID";
@@ -170,7 +170,7 @@
             // Insert records into table
             $sql_insert = "INSERT INTO `users_permission` ( `USERID`, `PERMISSIONID`, `PERMISSION_VAR`, `PERMISSION_VALUE` ) ";
             $sql_insert.= "SELECT :ID AS `USERID`, `P`.`ID`, `P`.`PHPVAR`, 1 AS `PERMISSION_VALUE` FROM `users_group` `P` ";
-            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',', array_keys ( $this->role_list["Super Admin"], 1, true ) ) . "' )";
+            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',\'', array_keys ( $this->role_list["Super Admin"], 1, true ) ) . "' )";
             $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $id ] );
             $sql_result = database::runInsertQuery ( $sql_insert, $sql_params, "ID" );
             if ( ! is_null( $sql_result ) )
@@ -182,7 +182,7 @@
          * @param integer $id
          * @return bool
          */
-        public function setUserAdmin ( $id )
+        public function setAdmin ( $id )
         {
             // Clear User Permissions
             $sql_delete = "DELETE FROM `users_permission` WHERE `USERID` = :ID";
@@ -192,7 +192,7 @@
             // Insert records into table
             $sql_insert = "INSERT INTO `users_permission` ( `USERID`, `PERMISSIONID`, `PERMISSION_VAR`, `PERMISSION_VALUE` ) ";
             $sql_insert.= "SELECT :ID AS `USERID`, `P`.`ID`, `P`.`PHPVAR`, 1 AS `PERMISSION_VALUE` FROM `users_group` `P` ";
-            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',', array_keys ( $this->role_list["Admin"], 1, true ) ) . "' )";
+            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',\'', array_keys ( $this->role_list["Admin"], 1, true ) ) . "' )";
             $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $id ] );
             $sql_result = database::runInsertQuery ( $sql_insert, $sql_params, "ID" );
             if ( ! is_null( $sql_result ) )
@@ -204,7 +204,7 @@
          * @param integer $id
          * @return bool
          */
-        public function setUserDataAnalyst ( $id )
+        public function setDataAnalyst ( $id )
         {
             // Clear User Permissions
             $sql_delete = "DELETE FROM `users_permission` WHERE `USERID` = :ID";
@@ -214,7 +214,7 @@
             // Insert records into table
             $sql_insert = "INSERT INTO `users_permission` ( `USERID`, `PERMISSIONID`, `PERMISSION_VAR`, `PERMISSION_VALUE` ) ";
             $sql_insert.= "SELECT :ID AS `USERID`, `P`.`ID`, `P`.`PHPVAR`, 1 AS `PERMISSION_VALUE` FROM `users_group` `P` ";
-            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',', array_keys ( $this->role_list["Data Analyst"], 1, true ) ) . "' )";
+            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',\'', array_keys ( $this->role_list["Data Analyst"], 1, true ) ) . "' )";
             $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $id ] );
             $sql_result = database::runInsertQuery ( $sql_insert, $sql_params, "ID" );
             if ( ! is_null( $sql_result ) )
@@ -226,7 +226,7 @@
          * @param integer $id
          * @return bool
          */
-        public function setUserAccountant ( $id )
+        public function setAccountant ( $id )
         {
             // Clear User Permissions
             $sql_delete = "DELETE FROM `users_permission` WHERE `USERID` = :ID";
@@ -236,7 +236,7 @@
             // Insert records into table
             $sql_insert = "INSERT INTO `users_permission` ( `USERID`, `PERMISSIONID`, `PERMISSION_VAR`, `PERMISSION_VALUE` ) ";
             $sql_insert.= "SELECT :ID AS `USERID`, `P`.`ID`, `P`.`PHPVAR`, 1 AS `PERMISSION_VALUE` FROM `users_group` `P` ";
-            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',', array_keys ( $this->role_list["Accountant"], 1, true ) ) . "' )";
+            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',\'', array_keys ( $this->role_list["Accountant"], 1, true ) ) . "' )";
             $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $id ] );
             $sql_result = database::runInsertQuery ( $sql_insert, $sql_params, "ID" );
             if ( ! is_null( $sql_result ) )
@@ -248,7 +248,7 @@
          * @param integer $id
          * @return bool
          */
-        public function setUserPublic ( $id )
+        public function setUser ( $id )
         {
             // Clear User Permissions
             $sql_delete = "DELETE FROM `users_permission` WHERE `USERID` = :ID";
@@ -258,7 +258,7 @@
             // Insert records into table
             $sql_insert = "INSERT INTO `users_permission` ( `USERID`, `PERMISSIONID`, `PERMISSION_VAR`, `PERMISSION_VALUE` ) ";
             $sql_insert.= "SELECT :ID AS `USERID`, `P`.`ID`, `P`.`PHPVAR`, 1 AS `PERMISSION_VALUE` FROM `users_group` `P` ";
-            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',', array_keys ( $this->role_list["Public"], 1, true ) ) . "' )";
+            $sql_insert.= "WHERE `P`.`PHPVAR` IN ( '" . implode ( '\',\'', array_keys ( $this->role_list["User"], 1, true ) ) . "' )";
             $sql_params = array ( ":ID" => [ "TYPE" => "INT", "VALUE" => $id ] );
             $sql_result = database::runInsertQuery ( $sql_insert, $sql_params, "ID" );
             if ( ! is_null( $sql_result ) )

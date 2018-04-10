@@ -18,7 +18,7 @@
         {
             session_auth ( );
 
-            if ( ! Role::isUserSuperAdmin ( $_SESSION ["USER_ID"] ) )
+            if ( ! Role::isSuperAdmin ( $_SESSION ["USER_ID"] ) )
             {
                 $this->canAccess = false;
                 setFlashMessage ( "Access Denied!", "You do not have permission to access this page.", 4 );
