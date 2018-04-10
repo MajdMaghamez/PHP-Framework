@@ -75,7 +75,7 @@
         {
             $tabs   = $this->getTabs ( );
 
-            $html   = $tabs . "<label class=\"form-check-label\" for=\"" . $this->getId ( ) . "\">";
+            $html   = $tabs . "\t<label class=\"form-check-label\" for=\"" . $this->getId ( ) . "\">";
             $html   .= $this->getIcon ( ) . " ";
             if ( $this->isShowStar ( ) ) { $html   .= "<span class=\"red\">*</span> "; }
             $html   .= $this->getLabel ( ) . "</label>\n";
@@ -89,11 +89,11 @@
         {
             $tabs   = $this->getTabs ( );
 
-            $html   = $tabs . "<input type=\"hidden\" ";
+            $html   = $tabs . "\t<input type=\"hidden\" ";
             $html   .= "class=\"" . implode ( " ", $this->getClassList ( ) ) . "\" ";
             $html   .= "name=\"" . $this->getName ( ) . "\" ";
             $html   .= "value=\"0\"/>\n";
-            $html   .= $tabs . "<input type=\"checkbox\" class=\"form-check-input\" ";
+            $html   .= $tabs . "\t<input type=\"checkbox\" class=\"form-check-input\" ";
             $html   .= "id=\"" . $this->getId ( ) . "\" ";
             $html   .= "name=\"" . $this->getName ( ) . "\" ";
             $html   .= "value=\"1\" ";
@@ -122,8 +122,8 @@
 
             $html   .= $this->renderBootstrapField ( );
             $html   .= $this->renderBootstrapLabel ( );
-            $html   .= $tabs . "<span class=\"error\">{error_" . $this->getId ( ) . "}</span>\n";
-            $html   .= "</div>\n";
+            $html   .= $tabs . "\t<span class=\"error\">{error_" . $this->getId ( ) . "}</span>\n";
+            $html   .= $tabs . "</div>\n";
             return $html;
         }
 

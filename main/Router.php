@@ -8,6 +8,7 @@
     use main\userControl\userQuestions;
     use main\controllers\devControl\main;
     use main\controllers\usersControl\usersList;
+    use main\controllers\usersControl\usersCreate;
     use main\controllers\homeControl\homeController;
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
@@ -47,6 +48,7 @@
 
             // Users route
             $this->routes["Users/List"]                 = usersList::class;
+            $this->routes["Users/Add"]                  = usersCreate::class;
 
             // Home route
             $this->routes["Home"]                       = homeController::class;

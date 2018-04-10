@@ -1,7 +1,6 @@
 <?php namespace main\controllers\usersControl;
 
-    use main\models\Role;
-    use main\storage\database;
+    use main\models\Permission;
     use main\controllers\Controller;
     use main\layouts\bootstrap\datatables;
     use main\frameworkHelper\datatableHelper;
@@ -20,7 +19,7 @@
         {
             session_auth ( );
 
-            if ( Role::isUserAdmin ( $_SESSION ["USER_ID"] ) || Role::isUserSuperAdmin ( $_SESSION ["USER_ID"] ) )
+            if ( Permission::getUserPermission ( $_SESSION["USER_ID"], "USER_VIEW" ) )
             {
                 $this->canAccess = true;
             }
@@ -84,7 +83,7 @@
         {
             $table      = 'users';
             $primary    = 'ID';
-            $this->userRoles = $this->getRoleList();
+            $this->userRoles = self::getRoleList();
 
             http_response_code( 404 );
 
@@ -146,13 +145,4 @@
             die ( json_encode( array( ) ) );
         }
 
-        /**
-         * @return array
-         */
-        protected function getRoleList ( )
-        {
-            $sql_select = "SELECT `PHPVAR` FROM `users_group` WHERE `ROLE` = 1 AND `DELETED` = 0";
-            $sql_result = database::runSelectQuery ( $sql_select );
-            return $sql_result;
-        }
     }

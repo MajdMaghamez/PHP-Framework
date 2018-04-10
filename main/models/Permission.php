@@ -84,7 +84,7 @@
             );
             $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
             if ( !empty ( $sql_result ) )
-                return boolval( $sql_select [0]["PERMISSION_VALUE"] );
+                return boolval( $sql_result [0]["PERMISSION_VALUE"] );
             return false;
         }
     }
