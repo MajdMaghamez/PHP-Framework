@@ -99,7 +99,7 @@
                     'dt'    => 3,
                     'formatter' => function ( $d, $row )
                     {
-                        return $this->userRoles[$d -1]["PHPVAR"];
+                        return $this->userRoles[$d -1]["NAME"];
                     }
                 ),
 

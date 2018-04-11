@@ -1,6 +1,7 @@
 <?php namespace main\controllers\usersControl;
 
     use main\models\User;
+    use main\models\Role;
     use main\gui\guiCreator;
     use main\models\Permission;
     use main\layouts\bootstrap\main;
@@ -26,113 +27,120 @@
             if ( Permission::getUserPermission( $_SESSION ["USER_ID"], "USER_ADD" ) )
             {
                 $this->canAccess = true;
+
+                $Tabs       = "\t\t\t\t\t\t\t\t";
+                $components =
+                    [
+                        0 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"        => "fields",
+                                        "class"         => "textField",
+                                        "label"         => "First Name",
+                                        "name"          => "firstname",
+                                        "id"            => "firstname",
+                                        "setRequired"   => true,
+                                        "setFieldSize"  => 1,
+                                        "setTabs"       => $Tabs
+                                    ]
+                            ],
+                        1 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"        => "fields",
+                                        "class"         => "textField",
+                                        "label"         => "Last Name",
+                                        "name"          => "lastname",
+                                        "id"            => "lastname",
+                                        "setRequired"   => true,
+                                        "setFieldSize"  => 1,
+                                        "setTabs"       => $Tabs
+                                    ]
+                            ],
+                        2 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"        => "fields",
+                                        "class"         => "emailField",
+                                        "label"         => "Email Address",
+                                        "name"          => "email",
+                                        "id"            => "email",
+                                        "setRequired"   => true,
+                                        "setFieldSize"  => 1,
+                                        "setTabs"       => $Tabs
+                                    ]
+                            ],
+                        3 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"        => "fields",
+                                        "class"         => "selectField",
+                                        "label"         => "Choose Role",
+                                        "name"          => "role",
+                                        "id"            => "role",
+                                        "setRequired"   => true,
+                                        "setFieldSize"  => 1,
+                                        "setTabs"       => $Tabs
+                                    ]
+                            ],
+                        4 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"        => "fields",
+                                        "class"         => "passwordField",
+                                        "label"         => "Password",
+                                        "name"          => "password",
+                                        "id"            => "password",
+                                        "setFieldSize"  => 1,
+                                        "setTabs"       => $Tabs
+                                    ]
+                            ],
+                        5 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"            => "fields",
+                                        "class"             => "checkboxField",
+                                        "label"             => "Force user to change their password post Login",
+                                        "name"              => "forcePassword",
+                                        "id"                => "forcePassword",
+                                        "setRenderInline"   => true,
+                                        "setTabs"           => $Tabs
+                                    ]
+                            ],
+                        6 =>
+                            [
+                                0 =>
+                                    [
+                                        "parent"        => "buttons",
+                                        "class"         => "formButton",
+                                        "label"         => "Add User",
+                                        "id"            => "addUser",
+                                        "type"          => 1,
+                                        "setFormItem"   => true,
+                                        "setTabs"       => $Tabs
+                                    ]
+                            ]
+                    ];
+
+                $arrComponents  = new guiCreator( $components );
+                $this->arrComponents = $arrComponents->getContainer ( );
+
+                foreach ( self::getRoleList ( ) as $index => $role )
+                {
+                    $this->arrComponents[3][0]->setOptions ( $role["ID"], $role["NAME"] );
+                }
             }
             else
             {
                 setFlashMessage( "Access Denied!", "You do not have permission to access this page", 4 );
             }
 
-            $Tabs       = "\t\t\t\t\t\t\t\t";
-            $components =
-            [
-                0 =>
-                [
-                    0 =>
-                    [
-                        "parent"        => "fields",
-                        "class"         => "textField",
-                        "label"         => "First Name",
-                        "name"          => "firstname",
-                        "id"            => "firstname",
-                        "setRequired"   => true,
-                        "setTabs"       => $Tabs
-                    ]
-                ],
-                1 =>
-                [
-                    0 =>
-                    [
-                        "parent"        => "fields",
-                        "class"         => "textField",
-                        "label"         => "Last Name",
-                        "name"          => "lastname",
-                        "id"            => "lastname",
-                        "setRequired"   => true,
-                        "setTabs"       => $Tabs
-                    ]
-                ],
-                2 =>
-                [
-                    0 =>
-                    [
-                        "parent"        => "fields",
-                        "class"         => "emailField",
-                        "label"         => "Email Address",
-                        "name"          => "email",
-                        "id"            => "email",
-                        "setRequired"   => true,
-                        "setTabs"       => $Tabs
-                    ]
-                ],
-                3 =>
-                [
-                    0 =>
-                    [
-                        "parent"        => "fields",
-                        "class"         => "selectField",
-                        "label"         => "Choose Role",
-                        "name"          => "role",
-                        "id"            => "role",
-                        "setRequired"   => true,
-                        "setTabs"       => $Tabs
-                    ]
-                ],
-                4 =>
-                [
-                    0 =>
-                    [
-                        "parent"        => "fields",
-                        "class"         => "passwordField",
-                        "label"         => "Password",
-                        "name"          => "password",
-                        "id"            => "password",
-                        "setTabs"       => $Tabs
-                    ]
-                ],
-                5 =>
-                [
-                    0 =>
-                    [
-                        "parent"            => "fields",
-                        "class"             => "checkboxField",
-                        "label"             => "Force user to change their password post Login",
-                        "name"              => "forcePassword",
-                        "id"                => "forcePassword",
-                        "setRenderInline"   => true,
-                        "setTabs"           => $Tabs
-                    ]
-                ],
-                6 =>
-                [
-                    0 =>
-                    [
-                        "parent"        => "buttons",
-                        "class"         => "formButton",
-                        "label"         => "Add User",
-                        "id"            => "addUser",
-                        "type"          => 1,
-                        "setTabs"       => $Tabs
-                    ]
-                ]
-            ];
-
-            $arrComponents  = new guiCreator( $components );
-            $this->arrComponents = $arrComponents->getContainer ( );
-
-            foreach ( self::getRoleList ( ) as $index => $role )
-            {
-                $this->arrComponents[3][0]->setOptions ( $role["ID"], $role["PHPVAR"] );
-            }
         }
 
         /**
@@ -144,7 +152,7 @@
             $formMethod = "post";
             $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Add";
             $formTabs   = "\t\t\t\t\t\t";
-            $html   = bootstrapForm::renderInline( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
+            $html   = bootstrapForm::renderStatic( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
             return $html;
         }
 
@@ -167,8 +175,16 @@
             $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
             $html   .= flash_message ( "\t\t\t\t\t" );
             $html   .= "\t\t\t\t\t<div class=\"box\">\n";
-            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Adding Users</h4><hr/>\n";
+            $html   .= "\t\t\t\t\t<h4><i class=\"fas fa-chevron-circle-right\"></i> Adding New User</h4><hr/>\n";
+            $html   .= "\t\t\t\t\t<div class=\"row\">\n";
+            $html   .= "\t\t\t\t\t\t<div class=\"col-md-6 col-lg-6 col-xl-6\">\n";
             if ( ! $errors ) { $html .=  $cacheManager->read ( $this->arrComponents ); }
+            $html   .= "\t\t\t\t\t\t</div>\n";
+            $html   .= "\t\t\t\t\t\t<div class=\"col-md-6 col-lg-6 col-xl-6\">\n";
+            $html   .= "\t\t\t\t\t\t\t<div id=\"roleDetails\">\n";
+            $html   .= "\t\t\t\t\t\t\t</div>\n";
+            $html   .= "\t\t\t\t\t\t</div>\n";
+            $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
@@ -183,14 +199,14 @@
             $html   = "<!DOCTYPE html>\n";
             $html   .= "<html lang=\"en\">\n";
             $html   .= "\t<head>\n";
-            $html   .= $layoutTemplate->render_header ( [ "TITLE" => "Create A User" ], ".page { margin-top: 15px; }" );
+            $html   .= $layoutTemplate->render_header ( [ "TITLE" => "Create A User" ], ".page { margin-top: 15px; } tbody {overflow-y:scroll; height: 100px; width:100%;}" );
             $html   .= "\t</head>\n";
             $html   .= "\t<body>\n";
             $html   .= $layoutTemplate->render_navbar ( );
             $html   .= "\t\t<div class=\"container page\">\n";
             ( $this->canAccess ) ? $html .= $this->renderPage ( ) : $html .= flash_message( "\t\t\t" );
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ) );
+            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderRoleDetailsJS ( ) );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 
@@ -223,7 +239,7 @@
             $Data ['last']       = $this->arrComponents[1][0]->getValue ( );
             $Data ['email']      = $this->arrComponents[2][0]->getValue ( );
             $Data ['role']       = $this->arrComponents[3][0]->getValue ( );
-
+            $Data ['changePswd'] = intval ( $this->arrComponents[5][0]->isChecked ( ) );
 
             if ( ! empty ( $this->arrComponents[4][0]->getValue ( ) ) )
             {
@@ -234,14 +250,6 @@
                 $Data ['password'] = randomToken();
             }
 
-            if ( $this->arrComponents[5][0]->getValue ( ) == 'checked' )
-            {
-                $Data ['changePswd'] = 1;
-            }
-            else
-            {
-                $Data ['changePswd'] = 0;
-            }
 
             // check if user exists
             $User       = new User( [ "EMAIL", $Data ['email'] ] );

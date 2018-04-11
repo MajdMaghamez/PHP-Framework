@@ -24,7 +24,7 @@
         {
             if ( isset ( $_SESSION ["USER_NAME"] ) ) $this->user_name = $_SESSION ["USER_NAME"];
             if ( isset ( $_SESSION ["USER_ID"] ) ) $this->user_id = $_SESSION ["USER_ID"];
-            if ( isset ( $_SESSION ["USER_ROLE"] ) ) $this->user_role = Role::getUserRoleName( $_SESSION ["USER_ROLE"] );
+            if ( isset ( $_SESSION ["USER_ROLE"] ) ) $this->user_role = Role::getRoleName( $_SESSION ["USER_ROLE"] );
 
             $this->parent = $parent;
             $this->child = $child;

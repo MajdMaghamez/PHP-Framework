@@ -105,8 +105,41 @@ EOT;
          */
         public static function getRoleList ( )
         {
-            $sql_select = "SELECT `ID`, `PHPVAR` FROM `users_group` WHERE `ROLE` = 1 AND `DELETED` = 0";
+            $sql_select = "SELECT `ID`, `NAME` FROM `users_group` WHERE `ROLE` = 1 AND `DELETED` = 0";
             $sql_result = database::runSelectQuery ( $sql_select );
             return $sql_result;
         }
+
+        public static function renderRoleDetailsJS ( )
+        {
+            $url = $GLOBALS ['RELATIVE_TO_ROOT'] . '/Users/Role/Details/';
+            $JavaScript = <<<EOT
+            
+            onSuccess = function ( data )
+            {
+                var html = "<h5>" + data.NAME + "</h5>";
+                html += "<p>" + data.DESCRIPTION + "</p><hr/>";
+                html += "<table class=\"table table-sm table-responsive-sm\"><thead><tr><th></th><th>Name</th><th>Description</th></tr></thead><tbody>";
+                $.each ( data.PERMISSIONS, function ( index, element ) {
+                    html += "<tr><td><i class=\"far fa-check-square\"></i></td><td>" + element.NAME + "</td><td>" + element.DESCRIPTION + "</td></tr>";
+                });
+                html += "</tbody></table>";
+                
+                $(html).appendTo ('#roleDetails');
+            }
+            
+            \$('#role').change ( function ( ) {
+                var role = \$(this).val();
+                \$('#roleDetails').html ( '' );
+                if ( role > 0 )
+                {
+                    \$.get ( "$url" + role, onSuccess, "json" );
+                }
+            });
+            
+EOT;
+            return $JavaScript;
+
+        }
+
     }

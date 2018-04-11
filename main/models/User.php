@@ -861,7 +861,7 @@ EOT;
 
                 // 2) set their permissions
                 $Roles  = new Role();
-                $Role_name = "set" . str_replace ( ' ', '', Role::getUserRoleName( $user['role'] ) );
+                $Role_name = "set" . str_replace ( ' ', '', Role::getRoleName( $user['role'] ) );
 
                 if ( method_exists( $Roles, $Role_name) )
                 {
