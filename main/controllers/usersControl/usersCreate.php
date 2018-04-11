@@ -268,7 +268,7 @@
                 return $User->sendVerificationEmail();
             }
 
-            setFlashMessage ( "Error!", "We were unable to create your account, try again later.", 4 );
+            setFlashMessage ( "Error!", "We were unable to create user account, try again later.", 4 );
             return false;
 
         }

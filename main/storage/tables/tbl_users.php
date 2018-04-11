@@ -63,8 +63,8 @@
             [
                 "COLUMN_NAME"		=> "`ANSWER1`",
                 "COLUMN_TYPE"		=> "varchar(255)",
-                "COLUMN_DEFAULT"	=> "",
-                "IS_NULLABLE"		=> "not null",
+                "COLUMN_DEFAULT"	=> "null",
+                "IS_NULLABLE"		=> "null",
                 "EXTRA"				=> ""
             ],
 
@@ -81,8 +81,8 @@
             [
                 "COLUMN_NAME"		=> "`ANSWER2`",
                 "COLUMN_TYPE"		=> "varchar(255)",
-                "COLUMN_DEFAULT"	=> "",
-                "IS_NULLABLE"		=> "not null",
+                "COLUMN_DEFAULT"	=> "null",
+                "IS_NULLABLE"		=> "null",
                 "EXTRA"				=> ""
             ],
 
