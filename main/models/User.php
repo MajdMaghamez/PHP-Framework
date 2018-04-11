@@ -785,8 +785,8 @@
             $ProfilePicture_New     = base64StringEncode ( microtime ( true ) ) . ".png";
 
             $sql_insert = <<<EOT
-            INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `CREATED`, `VERIFY_TOKEN`, `HOME_DIR`, `PICTURE` ) 
-            VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, CURRENT_TIMESTAMP ( ), :VERIFY_TOKEN, '/Home', :PICTURE );
+            INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `QUESTIONID1`, `QUESTIONID2`, `ANSWER1`, `ANSWER2`, `ROLE`, `CREATED`, `VERIFY_TOKEN`, `HOME_DIR`, `PICTURE` ) 
+            VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :QUESTIONID1, :QUESTIONID2, :ANSWER1, :ANSWER2, 4, CURRENT_TIMESTAMP ( ), :VERIFY_TOKEN, '/Home', :PICTURE );
 EOT;
             $sql_params = array
             (
@@ -863,7 +863,14 @@ EOT;
                 $Roles  = new Role();
                 $Role_name = "set" . str_replace ( ' ', '', Role::getUserRoleName( $user['role'] ) );
 
-                $Roles->$Role_name ( $sql_results );
+                if ( method_exists( $Roles, $Role_name) )
+                {
+                    $Roles->$Role_name ( $sql_results );
+                }
+                else
+                {
+                    $Roles->setUser( $sql_results );
+                }
 
                 // 3) If change password flag is set then forward them every time they login to the change password screen
                 if ( $user['changePswd'] )

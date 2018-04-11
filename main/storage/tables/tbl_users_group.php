@@ -32,6 +32,15 @@
                 "EXTRA"				=> ""
             ],
 
+            "NAME"              =>
+            [
+                "COLUMN_NAME"       => "`NAME`",
+                "COLUMN_TYPE"       => "varchar(50)",
+                "COLUMN_DEFAULT"    => "",
+                "IS_NULLABLE"       => "not null",
+                "EXTRA"             => ""
+            ],
+
             "DESCRIPTION"	    =>
             [
                 "COLUMN_NAME"		=> "`DESCRIPTION`",

@@ -307,41 +307,6 @@
          * @param string $active
          * @return array
          */
-        public static function getAccountantNavigation ( $user_name, $active )
-        {
-            $main = array ( );
-            array_push( $main, self::Home( $active ) );
-            array_push( $main, self::Reports( $active ) );
-            array_push( $main, self::Help( $active ) );
-
-            $user = self::User( $user_name, $active );
-            array_push( $user["children"], self::MyAccount( $active ) );
-            array_push( $user["children"], self::Messages( $active ) );
-            array_push( $user["children"], self::Logout( ) );
-
-            array_push( $main, $user );
-
-            return $main;
-        }
-
-        /**
-         * @param string $active
-         * @return array
-         */
-        public static function getAccountantSubNavigation ( $active )
-        {
-            $sub = array ( );
-            array_push( $sub, self::Dashboard( $active ) );
-
-            return $sub;
-        }
-
-
-        /**
-         * @param string $user_name
-         * @param string $active
-         * @return array
-         */
         public static function getUserNavigation ( $user_name, $active )
         {
             $main = array ( );

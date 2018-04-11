@@ -102,7 +102,7 @@
             
             var onSuccess = function(data, status)
             {
-                if ( status = 'success' )
+                if ( status == 'success' )
                 {
                     \$('#ProfileUploader').on('hidden.bs.modal',function ( )
                     {

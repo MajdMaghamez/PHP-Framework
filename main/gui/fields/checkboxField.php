@@ -110,19 +110,22 @@
         public function renderBootstrap ( )
         {
             $tabs   = $this->getTabs ( );
+            $html   = $tabs . "<div class=\"form-group\">\n";
 
             if ( $this->isRenderInline ( ) )
             {
-                $html   = $tabs . "<div class=\"form-check form-check-inline\">\n";
+                $html   .= $tabs . "\t<div class=\"form-check form-check-inline\">\n";
             }
             else
             {
-                $html   = $tabs . "<div class=\"form-check\">\n";
+                $html   .= $tabs . "\t<div class=\"form-check\">\n";
             }
 
             $html   .= $this->renderBootstrapField ( );
             $html   .= $this->renderBootstrapLabel ( );
             $html   .= $tabs . "\t<span class=\"error\">{error_" . $this->getId ( ) . "}</span>\n";
+            $html   .= $tabs . "\t</div>\n";
+
             $html   .= $tabs . "</div>\n";
             return $html;
         }

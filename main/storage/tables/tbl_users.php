@@ -171,7 +171,7 @@
             [
                 "COLUMN_NAME"       => "`ROLE`",
                 "COLUMN_TYPE"       => "tinyint(2)",
-                "COLUMN_DEFAULT"    => "default 5",
+                "COLUMN_DEFAULT"    => "default 4",
                 "IS_NULLABLE"       => "not null",
                 "EXTRA"             => ""
             ],
