@@ -34,7 +34,7 @@
             $html    = $tabs . "\t<div class=\"box\">\n";
 
             $html   .= $tabs . "\t\t<div class=\"profile-pic center\">\n";
-            $html   .= $tabs . "\t\t\t<img id=\"imgProfile\" src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $image . "\" height=\"100\" width=\"100\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
+            $html   .= $tabs . "\t\t\t<img id=\"imgProfile\" src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/cache/users/" . $image . "\" height=\"133\" width=\"133\" alt=\"My Profile Picture\" style=\"border-radius: 100%\" />\n";
             $html   .= $tabs . "\t\t\t<div class=\"editProfilePic\">\n";
             $html   .= $tabs . "\t\t\t\t<button type=\"button\" class=\"btn btn-outline-primary\" data-toggle=\"modal\" data-target=\"#ProfileUploader\"><i class=\"far fa-image\"></i></button>\n";
             $html   .= $tabs . "\t\t\t</div>\n";

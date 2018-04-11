@@ -62,7 +62,7 @@
             $oldPic = $GLOBALS["CACHE_FOLDER"] . "/users/" . $this->user->getProfilePicture();
 
             // 2) process image resizing
-            $image = new imageResizer( $_FILES['upload']['tmp_name'], null, 100, 100, false, $newPic, true, 100, $oldPic, true );
+            $image = new imageResizer( $_FILES['upload']['tmp_name'], null, 133, 133, false, $newPic, true, 100, $oldPic, true );
 
             if ( $image->process() )
             {
