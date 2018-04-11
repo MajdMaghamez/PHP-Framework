@@ -1,7 +1,6 @@
 <?php namespace main;
 
     use main\controllers\init;
-    use main\controllers\notFound;
     use main\userControl\userProfile;
     use main\userControl\userAccount;
     use main\userControl\userPassword;
@@ -13,6 +12,7 @@
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
     use main\controllers\authControl\VerifyController;
+    use main\controllers\usersControl\usersRoleDetails;
     use main\controllers\authControl\RegisterController;
     use main\controllers\authControl\ResetPassController;
     use main\controllers\authControl\ResetEmailController;
@@ -49,6 +49,7 @@
             // Users route
             $this->routes["Users/List"]                 = usersList::class;
             $this->routes["Users/Add"]                  = usersCreate::class;
+            $this->routes["Users/Role/Details"]         = usersRoleDetails::class;
 
             // Home route
             $this->routes["Home"]                       = homeController::class;
@@ -104,7 +105,8 @@
             }
             else
             {
-                ( new notFound ( ) )->onRequestStart ( );
+                http_response_code (404 );
+                redirect( '/404.html' );
             }
         }
     }

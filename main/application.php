@@ -249,7 +249,7 @@
 
     /**
      * @param $data
-     * @return false|int
+     * @return false|int index
      */
     function findInURL ( $data )
     {
