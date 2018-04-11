@@ -31,11 +31,10 @@
                                 [
                                     "parent"        => "fields",
                                     "class"         => "passwordField",
-                                    "label"         => "Password",
-                                    "name"          => "password",
-                                    "id"            => "password",
+                                    "label"         => "Current Password",
+                                    "name"          => "currentPassword",
+                                    "id"            => "currentPassword",
                                     "setRequired"   => true,
-                                    "setIcon"       => "",
                                     "setTabs"       => $Tabs
                                 ]
                         ],
@@ -45,16 +44,28 @@
                                 [
                                     "parent"        => "fields",
                                     "class"         => "passwordField",
-                                    "label"         => "Password Confirmation",
-                                    "name"          => "confPassword",
-                                    "id"            => "confPassword",
+                                    "label"         => "New Password",
+                                    "name"          => "password",
+                                    "id"            => "password",
                                     "setRequired"   => true,
-                                    "setIcon"       => "",
-                                    "setEqualTo"    => "password",
                                     "setTabs"       => $Tabs
                                 ]
                         ],
                     2 =>
+                        [
+                            0 =>
+                                [
+                                    "parent"        => "fields",
+                                    "class"         => "passwordField",
+                                    "label"         => "Confirm Password",
+                                    "name"          => "confPassword",
+                                    "id"            => "confPassword",
+                                    "setRequired"   => true,
+                                    "setEqualTo"    => "password",
+                                    "setTabs"       => $Tabs
+                                ]
+                        ],
+                    3 =>
                         [
                             0 =>
                                 [
@@ -156,6 +167,7 @@
             // clear the password fields
             $this->arrComponents[0][0]->setValue ( '' );
             $this->arrComponents[1][0]->setValue ( '' );
+            $this->arrComponents[2][0]->setValue ( '' );
 
             $this->onGet();
         }
@@ -165,8 +177,26 @@
          */
         protected function updatePassword ( )
         {
-            $password       = $this->arrComponents[0][0]->getValue ( );
-            $confPassword   = $this->arrComponents[1][0]->getValue ( );
+            $currentPassword= $this->arrComponents[0][0]->getValue ( );
+            $password       = $this->arrComponents[1][0]->getValue ( );
+            $confPassword   = $this->arrComponents[2][0]->getValue ( );
+
+            $user   = new User( ["ID", $_SESSION ["USER_ID"] ] );
+
+            // check if current password equal to the password in database
+            if( ! $user->isAuth ( $currentPassword ) )
+            {
+                $Attempt = $user->incrementFailed();
+                // check for failed attempts
+                if ( $Attempt >= $GLOBALS ["MAX_FAILED"] )
+                {
+                    // disable user account
+                    $user->setActive( false );
+                    redirect( '/Logout' );
+                }
+                setFlashMessage( 'Incorrect Password!', 'Current Password is incorrect, attempt ' . $Attempt . ' out of ' . $GLOBALS ["MAX_FAILED"], 4 );
+                return false;
+            }
 
             // check if password and confirm password are equal
             if ( $password != $confPassword )
@@ -176,7 +206,7 @@
             }
 
             // update password
-            $user   = new User( ["ID", $_SESSION ["USER_ID"] ] );
+
             return $user->setPassword( $password );
         }
     }

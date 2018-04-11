@@ -270,18 +270,25 @@
          */
         public function setPassword ( $password )
         {
-            $sql_update = "UPDATE `users` SET `PASSWORD` = :PASSWORD, `FAILED` = 0, `ACTIVE` = 1, `PASSWORD_TOKEN` = NULL, `UPDATED` = CURRENT_TIMESTAMP () WHERE `ID` = :ID";
+            $sql_update = "UPDATE `users` AS `U` INNER JOIN `users_group` AS `UG` ON `UG`.`ID` = `U`.`ROLE` AND `UG`.`ROLE` = 1 AND `UG`.`DELETED` = 0 ";
+            $sql_update.= "SET `U`.`PASSWORD` = :PASSWORD, `U`.`CHANGE_PASSWORD` = 0, `U`.`HOME_DIR` = `UG`.`HOMEPAGE`, `U`.`FAILED` = 0, `U`.`ACTIVE` = 1, `U`.`PASSWORD_TOKEN`= NULL, ";
+            $sql_update.= "`U`.`UPDATED` = CURRENT_TIMESTAMP ( ) WHERE `U`.`ID` = :ID";
             $sql_params = array ( ":PASSWORD" => [ "TYPE" => "STR", "VALUE" => password ( $password ) ], ":ID" => [ "TYPE" => "INT", "VALUE" => $this->getID() ] );
             $sql_result = database::runUpdateQuery ( $sql_update, $sql_params );
 
             if ( $sql_result > 0 )
             {
                 $this->object ["PASSWORD"] = password ( $password );
+                $this->object ["CHANGE_PASSWORD"] = 0;
+                $this->object ["FAILED"] = 0;
+                $this->object ["ACTIVE"] = 1;
+                $this->object ["PASSWORD_TOKEN"] = null;
                 return true;
             }
 
             return false;
         }
+
 
         /**
          * @param $password
@@ -857,6 +864,10 @@ EOT;
                 $Role_name = "set" . str_replace ( ' ', '', Role::getUserRoleName( $user['role'] ) );
 
                 $Roles->$Role_name ( $sql_results );
+
+                // 3) If change password flag is set then forward them every time they login to the change password screen
+                if ( $user['changePswd'] )
+                    $this->setHomePage( '/User/Password' );
 
                 return $sql_results;
             }

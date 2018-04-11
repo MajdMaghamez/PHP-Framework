@@ -25,57 +25,57 @@
                 [
                     0 =>
                         [
-                            0 =>
-                                [
-                                    "parent"        => "fields",
-                                    "class"         => "passwordField",
-                                    "label"         => "New Password",
-                                    "name"          => "password",
-                                    "id"            => "password",
-                                    "setRequired"   => true,
-                                    "setIcon"       => "<i class=\"fas fa-key\"></i>",
-                                    "setTabs"       => $Tabs
-                                ]
+                        0 =>
+                        [
+                            "parent"        => "fields",
+                            "class"         => "passwordField",
+                            "label"         => "New Password",
+                            "name"          => "password",
+                            "id"            => "password",
+                            "setRequired"   => true,
+                            "setIcon"       => "<i class=\"fas fa-key\"></i>",
+                            "setTabs"       => $Tabs
+                        ]
                         ],
                     1 =>
                         [
-                            0 =>
-                                [
-                                    "parent"        => "fields",
-                                    "class"         => "passwordField",
-                                    "label"         => "Confirm Password",
-                                    "name"          => "confPassword",
-                                    "id"            => "confPassword",
-                                    "setRequired"   => true,
-                                    "setEqualTo"    => "password",
-                                    "setIcon"       => "<i class=\"fas fa-key\"></i>",
-                                    "setTabs"       => $Tabs
-                                ]
+                        0 =>
+                        [
+                            "parent"        => "fields",
+                            "class"         => "passwordField",
+                            "label"         => "Confirm Password",
+                            "name"          => "confPassword",
+                            "id"            => "confPassword",
+                            "setRequired"   => true,
+                            "setEqualTo"    => "password",
+                            "setIcon"       => "<i class=\"fas fa-key\"></i>",
+                            "setTabs"       => $Tabs
+                        ]
                         ],
                     2 =>
+                    [
+                        0 =>
                         [
-                            0 =>
-                                [
-                                    "parent"        => "links",
-                                    "class"         => "link",
-                                    "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login",
-                                    "label"         => "Back To Login",
-                                    "setFormItem"   => true,
-                                    "setOutLine"    => true,
-                                    "setLikeBtn"    => true,
-                                    "setTabs"       => $Tabs
-                                ],
-                            1 =>
-                                [
-                                    "parent"        => "buttons",
-                                    "class"         => "formButton",
-                                    "label"         => "Submit",
-                                    "id"            => "reset",
-                                    "type"          => 1,
-                                    "setClass"      => "right",
-                                    "setTabs"       => $Tabs
-                                ]
+                            "parent"        => "links",
+                            "class"         => "link",
+                            "href"          => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Login",
+                            "label"         => "Back To Login",
+                            "setFormItem"   => true,
+                            "setOutLine"    => true,
+                            "setLikeBtn"    => true,
+                            "setTabs"       => $Tabs
+                        ],
+                        1 =>
+                        [
+                            "parent"        => "buttons",
+                            "class"         => "formButton",
+                            "label"         => "Submit",
+                            "id"            => "reset",
+                            "type"          => 1,
+                            "setClass"      => "right",
+                            "setTabs"       => $Tabs
                         ]
+                    ]
                 ];
 
             $arrComponent = new guiCreator ( $components );
@@ -89,7 +89,7 @@
         {
             $formId     = "form-parsley";
             $formMethod = "post";
-            $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset/Password/token/{TokenValue}";
+            $formAction = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Reset/Password/Token/{TokenValue}";
             $formTabs   = "\t\t\t\t\t\t";
             $html       = bootstrapForm::renderStatic ( $this->arrComponents, $formTabs, $formId, $formMethod, $formAction );
             return $html;
@@ -105,7 +105,7 @@
             $errors = false;
 
             // insert token into the form url
-            $TOKEN  = findInURL( 'token' );
+            $TOKEN  = findInURL( 'Token' );
             $TOKEN > 0 ? $TOKEN++ : $TOKEN = 0;
             $URL    = getURLParams();
             $TOKEN_VAL = sanitize_string( $URL[$TOKEN], '/^[a-z0-9]+$/' );
@@ -168,7 +168,7 @@
          */
         protected function updatePassword ( )
         {
-            $TOKEN  = findInURL( 'token' );
+            $TOKEN  = findInURL( 'Token' );
             $TOKEN > 0 ? $TOKEN++ : $TOKEN = 0;
             $URL    = getURLParams();
             $TOKEN_VAL = sanitize_string( $URL[$TOKEN], '/^[a-z0-9]+$/' );
@@ -180,8 +180,8 @@
                 return false;
             }
 
-            $data ['token'] = $TOKEN_VAL;
-            $user = new user ( [ 'PASSWORD_TOKEN', $data ['token'] ] );
+            $data ['Token'] = $TOKEN_VAL;
+            $user = new user ( [ 'PASSWORD_TOKEN', $data ['Token'] ] );
 
             // check if the user exists
             if ( is_null ( $user->getUser ( ) ) )
