@@ -158,6 +158,13 @@
                 return false;
             }
 
+            // check if user is deleted.
+            if ( $user->isDeleted() )
+            {
+                setFlashMessage( "Deleted User!", "Failed to Reset!", 4 );
+                return false;
+            }
+
             // generate reset token
             if ( ! $user->setPasswordToken ( randomToken ( ) ) )
             {

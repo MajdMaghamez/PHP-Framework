@@ -222,6 +222,13 @@
                 return false;
             }
 
+            // check if user is deleted
+            if ( $user->isDeleted() )
+            {
+                setFlashMessage( "User Found!", "You have entered an email address that is already associated with an account.", 5 );
+                return false;
+            }
+
             // save the user in database and return their ID
             $data ['id'] = $user->store_public ( $data );
 

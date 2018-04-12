@@ -202,6 +202,13 @@
                 return false;
             }
 
+            // check if the user is deleted
+            if ( $user->isDeleted ( ) )
+            {
+                setFlashMessage( "Deleted User!", "Failed to Login", 4 );
+                return false;
+            }
+
             // check if the user has an active account
             if ( ! $user->isActive ( ) )
             {
