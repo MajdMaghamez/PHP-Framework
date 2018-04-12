@@ -6,7 +6,9 @@
 
     class usersDelete extends Controller
     {
-
+        protected $canAccess = false;
+        protected $canEdit   = false;
+        protected $canAdd    = false;
         protected $canDelete = false;
 
         /**
@@ -17,24 +19,26 @@
         {
             session_auth ( );
 
-            if ( Permission::getUserPermission( $_SESSION["USER_ID"], "USER_DELETE") )
-                $this->canDelete = true;
+            $this->canAccess = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_VIEW" );
+            $this->canAdd    = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_ADD" );
+            $this->canEdit   = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_EDIT" );
+            $this->canDelete = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_DELETE" );
+
         }
 
         protected function onGet ( ) { }
 
         protected function onPost ( )
         {
-            $userID = sanitize_integer( $_POST ["UserId"] );
-            http_response_code( 400 );
-
-            $user   = new User( ["ID", $userID ] );
-            if ( ! is_null ( $user ) )
+            if ( $this->canDelete )
             {
-                if ( $user->setDeleted(true) )
-                {
-                    http_response_code( 200 );
-                }
+                $userID = sanitize_integer( $_POST ["UserId"] );
+                http_response_code( 400 );
+
+                $user   = new User( ["ID", $userID ] );
+                if ( ! is_null ( $user ) )
+                    if ( $user->setDeleted( true ) )
+                        http_response_code( 200 );
             }
 
         }

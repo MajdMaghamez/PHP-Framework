@@ -13,7 +13,9 @@
     class usersCreate extends Controller
     {
         use usersNavigation;
-        protected $canAccess = false;
+        protected $canAccess    = false;
+        protected $canEdit      = false;
+        protected $canAdd       = false;
         protected $arrComponents;
 
         /**
@@ -24,10 +26,12 @@
         {
             session_auth ( );
 
-            if ( Permission::getUserPermission( $_SESSION ["USER_ID"], "USER_ADD" ) )
-            {
-                $this->canAccess = true;
+            $this->canAccess = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_VIEW" );
+            $this->canAdd    = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_ADD" );
+            $this->canEdit   = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_EDIT" );
 
+            if ( $this->canAdd )
+            {
                 $Tabs       = "\t\t\t\t\t\t\t\t";
                 $components =
                     [
@@ -170,7 +174,7 @@
 
             $html    = "\t\t\t<div class=\"row\">\n";
             $html   .= "\t\t\t\t<div class=\"col-md-3 col-lg-3 col-xl-3\">\n";
-            $html   .= self::renderNavigationLinks();
+            $html   .= self::renderNavigationLinks( $this->canAccess, $this->canAdd, $this->canEdit );
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
             $html   .= flash_message ( "\t\t\t\t\t" );
@@ -205,7 +209,7 @@
             $html   .= "\t<body>\n";
             $html   .= $layoutTemplate->render_navbar ( );
             $html   .= "\t\t<div class=\"container page\">\n";
-            ( $this->canAccess ) ? $html .= $this->renderPage ( ) : $html .= flash_message( "\t\t\t" );
+            ( $this->canAdd ) ? $html .= $this->renderPage ( ) : $html .= flash_message( "\t\t\t" );
             $html   .= "\t\t</div>\n";
             $html   .= $layoutTemplate->render_footer ( $JavaScript );
             $html   .= "\t</body>\n";
@@ -216,7 +220,7 @@
 
         protected function onPost ( )
         {
-            if ( $this->canAccess )
+            if ( $this->canAdd )
             {
                 $errors = ! fieldsValidator::validate( $this->arrComponents );
                 if ( $errors )

@@ -9,6 +9,7 @@
     {
         use usersNavigation;
         protected $canAccess = false;
+        protected $canAdd    = false;
         protected $canEdit   = false;
         protected $canDelete = false;
 
@@ -22,9 +23,10 @@
         {
             session_auth ( );
 
-            $this->canAccess = Permission::getUserPermission ( $_SESSION["USER_ID"], "USER_VIEW" );
-            $this->canEdit   = Permission::getUserPermission( $_SESSION ["USER_ID"], "USER_EDIT" );
-            $this->canDelete = Permission::getUserPermission( $_SESSION ["USER_ID"], "USER_DELETE" );
+            $this->canAccess = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_VIEW" );
+            $this->canAdd    = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_ADD" );
+            $this->canEdit   = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_EDIT" );
+            $this->canDelete = Permission::getUserPermission( $_SESSION["USER_ID"], "USER_DELETE" );
 
             if ( ! $this->canAccess )
                 setFlashMessage ( "Access Denied!", "You do not have permission to access this page", 4 );
@@ -37,7 +39,7 @@
         {
             $html    = "\t\t\t<div class=\"row\">\n";
             $html   .= "\t\t\t\t<div class=\"col-md-3 col-lg-3 col-xl-3\">\n";
-            $html   .= self::renderNavigationLinks();
+            $html   .= self::renderNavigationLinks( $this->canAccess, $this->canAdd, $this->canEdit );
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t<div class=\"col-md-9 col-lg-9 col-xl-9\">\n";
             $html   .= "\t\t\t\t\t<div class=\"box\">\n";

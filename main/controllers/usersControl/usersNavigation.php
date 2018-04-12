@@ -3,30 +3,27 @@
     use main\storage\database;
     trait usersNavigation
     {
+
         /**
+         * @param bool $canAccess
+         * @param bool $canAdd
+         * @param bool $canEdit
          * @return string
          */
-        public static function renderNavigationLinks ( )
+        public static function renderNavigationLinks ( $canAccess, $canAdd, $canEdit )
         {
             $tabs = "\t\t\t\t";
             $path = explode ( '\\', __CLASS__ );
             $path = array_pop ( $path );
 
-            $navigation =
-            [
-                0 =>
-                [
-                    "label" => "Users List",
-                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/List",
-                    "class" => ( $path == 'usersList' ) ? " active" : ""
-                ],
-                1 =>
-                [
-                    "label" => "Add Users",
-                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Add",
-                    "class" => ( $path == 'usersCreate' ) ? " active" : ""
-                ]
-            ];
+            $navigation = array ();
+
+            if ( $canAccess )
+                array_push ( $navigation, self::getViewButton ( $path ) );
+            if ( $canAdd )
+                array_push ( $navigation, self::getAddButton ( $path ) );
+            if ( $canEdit && findInURL( 'Edit' ) )
+                array_push ( $navigation, self::getEditButton ( $path ) );
 
             $html    = $tabs . "\t<div class=\"box\">\n";
 
@@ -43,6 +40,49 @@
 
             return $html;
         }
+
+        /**
+         * @param string $path
+         * @return array
+         */
+        public static function getViewButton ( $path )
+        {
+            return
+                [
+                "label" => "Users List",
+                "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/List",
+                "class" => ( $path == 'usersList' ) ? " active" : ""
+                ];
+        }
+
+        /**
+         * @param string $path
+         * @return array
+         */
+        public static function getAddButton ( $path )
+        {
+            return
+                [
+                "label" => "Add Users",
+                "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Add",
+                "class" => ( $path == 'usersCreate' ) ? " active" : ""
+                ];
+        }
+
+        /**
+         * @param string $path
+         * @return array
+         */
+        public static function getEditButton ( $path )
+        {
+            return
+                [
+                    "label" => "Edit Users",
+                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit",
+                    "class" => ( $path == 'usersEdit' ) ? " active" : ""
+                ];
+        }
+
 
         /**
          * @return string
