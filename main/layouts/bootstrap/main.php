@@ -149,7 +149,7 @@
         {
             $html    = "";
 
-            if ( isset ( $lib ["BEFORE"] ) ) { foreach ( $lib ["BEFORE"] as $key => $value ) { $html .= "\t\t" . $value . "\n"; } }
+            if ( isset ( $lib ["BEFORE"] ) ) { foreach ( $lib ["BEFORE"] as $key => $value ) { $html .= "\t\t<link rel=\"stylesheet\" href=\"" . $value . "\"/>\n"; } }
 
             // bootstrap css
             $html   .= "\t\t<link rel=\"stylesheet\" href=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/lib/bootstrap/css/bootstrap.min.css\"/>\n";
@@ -169,7 +169,7 @@
             // parsley js
             $html   .= "\t\t<script src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/lib/parsley/parsley.min.js\"></script>\n";
 
-            if ( isset ( $lib ["AFTER"] ) ) { foreach ( $lib ["AFTER"] as $key => $value ) { $html .= "\t\t" . $value . "\n"; } }
+            if ( isset ( $lib ["AFTER"] ) ) { foreach ( $lib ["AFTER"] as $key => $value ) { $html .= "\t\t<link rel=\"stylesheet\" href=\"" . $value . "\"/>\n"; } }
 
             // IE
             $html   .= "\t\t<!-- [IF lt IE 9]>\n";
@@ -217,7 +217,7 @@
         {
             $html    = "";
 
-            if ( isset ( $lib ["BEFORE"] ) ) { foreach ( $lib ["BEFORE"] as $key => $value ) { $html .= "\t\t" . $value . "\n"; } }
+            if ( isset ( $lib ["BEFORE"] ) ) { foreach ( $lib ["BEFORE"] as $key => $value ) { $html .= "\t\t<script src=\"" . $value . "\"></script>\n"; } }
 
             // popper js
             $html   .= "\t\t<script src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/lib/bootstrap/js/popper.min.js\"></script>\n";
@@ -234,7 +234,7 @@
             // autoload js
             $html   .= "\t\t<script src=\"" . $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/js/autoload.js\"></script>\n";
 
-            if ( isset ( $lib ["AFTER"] ) ) { foreach ( $lib ["AFTER"] as $key => $value ) { $html .= "\t\t" . $value . "\n"; } }
+            if ( isset ( $lib ["AFTER"] ) ) { foreach ( $lib ["AFTER"] as $key => $value ) { $html .= "\t\t<script src=\"" . $value . "\"></script>\n"; } }
 
             return $html;
         }

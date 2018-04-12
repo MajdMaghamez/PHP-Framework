@@ -195,6 +195,7 @@
         protected function onGet ( )
         {
             $layoutTemplate = new main ( trim ( basename ( __DIR__ ) ), trim ( basename ( __DIR__ ) ) );
+            $JavaScript     = array ( "LIBRARIES" => [ "AFTER" => [ $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/js/usersControl/usersCreate.js" ] ] );
 
             $html   = "<!DOCTYPE html>\n";
             $html   .= "<html lang=\"en\">\n";
@@ -206,7 +207,7 @@
             $html   .= "\t\t<div class=\"container page\">\n";
             ( $this->canAccess ) ? $html .= $this->renderPage ( ) : $html .= flash_message( "\t\t\t" );
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderRoleDetailsJS ( ) );
+            $html   .= $layoutTemplate->render_footer ( $JavaScript );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 

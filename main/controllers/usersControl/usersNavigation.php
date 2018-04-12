@@ -44,60 +44,34 @@
             return $html;
         }
 
-        public static function renderListTableJS ( )
+        /**
+         * @return string
+         */
+        public static function renderUsersDeleteModal ( )
         {
-            $url        = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/List/";
-            $JavaScript = <<<EOT
+            $tabs   = "\t\t";
 
-            \$('#users').dataTable ({
-                'processing'    : true,
-                'serverSide'    : true,
-                'responsive'    : true,
-                'lengthMenu'    : [ 5, 10, 25 ],
-                'ajax'          :
-                {
-                    url     : '$url',
-                    type    : 'POST'
-                },
-                'columns'       :
-                [
-                    {
-                        'data'          : 0,
-                        'render'        : function ( data, type, row ) { return data + ' '  + row [1]; },
-                        'searchable'    : true,
-                        'orderable'     : true
-                    },
-                    {
-                        'data'          : 2,
-                        'searchable'    : true,
-                        'orderable'     : true
-                    },
-                    {
-                        'data'          : 3,
-                        'searchable'    : false,
-                        'orderable'     : true
-                    },
-                    {
-                        'data'          : 4,
-                        'searchable'    : false,
-                        'ordable'       : true
-                    },
-                    {
-                        'data'          : 5,
-                        'render'        : function ( data, type, row )
-                        {
-                            return  "<a href='" + data + "' class='margin-right-5'><i class='far fa-edit'></i></a>" +
-                                    "<a href='" + row[6] + "'><i class='far fa-trash-alt'></i></a>";
-                        },
-                        'searchable'    : false,
-                        'orderable'     : false
-                    }
-                ],
-                'order'         : [[ 0, 'asc' ]]
-            });
-            
-EOT;
-            return $JavaScript;
+            $html    = $tabs . "\t<div class=\"modal fade\" id=\"DeleteUser\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"UserDeleteWindow\" aria-hidden=\"true\">\n";
+            $html   .= $tabs . "\t\t<div class=\"modal-dialog\" role=\"document\">\n";
+            $html   .= $tabs . "\t\t\t<div class=\"modal-content\">\n";
+            $html   .= $tabs . "\t\t\t\t<div class=\"modal-header\">\n";
+            $html   .= $tabs . "\t\t\t\t\t<h5 class=\"modal-title\" id=\"UserDeleteWindow\">Deleting User</h5>\n";
+            $html   .= $tabs . "\t\t\t\t\t<button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">\n";
+            $html   .= $tabs . "\t\t\t\t\t\t<span aria-hidden=\"true\">&times;</span>\n";
+            $html   .= $tabs . "\t\t\t\t\t</button>\n";
+            $html   .= $tabs . "\t\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t\t\t<div class=\"modal-body\">\n";
+            $html   .= $tabs . "\t\t\t\t\t<h5 class='center'>Are you sure you want to delete this user?</h5>\n";
+            $html   .= $tabs . "\t\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t\t\t<div class=\"modal-footer\">\n";
+            $html   .= $tabs . "\t\t\t\t\t<button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Cancel</button>\n";
+            $html   .= $tabs . "\t\t\t\t\t<button type=\"button\" id=\"delete\" class=\"btn btn-outline-danger btn-danger\">Yes, Delete</button>\n";
+            $html   .= $tabs . "\t\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t\t</div>\n";
+            $html   .= $tabs . "\t\t</div>\n";
+            $html   .= $tabs . "\t</div>\n";
+
+            return $html;
         }
 
         /**
@@ -108,38 +82,6 @@ EOT;
             $sql_select = "SELECT `ID`, `NAME` FROM `users_group` WHERE `ROLE` = 1 AND `DELETED` = 0";
             $sql_result = database::runSelectQuery ( $sql_select );
             return $sql_result;
-        }
-
-        public static function renderRoleDetailsJS ( )
-        {
-            $url = $GLOBALS ['RELATIVE_TO_ROOT'] . '/Users/Role/Details/';
-            $JavaScript = <<<EOT
-            
-            onSuccess = function ( data )
-            {
-                var html = "<h5>" + data.NAME + "</h5>";
-                html += "<p>" + data.DESCRIPTION + "</p><hr/>";
-                html += "<table class=\"table table-sm table-responsive-sm\"><thead><tr><th></th><th>Name</th><th>Description</th></tr></thead><tbody>";
-                $.each ( data.PERMISSIONS, function ( index, element ) {
-                    html += "<tr><td><i class=\"far fa-check-square\"></i></td><td>" + element.NAME + "</td><td>" + element.DESCRIPTION + "</td></tr>";
-                });
-                html += "</tbody></table>";
-                
-                $(html).appendTo ('#roleDetails');
-            }
-            
-            \$('#role').change ( function ( ) {
-                var role = \$(this).val();
-                \$('#roleDetails').html ( '' );
-                if ( role > 0 )
-                {
-                    \$.get ( "$url" + role, onSuccess, "json" );
-                }
-            });
-            
-EOT;
-            return $JavaScript;
-
         }
 
     }

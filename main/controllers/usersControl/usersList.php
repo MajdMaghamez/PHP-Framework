@@ -9,6 +9,9 @@
     {
         use usersNavigation;
         protected $canAccess = false;
+        protected $canEdit   = false;
+        protected $canDelete = false;
+
         protected $userRoles = array ( );
 
         /**
@@ -19,16 +22,17 @@
         {
             session_auth ( );
 
-            if ( Permission::getUserPermission ( $_SESSION["USER_ID"], "USER_VIEW" ) )
-            {
-                $this->canAccess = true;
-            }
-            else
-            {
+            $this->canAccess = Permission::getUserPermission ( $_SESSION["USER_ID"], "USER_VIEW" );
+            $this->canEdit   = Permission::getUserPermission( $_SESSION ["USER_ID"], "USER_EDIT" );
+            $this->canDelete = Permission::getUserPermission( $_SESSION ["USER_ID"], "USER_DELETE" );
+
+            if ( ! $this->canAccess )
                 setFlashMessage ( "Access Denied!", "You do not have permission to access this page", 4 );
-            }
         }
 
+        /**
+         * @return string
+         */
         protected function renderPage ( )
         {
             $html    = "\t\t\t<div class=\"row\">\n";
@@ -45,7 +49,8 @@
             $html   .= "\t\t\t\t\t\t\t\t\t<th class=\"none\">Email</th>\n";
             $html   .= "\t\t\t\t\t\t\t\t\t<th class=\"desktop\">Role</th>\n";
             $html   .= "\t\t\t\t\t\t\t\t\t<th class=\"desktop\">Last Logged in</th>\n";
-            $html   .= "\t\t\t\t\t\t\t\t\t<th class=\"desktop\">Action</th>\n";
+            $html   .= "\t\t\t\t\t\t\t\t\t<th class=\"desktop\">Edit</th>\n";
+            $html   .= "\t\t\t\t\t\t\t\t\t<th class=\"desktop\">Delete</th>\n";
             $html   .= "\t\t\t\t\t\t\t\t</tr>\n";
             $html   .= "\t\t\t\t\t\t\t</thead>\n";
             $html   .= "\t\t\t\t\t\t\t<tbody>\n";
@@ -54,6 +59,7 @@
             $html   .= "\t\t\t\t\t</div>\n";
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
+            $html   .= self::renderUsersDeleteModal();
 
             return $html;
         }
@@ -61,6 +67,7 @@
         protected function onGet ( )
         {
             $layoutTemplate = new datatables ( trim ( basename (__DIR__ ) ), trim ( basename ( __DIR__ ) ) );
+            $JavaScript     = array ( "LIBRARIES" => [ "AFTER" => [ $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/js/usersControl/usersList.js" ] ] );
 
             $html   = "<!DOCTYPE html>\n";
             $html   .= "<html lang=\"en\">\n";
@@ -72,7 +79,7 @@
             $html   .= "\t\t<div class=\"container page\">\n";
             ( $this->canAccess ) ? $html .= $this->renderPage ( ) : $html .= flash_message( "\t\t\t" );
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderListTableJS() );
+            $html   .= $layoutTemplate->render_footer ( $JavaScript );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 
@@ -89,9 +96,9 @@
 
             $table_columns = array
             (
-                array ( 'db' => 'FIRSTNAME', 'dt' => 0 ),
-                array ( 'db' => 'LASTNAME', 'dt' => 1 ),
-                array ( 'db' => 'EMAIL', 'dt' => 2 ),
+                array ( 'db' => 'FIRSTNAME',    'dt' => 0 ),
+                array ( 'db' => 'LASTNAME',     'dt' => 1 ),
+                array ( 'db' => 'EMAIL',        'dt' => 2 ),
 
                 array
                 (
@@ -110,7 +117,7 @@
                     'formatter' => function ( $d, $row )
                     {
                         if ( isset ( $d ) )
-                            return date ( 'm/d/Y | h:i:s A', strtotime( $d ) );
+                            return date ( 'm/d/Y | h:i:s A T', strtotime( $d ) );
                         return '';
                     }
                 ),
@@ -121,7 +128,8 @@
                     'dt'    => 5,
                     'formatter' => function ( $d, $row )
                     {
-                        return $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/" . $d;
+                        ( $this->canEdit ) ? $edit = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/" . $d : $edit = '';
+                        return $edit;
                     }
                 ),
 
@@ -131,10 +139,12 @@
                     'dt'    => 6,
                     'formatter' => function ( $d, $row )
                     {
-                        return $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Delete/" . $d;
+                        ( $this->canDelete ) ? $delete = $d : $delete = '';
+                        return $delete;
                     }
                 )
             );
+
 
             if ( $this->canAccess )
             {

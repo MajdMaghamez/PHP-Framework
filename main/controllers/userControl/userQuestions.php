@@ -104,6 +104,7 @@
         protected function onGet ( )
         {
             $layoutTemplate = new main ( trim ( basename(__DIR__) ), trim ( basename (__DIR__) ), true );
+            $JavaScript     = array ( "LIBRARIES" => [ "AFTER" => [ $GLOBALS ["RELATIVE_TO_ROOT"] . "/assets/js/userControl/userProfile.js" ] ] );
 
             $user   = new User ( [ "ID", $_SESSION ["USER_ID"] ] );
             $this->arrComponents[0][0]->setValue( $user->getQuestion1() );
@@ -132,7 +133,7 @@
             $html   .= "\t\t\t\t</div>\n";
             $html   .= "\t\t\t</div>\n";
             $html   .= "\t\t</div>\n";
-            $html   .= $layoutTemplate->render_footer ( array ( ), self::renderProfilePicJS( ) );
+            $html   .= $layoutTemplate->render_footer ( $JavaScript );
             $html   .= "\t</body>\n";
             $html   .= "</html>\n";
 
