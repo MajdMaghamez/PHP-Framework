@@ -779,7 +779,7 @@
          *
          * @note storing users from public registration
          */
-        public function store_public ( $user )
+        public static function store_public ( $user )
         {
             $ProfilePicture_Default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
             $ProfilePicture_New     = base64StringEncode ( microtime ( true ) ) . ".png";
@@ -826,14 +826,16 @@ EOT;
          * @param $user
          * @return int|null
          */
-        public function store ( $user )
+        public static function store ( $user )
         {
             $ProfilePicture_Default = $GLOBALS ["RELATIVE_TO_DIRECTORY"] . "/assets/img/default.png";
             $ProfilePicture_New     = base64StringEncode ( microtime ( true ) ) . ".png";
 
+            ( boolval ( $user['changePswd'] ) )  ? $home = '/User/Password/' : $home = '/Home';
+
             $sql_insert = <<<EOT
             INSERT INTO `users` ( `FIRSTNAME`, `LASTNAME`, `EMAIL`, `PASSWORD`, `ROLE`, `CREATED`, `CREATED_BY`, `VERIFY_TOKEN`, `CHANGE_PASSWORD`, `HOME_DIR`, `PICTURE` )
-            VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :ROLE, CURRENT_TIMESTAMP ( ), :CREATED_BY, :VERIFY_TOKEN, :CHANGE_PASS, '/Home', :PICTURE );
+            VALUES ( :FIRSTNAME, :LASTNAME, :EMAIL, :PASSWORD, :ROLE, CURRENT_TIMESTAMP ( ), :CREATED_BY, :VERIFY_TOKEN, :CHANGE_PASS, :HOME, :PICTURE );
 EOT;
 
             $sql_params = array
@@ -846,6 +848,7 @@ EOT;
                 ":CREATED_BY"   => ["TYPE" => "INT", "VALUE" => $_SESSION["USER_ID"]],
                 ":VERIFY_TOKEN" => ["TYPE" => "STR", "VALUE" => randomToken()],
                 ":CHANGE_PASS"  => ["TYPE" => "INT", "VALUE" => $user ['changePswd']],
+                ":HOME"         => ["TYPE" => "STR", "VALUE" => $home],
                 ":PICTURE"      => ["TYPE" => "STR", "VALUE" => $ProfilePicture_New]
             );
 
@@ -872,9 +875,6 @@ EOT;
                     $Roles->setUser( $sql_results );
                 }
 
-                // 3) If change password flag is set then forward them every time they login to the change password screen
-                if ( $user['changePswd'] )
-                    $this->setHomePage( '/User/Password' );
 
                 return $sql_results;
             }

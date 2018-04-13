@@ -230,7 +230,7 @@
             }
 
             // save the user in database and return their ID
-            $data ['id'] = $user->store_public ( $data );
+            $data ['id'] = User::store_public( $data );
 
             // send a verification email
             if ( $data ['id'] > 0 )

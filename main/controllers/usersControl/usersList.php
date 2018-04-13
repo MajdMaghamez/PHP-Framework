@@ -130,7 +130,7 @@
                     'dt'    => 5,
                     'formatter' => function ( $d, $row )
                     {
-                        ( $this->canEdit ) ? $edit = $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/" . $d : $edit = '';
+                        ( $this->canEdit ) ? $edit = $d : $edit = '';
                         return $edit;
                     }
                 ),

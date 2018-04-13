@@ -37,7 +37,7 @@ var table = $('#users').DataTable ({
             'data'      : 5,
             'render'    : function (data, type, row) {
                 if ( data !== '' )
-                    return "<a href=\"" + data + "\"><i class=\"far fa-edit\"></i></a>";
+                    return "<a href=\"/Users/Edit/" + data + "\"><i class=\"far fa-edit\"></i></a>";
                 return "";
             },
             'searchable': false,

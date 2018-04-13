@@ -265,7 +265,7 @@
             }
 
             // store user in database and return their ID
-            $Data ['id'] = $User->store( $Data );
+            $Data ['id'] = User::store( $Data );
 
             if ( $Data ['id'] > 0 )
             {
