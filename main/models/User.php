@@ -14,7 +14,7 @@
          */
         public function __construct ( $data )
         {
-            $sql_select = "SELECT * FROM `users` WHERE `" . $data [0] . "` = :" . $data [0] . " AND `DELETED` = 0";
+            $sql_select = "SELECT * FROM `users` WHERE `" . $data [0] . "` = :" . $data [0];
             $sql_params = array ( ":" . $data[0] => ["TYPE" => "STR", "VALUE" => $data [1] ] );
             $sql_result = database::runSelectQuery ( $sql_select, $sql_params );
 
@@ -128,11 +128,11 @@
 
 
         /**
-         * @return integer
+         * @return boolean
          */
         public function isActive ( )
         {
-            return $this->object ["ACTIVE"];
+            return boolval ( $this->object ["ACTIVE"] );
         }
 
         /**
@@ -196,11 +196,11 @@
         }
 
         /**
-         * @return integer
+         * @return boolean
          */
         public function isVerified ( )
         {
-            return $this->object ["VERIFIED"];
+            return boolval ( $this->object ["VERIFIED"] );
         }
 
         /**
@@ -230,11 +230,11 @@
         }
 
         /**
-         * @return integer
+         * @return boolean
          */
         public function isDeleted ( )
         {
-            return $this->object ["DELETED"];
+            return boolval ( $this->object ["DELETED"] );
         }
 
         /**

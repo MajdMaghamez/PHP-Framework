@@ -36,7 +36,7 @@
                 http_response_code( 400 );
 
                 $user   = new User( ["ID", $userID ] );
-                if ( ! is_null ( $user ) )
+                if ( ! is_null ( $user->getUser() ) )
                     if ( $user->setDeleted( true ) )
                         http_response_code( 200 );
             }

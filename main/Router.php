@@ -9,11 +9,15 @@
     use main\controllers\usersControl\usersList;
     use main\controllers\usersControl\usersCreate;
     use main\controllers\usersControl\usersDelete;
+    use main\controllers\usersControl\usersEditRole;
     use main\controllers\homeControl\homeController;
+    use main\controllers\usersControl\usersEditName;
+    use main\controllers\usersControl\usersEditEmail;
     use main\controllers\authControl\LoginController;
     use main\controllers\authControl\LogoutController;
     use main\controllers\authControl\VerifyController;
     use main\controllers\usersControl\usersRoleDetails;
+    use main\controllers\usersControl\usersEditPassword;
     use main\controllers\authControl\RegisterController;
     use main\controllers\authControl\ResetPassController;
     use main\controllers\authControl\ResetEmailController;
@@ -52,6 +56,10 @@
             $this->routes["Users/Add"]                  = usersCreate::class;
             $this->routes["Users/Role/Details"]         = usersRoleDetails::class;
             $this->routes["Users/Delete"]               = usersDelete::class;
+            $this->routes["Users/Edit"]                 = usersEditName::class;
+            $this->routes["Users/Edit/Email"]           = usersEditEmail::class;
+            $this->routes["Users/Edit/Password"]        = usersEditPassword::class;
+            $this->routes["Users/Edit/Role"]            = usersEditRole::class;
 
             // Home route
             $this->routes["Home"]                       = homeController::class;
@@ -83,22 +91,25 @@
             {
                 $router = null;
                 $route = explode( '/', $route );
-                $controller = $route[0];
 
-                for ( $i = 1; $i < sizeof($route); $i++ )
+                foreach ( $route as $index => $item )
                 {
-                    $controller .= '/' . $route[$i];
-                    if ( array_key_exists ( $controller, $this->routes ) )
+                    array_pop ( $route );
+                    $controller = implode( '/', $route );
+                    if ( array_key_exists( $controller, $this->routes ) )
                     {
                         $router = $controller;
                         break;
                     }
                 }
 
-                ! is_null ( $router ) ? $this->routeTo( $router ) : $this->routeTo( $route[0] );
+                ( ! is_null ( $router ) ) ? $this->routeTo( $router ) : redirect( '/404.html' );
             }
         }
 
+        /**
+         * @param string $route
+         */
         public function routeTo( $route ) {
             if ( array_key_exists( $route, $this->routes) )
             {

@@ -8,28 +8,43 @@
          * @param bool $canAccess
          * @param bool $canAdd
          * @param bool $canEdit
+         * @param array $user
          * @return string
          */
-        public static function renderNavigationLinks ( $canAccess, $canAdd, $canEdit )
+        public static function renderNavigationLinks ( $canAccess, $canAdd, $canEdit, $user = array() )
         {
             $tabs = "\t\t\t\t";
             $path = explode ( '\\', __CLASS__ );
             $path = array_pop ( $path );
 
             $navigation = array ();
+            $subNavigation = array ();
 
             if ( $canAccess )
                 array_push ( $navigation, self::getViewButton ( $path ) );
             if ( $canAdd )
                 array_push ( $navigation, self::getAddButton ( $path ) );
-            if ( $canEdit && findInURL( 'Edit' ) )
-                array_push ( $navigation, self::getEditButton ( $path ) );
+            if ( $canEdit && boolval ( findInURL( 'Edit' ) ) )
+            {
+                array_push ( $navigation, self::getEditButton( $path, $user ) );
+                array_push ( $subNavigation, self::getEditNameButton ( $path, $user ) );
+                array_push ( $subNavigation, self::getEditEmailButton( $path, $user ) );
+                array_push ( $subNavigation, self::getEditPasswordButton( $path, $user ) );
+                array_push ( $subNavigation, self::getEditRoleButton( $path, $user ) );
+            }
 
             $html    = $tabs . "\t<div class=\"box\">\n";
 
             $html   .= $tabs . "\t\t<div class=\"nav flex-column nav-pills\" role=\"tablist\" aria-orientation=\"vertical\">\n";
 
             foreach ( $navigation as $link => $page )
+            {
+                $html .= $tabs . "\t\t\t<a class=\"nav-link" . $page ["class"] . "\" href=\"" . $page["href"] . "\">" . $page ["label"] . "</a>\n";
+            }
+
+            $html .= $tabs . "\t\t\t<br>\n";
+
+            foreach ( $subNavigation as $link => $page )
             {
                 $html .= $tabs . "\t\t\t<a class=\"nav-link" . $page ["class"] . "\" href=\"" . $page["href"] . "\">" . $page ["label"] . "</a>\n";
             }
@@ -70,19 +85,79 @@
         }
 
         /**
-         * @param string $path
+         * @param $path
+         * @param $user
          * @return array
          */
-        public static function getEditButton ( $path )
+        public static function getEditButton ( $path, $user )
         {
             return
                 [
-                    "label" => "Edit Users",
-                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit",
-                    "class" => ( $path == 'usersEdit' ) ? " active" : ""
+                    "label" => "Editing " . $user["NAME"],
+                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/" . $user["ID"],
+                    "class" => ( $path == 'usersEditName' || $path == 'usersEditEmail' || $path == 'usersEditPassword' || $path == 'usersEditRole' ) ? " active" : ""
                 ];
         }
 
+        /**
+         * @param string $path
+         * @param array $user
+         * @return array
+         */
+        public static function getEditNameButton ( $path, $user )
+        {
+            return
+                [
+                    "label" => "Name",
+                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/" . $user["ID"],
+                    "class" => ( $path == 'usersEditName' ) ? " active" : ""
+                ];
+        }
+
+        /**
+         * @param string $path
+         * @param array $user
+         * @return array
+         */
+        public static function getEditEmailButton ( $path, $user )
+        {
+            return
+                [
+                    "label" => "Email Address",
+                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/Email/" . $user["ID"],
+                    "class" => ( $path == 'usersEditEmail' ) ? " active" : ""
+                ];
+        }
+
+        /**
+         * @param string $path
+         * @param array $user
+         * @return array
+         */
+        public static function getEditPasswordButton ( $path, $user )
+        {
+            return
+                [
+                    "label" => "Password",
+                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/Password/" . $user["ID"],
+                    "class" => ( $path == 'usersEditPassword' ) ? " active" : ""
+                ];
+        }
+
+        /**
+         * @param string $path
+         * @param array $user
+         * @return array
+         */
+        public static function getEditRoleButton ( $path, $user )
+        {
+            return
+                [
+                    "label" => "Change Role",
+                    "href"  => $GLOBALS ["RELATIVE_TO_ROOT"] . "/Users/Edit/Role/" . $user["ID"],
+                    "class" => ( $path == 'usersEditRole' ) ? " active" : ""
+                ];
+        }
 
         /**
          * @return string

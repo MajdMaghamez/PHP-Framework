@@ -258,7 +258,7 @@
 
             // check if user exists
             $User       = new User( [ "EMAIL", $Data ['email'] ] );
-            if ( is_null ( $User ) )
+            if ( ! is_null ( $User->getUser() ) )
             {
                 setFlashMessage( 'Failed!', 'This email address is associated with another user', 4 );
                 return false;
